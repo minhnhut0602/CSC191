@@ -1,4 +1,9 @@
-<web-app>
+<web-app version="2.4"
+         xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <display-name>Salon Scheduling API</display-name>
 
     <servlet>
         <servlet-name>salonscheduler-api</servlet-name>
@@ -10,16 +15,4 @@
         <servlet-name>salonscheduler-api</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
-    <context-param>
-        <param-name>ContextConfigLocation</param-name>
-        <param-value>/WEB-INF/salonscheduler-api-servlet.xml</param-value>
-    </context-param>
-
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
-    </listener>
-
 </web-app>
