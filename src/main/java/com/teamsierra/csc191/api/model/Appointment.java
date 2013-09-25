@@ -68,14 +68,14 @@ public class Appointment {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                    "\"clientID\":"+ getClientID() +","+
-                    "\"stylistID\":"+ getStylistID() +","+
-                    "\"startTime\":"+ getStartTime() +","+
-                    "\"endTime\":"+ getEndTime() +","+
-                    "\"status\":\""+ getStatus() +"\""+
-                "}";
-    }
+//    @Override
+//    public String toString() {
+//        return "{" +
+//                    "\"clientID\":"+ getClientID() +","+
+//                    "\"stylistID\":"+ getStylistID() +","+
+//                    "\"startTime\":"+ getStartTime() +","+
+//                    "\"endTime\":"+ getEndTime() +","+
+//                    "\"status\":\""+ getStatus() +"\""+
+//                "}";
+//    }
 }

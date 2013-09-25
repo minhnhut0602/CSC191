@@ -1,13 +1,14 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>api login test</title>
 </head>
 <body>
-    <form method="post" action="/">
-        <input type="text" name="username">
-        <input type="password" name="password">
-        <button type="submit"></button>
-    </form>
+    <form:form method="post" action="login">
+        <form:input type="text" path="username"/>
+        <form:input type="password" path="password"/>
+        <button type="submit">Submit</button>
+    </form:form>
 </body>
 </html>

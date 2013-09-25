@@ -25,15 +25,11 @@ public class AppointmentRepository {
 
     private MongoTemplate mongoTemplate;
 
-    public AppointmentRepository() {
-    }
-
     @Autowired
     public AppointmentRepository(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
 
         if (!mongoTemplate.collectionExists(Appointment.class)) {
-
             L.debug("Creating the appointments collection");
             mongoTemplate.createCollection(Appointment.class);
         }
@@ -48,9 +44,10 @@ public class AppointmentRepository {
     //    | $$  | $$\  $$$ /$$  \ $$| $$      | $$  \ $$   | $$
     //   /$$$$$$| $$ \  $$|  $$$$$$/| $$$$$$$$| $$  | $$   | $$
     //  |______/|__/  \__/ \______/ |________/|__/  |__/   |__/
-    public void insert(Appointment appointment) {
+    public Appointment insert(Appointment appointment) {
         L.debug("Inserting new appointment: "+ appointment);
         mongoTemplate.insert(appointment);
+        return appointment;
     }
 
 
@@ -65,10 +62,6 @@ public class AppointmentRepository {
     public Appointment findByID(String id) {
         L.debug("Finding an appointment by _id:"+ id);
         return mongoTemplate.findOne(query(where("_id").is(id)), Appointment.class);
-    }
-    public List<Appointment> findByClientID(String clientID) {
-        L.debug("Finding an appointment by clientID: " + clientID);
-        return mongoTemplate.find(query(where("clientID").is(clientID)), Appointment.class);
     }
     public List<Appointment> findAll(User user) {
         L.debug("Finding all appointments for user: "+ user);

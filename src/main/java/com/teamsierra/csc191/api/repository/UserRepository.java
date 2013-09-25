@@ -27,7 +27,6 @@ public class UserRepository {
         this.mongoTemplate = mongoTemplate;
 
         if(!mongoTemplate.collectionExists(User.class)) {
-
             L.debug("Creating the users collection");
             mongoTemplate.createCollection(User.class);
         }
@@ -43,7 +42,7 @@ public class UserRepository {
     //   /$$$$$$| $$ \  $$|  $$$$$$/| $$$$$$$$| $$  | $$   | $$
     //  |______/|__/  \__/ \______/ |________/|__/  |__/   |__/
     public void insert(User user) {
-        L.debug("Inserting new user: "+ user);
+        L.info("Inserting new user: "+ user);
         mongoTemplate.insert(user);
     }
 
@@ -57,15 +56,15 @@ public class UserRepository {
     //  | $$       /$$$$$$| $$ \  $$| $$$$$$$/
     //  |__/      |______/|__/  \__/|_______/
     public User findByEmail(String email) {
-        L.debug("Finding a user by email: " + email);
+        L.info("Finding a user by email: " + email);
         return mongoTemplate.findOne(query(where("email").is(email)), User.class);
     }
     public User findById(String id) {
-        L.debug("Finding a user by id: "+ id);
+        L.info("Finding a user by id: "+ id);
         return mongoTemplate.findOne(query(where("_id").is(id)), User.class);
     }
     public User findByToken(String token) {
-        L.debug("Finding a user by token: "+ token);
+        L.info("Finding a user by token: "+ token);
         return mongoTemplate.findOne(query(where("token").is(token)), User.class);
     }
 
@@ -79,7 +78,7 @@ public class UserRepository {
     //  |  $$$$$$/| $$  | $$   \  $/   | $$$$$$$$
     //   \______/ |__/  |__/    \_/    |________/
     public void save(User user) {
-        L.debug("Saving the following user object: " + user);
+        L.info("Saving the following user object: " + user);
         mongoTemplate.save(user);
     }
 }
