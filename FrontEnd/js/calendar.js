@@ -3,7 +3,14 @@ var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday"
 
 function CalendarGenerator($scope) {
     $scope.calendar = function(year, monthIndex, day) {
-        console.log(year+", "+monthIndex+", "+day);
+        if (year === undefined &&
+            monthIndex === undefined &&
+            day === undefined) {
+            var setCurrentDate = new Date();
+            year = setCurrentDate.getYear();
+            monthIndex = setCurrentDate.getMonth();
+            day = 0;
+        }
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
         var month = {};
