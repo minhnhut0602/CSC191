@@ -12,8 +12,9 @@
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
         <!-- Font Awesome -->
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+   
         <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
         <!-- End Font Awesome -->
         <link rel="stylesheet" href="css/normalize.css">
@@ -41,28 +42,30 @@
 
         <div class="wrapper" id="content">
         <div class="top">
-            <div class="left">
-                <h2 class="upcoming-header">Upcoming Appointments</h2>
-            </div>
-            <div class="right"> <button type="button" class="btn btn-primary" style="position:absolute;bottom:0 !important;">Make appointment</button>
-        </div>
+                Upcoming 
+                <button type="button" class="btn btn-primary right asd">Make an Appointment</button>
+
+
+
+
         </div>
 
-        <div ng-controller="CalendarGenerator" ng-init="month = calendar(2013, 9, 22)">
+        <div ng-controller="CalendarGenerator" ng-init="month = calendar()">
             <div class="left">
                 <div class="clearfix">
                     <br/>
                 </div>
                     
-                <div class="alert alert-success" ng-click="month = calendar(2013, 9, 22)" >See you Wednesday March 3rd at 8 am with Alexa </div>
-                <div class="alert alert-warning" ng-click="month = calendar(2013, 9, 1)">Appointment March 18th (Pending)</div>
-                <div class="alert alert-danger">Sorry, April 20th at 4:20pm wont work </div>
+                <div class="alert alert-success" ng-click="month = calendar(2013, 2, 3)" >See you Wednesday March 3rd at 8 am with Alexa </div>
+                <div class="alert alert-warning" ng-click="month = calendar(2013, 2, 18)">Appointment March 18th (Pending)</div>
+                <div class="alert alert-danger" ng-click="month = calendar(2013, 3, 20)">Sorry, April 20th at 4:20pm wont work </div>
         
             </div>
 
-            <div class="right" ng-controller="CalendarGenerator">
-                    <br/>
+            <div class="right calendar" ng-controller="CalendarGenerator">
+                    
                 <div class="month" >
+                    <h2 class="month-name">{{month.name}}</h2>
                 <div class="week" ng-repeat="week in month.weeks">
                     <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
                 </div>

@@ -20,6 +20,7 @@
         <script src="js/vendor/less.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
         <script src="js/calendar.js"></script>
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -29,14 +30,6 @@
         <!-- Add your site or application content here -->
         <div class="wrapper" ng-controller="CalendarGenerator">
             <div class="months" ts-calendar></div>
-
-            <div class="month" ng-init="month = calendar(2013, 9, 28)">
-                <div class="week" ng-repeat="week in month.weeks">
-                    <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
-                </div>
-                
-            </div>
-
         </div>
 
         
@@ -47,7 +40,11 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
 
-        
+        <script>
+            $(document).ready(function() {
+                $('.day:not(.inactive)').popover({placement:'auto right'});
+            });
+        </script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <!--script>

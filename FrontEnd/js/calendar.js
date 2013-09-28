@@ -59,10 +59,11 @@ mod.directive('tsCalendar', function () {
         restrict : 'A',
         template :  '<div class="month" ng-repeat="month in months">' +
                         '<div class="month-name"><h1>{{month.name}}</h1></div>' +
-                        '<div class="week" ng-repeat="week in month.weeks">' +
-                            '<div ng-repeat="day in week" class="day {{day.name}} {{day.class}}">' +
+                        '<div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">' +
+                            '<div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-content="{{day.name}} the {{day.number}}" data-original-title="{{month.name}}">' +
                                 '<strong>{{day.number}}</strong>' +
                             '</div>' +
+                            // '<div class="day-info" ng-hide="dayInfo"></div>' +
                         '</div>' +
                     '</div>',
         scope : {
