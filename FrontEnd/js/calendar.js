@@ -60,7 +60,7 @@ mod.directive('tsCalendar', function () {
         template :  '<div class="month" ng-repeat="month in months">' +
                         '<div class="month-name"><h1>{{month.name}}</h1></div>' +
                         '<div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">' +
-                            '<div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-content="{{day.name}} the {{day.number}}" data-original-title="{{month.name}}">' +
+                            '<div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">' +
                                 '<strong>{{day.number}}</strong>' +
                             '</div>' +
                             // '<div class="day-info" ng-hide="dayInfo"></div>' +
@@ -91,6 +91,8 @@ mod.directive('tsCalendar', function () {
                 var weeks = [];
 
                 month.name = monthNames[(monthIndex+i)%12];
+                month.year = scope.date.getFullYear();
+                month.number = scope.date.getMonth();
 
                 // loop for weeks
                 for (var j=0 ; scope.date.getMonth() === (monthIndex+i)%12 ; j++) {
