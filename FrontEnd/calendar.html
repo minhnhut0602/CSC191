@@ -12,10 +12,7 @@
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-        <!-- Font Awesome -->
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-        <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-        <!-- End Font Awesome -->
+        
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet/less" href="css/main.less">
         
@@ -24,30 +21,17 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
         <script src="js/calendar.js"></script>
     </head>
-    <body >
+    <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
         <!-- Add your site or application content here -->
-
-        <div class="topUserBar" >
-            <div class="wrapper">
-                <img src="http://placehold.it/40x40" alt="holder.js/34x34" class="img-rounded">
-                Sandy Johnson
-            </div>  
+        <div class="wrapper">
+            <div class="months" ts-calendar></div>
         </div>
 
-        <div class="wrapper" id="content">
-            <h2 class="upcoming-header">Upcoming Appointments</h2>
-            <div class="upcoming-appointments">
-                <div class="alert alert-success">See you Wednesday March 3rd at 8 am with Alexa </div>
-                <div class="alert alert-warning">Appointment March 18th (Pending)</div>
-                <div class="alert alert-danger">Sorry, April 20th at 4:20pm wont work </div>
-
-            </div>
-
-        </div>
+        
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>

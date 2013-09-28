@@ -105,7 +105,7 @@ textarea {
  * =============================================================================================== */
 
 .wrapper {
-    max-width: 960px;
+    max-width: 1140px;
     margin: 0 auto;
 }
 
@@ -394,4 +394,70 @@ textarea {
     h3 {
         page-break-after: avoid;
     }
+}
+
+
+//      ____.           ___.   .__        
+//     |    | ____  __ _\_ |__ |__| ____  
+//     |    |/  _ \|  |  \ __ \|  |/    \ 
+// /\__|    (  <_> )  |  / \_\ \  |   |  \
+// \________|\____/|____/|___  /__|___|  /
+//                           \/        \/ 
+
+@UserBarHeight:50px;
+.topUserBar {
+
+    position:fixed;
+    top:0;
+    background:#563d7c;
+    width:100%;
+    height: @UserBarHeight;
+    line-height:@UserBarHeight;
+    color:white;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.15);
+    border-color: #463265;
+    box-shadow: 0 1px 0 rgba(255,255,255,.1);
+
+
+}
+
+.topUserBar img {
+    margin-top:-4px;
+    margin-right:10px;
+}
+
+#content {
+    padding-top:@UserBarHeight;
+}
+
+.upcoming-appointments {
+    width:50%;
+}
+
+#alert-icon {
+    position:relative !important; 
+    float:right !important; 
+    font-size:20px;
+}
+
+.alert-success:before{
+    float:right;
+    font-family:FontAwesome;
+    font-size:20px;
+    content:"\F00C";
+}
+
+
+.alert-warning:before{
+    float:right;
+    font-family:FontAwesome;
+    font-size:20px;
+    content:"\F128";
+}
+
+.alert-danger:before{
+    float:right;
+    font-family:FontAwesome;
+    font-size:20px;
+    content:"\F00D";
 }
