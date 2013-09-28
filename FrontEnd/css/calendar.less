@@ -1,0 +1,139 @@
+/* =============================================================================================== *
+ *   /$$      /$$ /$$     /$$        /$$$$$$  /$$$$$$$$ /$$     /$$ /$$       /$$$$$$$$  /$$$$$$   *
+ *  | $$$    /$$$|  $$   /$$/       /$$__  $$|__  $$__/|  $$   /$$/| $$      | $$_____/ /$$__  $$  *
+ *  | $$$$  /$$$$ \  $$ /$$/       | $$  \__/   | $$    \  $$ /$$/ | $$      | $$      | $$  \__/  *
+ *  | $$ $$/$$ $$  \  $$$$/        |  $$$$$$    | $$     \  $$$$/  | $$      | $$$$$   |  $$$$$$   *
+ *  | $$  $$$| $$   \  $$/          \____  $$   | $$      \  $$/   | $$      | $$__/    \____  $$  *
+ *  | $$\  $ | $$    | $$           /$$  \ $$   | $$       | $$    | $$      | $$       /$$  \ $$  *
+ *  | $$ \/  | $$    | $$          |  $$$$$$/   | $$       | $$    | $$$$$$$$| $$$$$$$$|  $$$$$$/  *
+ *  |__/     |__/    |__/           \______/    |__/       |__/    |________/|________/ \______/   *
+ * =============================================================================================== */
+
+.wrapper {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.month {
+    margin-bottom: 60px;
+}
+
+@dayHeight: 100px;
+@border: 0 #ddd solid;
+.week {
+    position: relative;
+    overflow: hidden;
+    height: @dayHeight;
+    border: @border;
+    border-width: 0 0 1px 0;
+}
+
+.day {
+    position: absolute;
+    height: @dayHeight;
+    width: 14.285714286%;
+    border: @border;
+}
+.day:hover {
+    background: #eee;
+}
+.inactive:hover {
+    background: none;
+}
+.inactive strong {
+    color: #ccc;
+}
+.today {
+    // background: #d0e3f0;
+}
+.today strong {
+    background: #428bca;
+    border-radius: 0 0 10px 10px;
+    color:white;
+}
+.week .day {
+    border-width: 1px 0 1px 0;
+}
+.week ~ .week .day {
+    border-width: 0 0 1px 0;
+}
+.week:last-child {
+    border-width: 0 0 0 0;
+}
+.week:last-child .day{
+    border-width: 0 0 1px 0;
+}
+
+@sundayShift: 0;
+@mondayShift: 14.285714286%;
+@tuesdayShift: 14.285714286% * 2;
+@wednesdayShift: 14.285714286% * 3;
+@thursdayShift: 14.285714286% * 4;
+@fridayShift: 14.285714286% * 5;
+@saturdayShift: 14.285714286% * 6;
+
+.sunday {
+    left: @sundayShift;
+}
+.monday {
+    left: @mondayShift;
+}
+.tuesday {
+    left: @tuesdayShift;
+}
+.wednesday {
+    left: @wednesdayShift;
+}
+.thursday {
+    left: @thursdayShift;
+}
+.friday {
+    left: @fridayShift;
+}
+.saturday {
+    left: @saturdayShift;
+}
+.day strong {
+    margin-left: 4px;
+    padding: 6px;
+    font-size: 18px;
+}
+
+.day-info {
+    height: 40px;
+}
+
+
+.clock {
+    display:inline;
+    widht:40px;
+}
+
+.popover-title {
+    color: white;
+    background-color: #563d7c;
+}
+.popover-content .new-appointment-form {
+    width: 250px;
+}
+.popover-content .control-label, 
+.popover-content .appointment-type-selection,
+.popover-content .appointment-start-time,
+.popover-content .appointment-start-time-colon {
+    float: left;
+}
+.popover-content .control-label {
+    line-height: 34px;
+    width: 30%;
+}
+.popover-content .appointment-type-selection {
+    width: 65%;
+}
+.popover-content .appointment-start-time {
+    width: 30%;
+}
+.popover-content .appointment-start-time-colon {
+    line-height: 34px;
+    width: 5%;
+    text-align: center;
+}
