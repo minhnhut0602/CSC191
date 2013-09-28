@@ -3,6 +3,7 @@ var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday"
 
 function CalendarGenerator($scope) {
     $scope.calendar = function(year, monthIndex, day) {
+        console.log(year+", "+monthIndex+", "+day);
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
         var month = {};
@@ -24,7 +25,7 @@ function CalendarGenerator($scope) {
                 var dayNumber = date.getDate();
                 var dayName   = dayNames[date.getDay()];
                 var dayClass  = "";
-                if (date.getTime() < current.getTime()) {
+                if (date.getTime() < current.getTime() || date.getTime() > current.getTime()) {
                     dayClass = "inactive";
                 }
                 if (date.getDate()  === current.getDate() &&
