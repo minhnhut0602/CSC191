@@ -3,3 +3,4 @@
 *.jar
 *.war
 */.idea/
+sftp-config.json
