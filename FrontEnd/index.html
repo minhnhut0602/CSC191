@@ -23,6 +23,7 @@
         <script src="js/vendor/less.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
         <script src="js/calendar.js"></script>
+
     </head>
     <body >
         <!--[if lt IE 7]>
@@ -47,16 +48,26 @@
         </div>
         </div>
 
-        <div>
-            <div class="upcoming-appointments">
+        <div ng-controller="CalendarGenerator" ng-init="month = calendar(2013, 9, 22)">
+            <div class="left">
                 <div class="clearfix">
                     <br/>
                 </div>
-
-                <div class="alert alert-success">See you Wednesday March 3rd at 8 am with Alexa </div>
-                <div class="alert alert-warning">Appointment March 18th (Pending)</div>
+                    
+                <div class="alert alert-success" ng-click="month = calendar(2013, 9, 22)" >See you Wednesday March 3rd at 8 am with Alexa </div>
+                <div class="alert alert-warning" ng-click="month = calendar(2013, 9, 1)">Appointment March 18th (Pending)</div>
                 <div class="alert alert-danger">Sorry, April 20th at 4:20pm wont work </div>
+        
+            </div>
 
+            <div class="right" ng-controller="CalendarGenerator">
+                    <br/>
+                <div class="month" >
+                <div class="week" ng-repeat="week in month.weeks">
+                    <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
+                </div>
+                
+            </div>
             </div>
         </div>
         </div>
