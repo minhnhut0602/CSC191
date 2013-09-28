@@ -5,3 +5,4 @@
 */.idea/
 sftp-config.json
 *.sublime-workspace
+*.sublime-project
