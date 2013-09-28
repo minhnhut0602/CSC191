@@ -4,3 +4,4 @@
 *.war
 */.idea/
 sftp-config.json
+*.sublime-workspace

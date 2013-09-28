@@ -27,8 +27,16 @@
         <![endif]-->
 
         <!-- Add your site or application content here -->
-        <div class="wrapper">
+        <div class="wrapper" ng-controller="CalendarGenerator">
             <div class="months" ts-calendar></div>
+
+            <div class="month" ng-init="month = calendar(2013, 9, 28)">
+                <div class="week" ng-repeat="week in month.weeks">
+                    <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
+                </div>
+                
+            </div>
+
         </div>
 
         
