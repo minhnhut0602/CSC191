@@ -3,94 +3,94 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" ng-app="tsCalendarGenerator"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
-        <!-- Font Awesome -->
-   
-        <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-        <!-- End Font Awesome -->
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet/less" href="css/main.less">
-        
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-        <script src="js/vendor/less.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-        <script src="js/calendar.js"></script>
+    <!-- Font Awesome -->
 
-    </head>
-    <body >
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <!-- End Font Awesome -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet/less" href="css/main.less">
 
-        <!-- Add your site or application content here -->
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <script src="js/vendor/less.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+    <script src="js/calendar.js"></script>
 
-        <div class="topUserBar" >
-            <div class="wrapper">
-                <img src="http://placehold.it/40x40" alt="holder.js/34x34" class="img-rounded">
-                Sandy Johnson
-            </div>  
-        </div>
+</head>
+<body >
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
 
-        <div class="wrapper" id="content">
-        <div class="top">
-                Upcoming 
-                <button type="button" class="btn btn-primary right asd">Make an Appointment</button>
+<!-- Add your site or application content here -->
 
+<div class="topUserBar" >
+    <div class="wrapper">
+        <img src="http://placehold.it/40x40" alt="holder.js/34x34" class="img-rounded">
+        Sandy Johnson
+    </div>  
+</div>
 
+<div class="wrapper" id="content">
+    <div class="top">
+        Upcoming 
+        <button type="button" class="btn btn-primary right asd">Make an Appointment</button>
 
 
-        </div>
 
-        <div ng-controller="CalendarGenerator" ng-init="month = calendar()">
-            <div class="left">
-                <div class="clearfix">
-                    <br/>
-                </div>
-                    
-                <div class="alert alert-success" ng-click="month = calendar(2013, 2, 3)" >See you Wednesday March 3rd at 8 am with Alexa </div>
-                <div class="alert alert-warning" ng-click="month = calendar(2013, 2, 18)">Appointment March 18th (Pending)</div>
-                <div class="alert alert-danger" ng-click="month = calendar(2013, 3, 20)">Sorry, April 20th at 4:20pm wont work </div>
-        
+
+    </div>
+
+    <div ng-controller="CalendarGenerator" ng-init="month = calendar()">
+        <div class="left">
+            <div class="clearfix">
+                <br/>
             </div>
 
-            <div class="right calendar" ng-controller="CalendarGenerator">
-                    
-                <div class="month" >
-                    <h2 class="month-name">{{month.name}}</h2>
+            <div class="alert alert-success" ng-click="month = calendar(2013, 2, 3)" >See you Wednesday March 3rd at 8 am with Alexa </div>
+            <div class="alert alert-warning" ng-click="month = calendar(2013, 2, 18)">Appointment March 18th (Pending)</div>
+            <div class="alert alert-danger" ng-click="month = calendar(2013, 3, 20)">Sorry, April 20th at 4:20pm wont work </div>
+
+        </div>
+
+        <div class="right calendar" ng-controller="CalendarGenerator">
+
+            <div class="month" >
+                <h2 class="month-name">{{month.name}}</h2>
                 <div class="week" ng-repeat="week in month.weeks">
                     <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
                 </div>
-                
-            </div>
+
             </div>
         </div>
-        </div>
+    </div>
+</div>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
 
-        
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <!--script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script-->
-    </body>
+
+<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<!--script>
+(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+                                                        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+ e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+ e.src='//www.google-analytics.com/analytics.js';
+ r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+ga('create','UA-XXXXX-X');ga('send','pageview');
+</script-->
+</body>
 </html>
