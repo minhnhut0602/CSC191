@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
         
         <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap-select.min.css">
         <link rel="stylesheet/less" href="css/main.less">
         <link rel="stylesheet/less" href="css/calendar.less">
         
@@ -32,32 +33,19 @@
 
         <div class="topUserBar" >
             <div class="wrapper">
-                <img src="http://placehold.it/40x40" alt="holder.js/34x34" class="img-rounded">
+                <img src="http://placehold.it/40x40" class="img-rounded">
                 Sandy Johnson
             </div>  
         </div>
-       <div class="wrapper" id="content">
-        <div class="top">
-                
+        <div class="wrapper" id="content">
+            <div class="top">
+                <select class="selectpicker" multiple data-live-search="true" data-width="40%">
+                    <option selected>Alex Johnson</option>
+                    <option selected>Shoni Summers</option>
+                    <option selected>Amanda Rinkey</option>
+                </select>
 
-        <div class="btn-group">
-  <button type="button" class="btn btn-default" data-animation="selector">Filter Stylist</button>
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href="#">Alex Johnson</a></li>
-    <li><a href="#">Shoni Summers</a></li>
-    <li><a href="#">Amanda Rinkey</a></li>
-    <li class="divider"></li>
-    <li><a href="#">Select All</a></li>
-  </ul>
-</div>
-
-
-
-
-        </div>
+            </div>
 
         <div class="wrapper" id="content" ng-controller="CalendarGenerator">
             <div class="months" ts-calendar></div>
@@ -68,12 +56,14 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script src="js/vendor/bootstrap-select.min.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
 
         <script>
             $(document).ready(function() {
-                $('.day:not(.inactive)').popover({html: true, placement:'bottom', container:'body', content: function() {
+                $('.selectpicker').selectpicker();
+                $('.day:not(.inactive)').popover({html: true, placement:'bottom', container:'.wrapper', content: function() {
                     var year = $(this).attr('data-year');
                     var month = $(this).attr('data-month');
                     var day = $(this).attr('data-day');
@@ -82,8 +72,8 @@
                     return  '<form class="new-appointment-form">' +
                                 '<div class="clearfix">' +
                                     '<label class="control-label appointment-type-label">Stylist</label>' +
-                                    '<div class="appointment-type-selection">' +
-                                        '<select class="form-control" id="appointment-type">' +
+                                    '<div class="appointment-stylist-selection">' +
+                                        '<select class="selectpicker-popover" id="appointment-stylist" data-width="100%">' +
                                             '<option>Alexa Johnson</option>' +
                                             '<option>Amy Brown</option>' +
                                             '<option>Amanda Rinkey</option>' +
@@ -95,7 +85,7 @@
                                 '<div class="clearfix">' +
                                     '<label class="control-label appointment-type-label">Type</label>' +
                                     '<div class="appointment-type-selection">' +
-                                        '<select class="form-control" id="appointment-type">' +
+                                        '<select class="selectpicker-popover" id="appointment-type" data-width="100%">' +
                                             '<option>Color</option>' +
                                             '<option>Cut</option>' +
                                             '<option>Perm</option>' +
@@ -115,12 +105,17 @@
                                     '</div>' +
                                 '</div>' +
                                 '<div class="form-group">' +
-                                    '<div>' +
-                                        '<button type="submit" class="btn btn-default">Done</button>' +
+                                    '<div class="submit-button">' +
+                                        '<button type="submit" class="btn btn-primary">Done</button>' +
                                     '</div>' +
                                 '</div>' +
                             '</form>';
                 }});
+                $('.day:not(.inactive)').on('shown.bs.popover', function () {
+                    console.log("event fired");
+                    $('.selectpicker-popover').selectpicker();
+                })
+                
             });
         </script>
 
