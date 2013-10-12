@@ -1,0 +1,38 @@
+<div class="top">
+    Upcoming 
+    <button type="button" class="btn btn-primary right asd">Make an Appointment</button>
+</div>
+
+<div ng-controller="CalendarGenerator" ng-init="month = calendar()">
+    <div class="left">
+        <div class="clearfix"><br/></div>
+        
+        <div class="alert alert-success " ng-click="month = calendar(2013, 2, 3)" >Appointment with Sandy Johnson at 3pm
+            <br/>
+            <input class="form-control" id="disabledInput" type="text" placeholder="See you soon :)" disabled><br/>
+            <button type="button" class="btn btn-danger " disabled>Deny</button> <button type="button" class="btn btn-success" disabled>Accept</button>
+        </div>
+        
+        <div class="alert alert-warning" ng-click="month = calendar(2013, 2, 18)">Appointment March 18th (Pending) 
+            <br/>
+            <input class="form-control" id="disabledInput" type="text" placeholder="Put your message here" ><br/>
+            <button type="button" class="btn btn-danger " >Deny</button> <button type="button" class="btn btn-success" >Accept</button>
+        </div>
+
+        <div class="alert alert-danger" ng-click="month = calendar(2013, 3, 20)">Sorry, April 20th at 4:20pm wont work 
+            <br/>
+            <input class="form-control" id="disabledInput" type="text" placeholder="Sorry, turns out I have a doctors appointmet. Lets reschedule" disabled><br/>
+            <button type="button" class="btn btn-danger " disabled>Deny</button> <button type="button" class="btn btn-success" disabled>Accept</button>
+        </div>
+    </div>
+
+    <div class="right calendar" ng-controller="CalendarGenerator">
+        <div class="month" >
+            <h2 class="month-name">{{month.name}}</h2>
+            
+            <div class="week" ng-repeat="week in month.weeks">
+                <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
+            </div>     
+        </div>
+    </div>
+</div>

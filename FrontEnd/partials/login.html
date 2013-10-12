@@ -1,0 +1,21 @@
+<div class="container">
+    <ul class="pagination" >
+        <li><a href="" ng-click="staff = false; client = true; "><span class="label label-default">Staff</span></a></li>
+        <li><a href="#"><span class="label label-primary" ng-click="staff = true; client = false;">Client</span></a></li>
+    </ul>
+    <form class="form-signin" ng-hide="staff" >
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="form-control" placeholder="Email address" autofocus="">
+        <input type="password" class="form-control" placeholder="Password">
+        <label class="checkbox">
+            <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+
+    <form class="form-signin client" ng-hide="client">
+        <button type="button" class="btn btn-primary">Google</button>
+        <button type="button" class="btn btn-primary">Facebook</button>
+        <button type="button" class="btn btn-primary">Yahoo!</button>
+    </form>
+</div>

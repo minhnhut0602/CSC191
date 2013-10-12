@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" ng-app="tsCalendarGenerator"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="scheduleApp"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,18 +12,19 @@
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-
-    <!-- Font Awesome -->
-
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <!-- End Font Awesome -->
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet/less" href="css/main.less">
 
     <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     <script src="js/vendor/less.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-    <script src="js/calendar.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/directives.js"></script>
 
 </head>
 <body >
@@ -40,46 +41,28 @@
     </div>  
 </div>
 
-<div class="wrapper" id="content">
-    <div class="top">
-        Upcoming 
-        <button type="button" class="btn btn-primary right asd">Make an Appointment</button>
 
-
-
-
-    </div>
-
-    <div ng-controller="CalendarGenerator" ng-init="month = calendar()">
-        <div class="left">
-            <div class="clearfix">
-                <br/>
-            </div>
-
-            <div class="alert alert-success" ng-click="month = calendar(2013, 2, 3)" >See you Wednesday March 3rd at 8 am with Alexa </div>
-            <div class="alert alert-warning" ng-click="month = calendar(2013, 2, 18)">Appointment March 18th (Pending)</div>
-            <div class="alert alert-danger" ng-click="month = calendar(2013, 3, 20)">Sorry, April 20th at 4:20pm wont work </div>
-
-        </div>
-
-        <div class="right calendar" ng-controller="CalendarGenerator">
-
-            <div class="month" >
-                <h2 class="month-name">{{month.name}}</h2>
-                <div class="week" ng-repeat="week in month.weeks">
-                    <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="js/vendor/bootstrap-select.min.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/main.js"></script>
+<script>
+    // $(document).ready(function() {
+    //     setInterval(function(){
+    //         try {
+    //             initializeView();
+    //         }
+    //         catch(err) {
+    //         }
+    //     }, 50);
+    // });
+</script>
+
+
+<!-- DIV FOR OUR VIEWS -->
+<div class="wrapper" id="content" ng-view></div>
+
+
 
 
 

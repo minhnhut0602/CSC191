@@ -1,0 +1,20 @@
+<div class="top">
+    <select class="selectpicker" multiple data-live-search="true" data-width="40%">
+        <option selected>Alex Johnson</option>
+        <option selected>Shoni Summers</option>
+        <option selected>Amanda Rinkey</option>
+    </select>
+
+</div>
+
+<div class="month">
+    <div class="month-name"><h1>{{month.name}}</h1></div>
+    <div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">
+        <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">
+            <strong>{{day.number}}</strong>
+        </div>
+        <div class="day-info" ng-hide="dayInfo"></div>
+    </div>
+</div>
+
+<div init-calendar></div>
