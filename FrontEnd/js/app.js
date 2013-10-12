@@ -1,7 +1,7 @@
-var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'scheduleDirectives']);
+var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'scheduleDirectives', 'facebook']);
 
-scheduleApp.config(['$routeProvider',
-    function($routeProvider) {
+scheduleApp.config(['$routeProvider', 'FacebookProvider',
+    function($routeProvider, FacebookProvider) {
         $routeProvider.
             when('/calendar', {
                 templateUrl: 'partials/calendar.html',
@@ -17,9 +17,11 @@ scheduleApp.config(['$routeProvider',
                 templateUrl: 'partials/edit-profile.html'
             }).
             when('/login', {
-                templateUrl: 'partials/login.html'
+                templateUrl: 'partials/login.html',
+                controller: 'AuthController'
             }).
             otherwise({
                 redirectTo: '/login'
             });
+        FacebookProvider.init('197300770451342');
     }]);

@@ -3,7 +3,6 @@ var scheduleDirectives = angular.module('scheduleDirectives', []);
 scheduleDirectives.directive('initCalendar', function() {
     return function(scope, element, attrs) {
         $('body').popover({selector: '.day:not(.inactive)', html: true, placement:'bottom', container:'.wrapper', content: function() {
-            console.log('does this work');
             var year = $(this).attr('data-year');
             var month = $(this).attr('data-month');
             var day = $(this).attr('data-day');
@@ -55,12 +54,10 @@ scheduleDirectives.directive('initCalendar', function() {
         $('.selectpicker').selectpicker();
 
         $('body').on('shown.bs.popover', '.day:not(.inactive)', function () {
-            console.log('popover shown');
             $('.selectpicker-popover').selectpicker();
         });
 
         $('body:not(.day)').mousedown(function() {
-            console.log('mouse down');
             //$('.day:not(.inactive)').popover('destroy');
             //$('.selectpicker-popover').selectpicker('hide');
         });

@@ -57,69 +57,63 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
     };
     var d = new Date();
     $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
-    // $scope.$on('$viewContentLoaded', function(){
-        
-        // $('body').popover({selector: '.day:not(.inactive)', html: true, placement:'bottom', container:'.wrapper', content: function() {
-        //     console.log('does this work');
-        //     var year = $(this).attr('data-year');
-        //     var month = $(this).attr('data-month');
-        //     var day = $(this).attr('data-day');
-        //     var date = new Date(year, month, day);
-
-        //     return  '<form class="new-appointment-form">' +
-        //                 '<div class="clearfix">' +
-        //                     '<label class="control-label appointment-type-label">Stylist</label>' +
-        //                     '<div class="appointment-stylist-selection">' +
-        //                         '<select class="selectpicker-popover" id="appointment-stylist" data-width="100%">' +
-        //                             '<option>Alexa Johnson</option>' +
-        //                             '<option>Amy Brown</option>' +
-        //                             '<option>Amanda Rinkey</option>' +
-        //                             '<option>Cris Rio</option>' +
-        //                             '<option>Shoni Summers</option>' +
-        //                         '</select>' +
-        //                     '</div>' +
-        //                 '</div>' +
-        //                 '<div class="clearfix">' +
-        //                     '<label class="control-label appointment-type-label">Type</label>' +
-        //                     '<div class="appointment-type-selection">' +
-        //                         '<select class="selectpicker-popover" id="appointment-type" data-width="100%">' +
-        //                             '<option>Color</option>' +
-        //                             '<option>Cut</option>' +
-        //                             '<option>Perm</option>' +
-        //                             '<option>Hilight</option>' +
-        //                             '<option>Shave</option>' +
-        //                         '</select>' +
-        //                     '</div>' +
-        //                 '</div>' +
-        //                 '<div class="clearfix">' +
-        //                     '<label class="control-label">Start</label>' +
-        //                     '<div class="appointment-start-time">' +
-        //                         '<input type="text" class="form-control" id="start-time-hour" placeholder="Hour">' +
-        //                     '</div>' +
-        //                     '<div class="appointment-start-time-colon">:</div>' +
-        //                     '<div class="appointment-start-time">' +
-        //                         '<input type="text" class="form-control" id="start-time-minute" placeholder="Minute">' +
-        //                     '</div>' +
-        //                 '</div>' +
-        //                 '<div class="form-group">' +
-        //                     '<div class="submit-button">' +
-        //                         '<button type="submit" class="btn btn-primary">Done</button>' +
-        //                     '</div>' +
-        //                 '</div>' +
-        //             '</form>';
-        // }});
-
-        // $('.selectpicker').selectpicker();
-
-        // $('body').on('shown.bs.popover', '.day:not(.inactive)', function () {
-        //     console.log('popover shown');
-        //     $('.selectpicker-popover').selectpicker();
-        // });
-
-        // $('body:not(.day)').mousedown(function() {
-        //     console.log('mouse down');
-        //     //$('.day:not(.inactive)').popover('destroy');
-        //     //$('.selectpicker-popover').selectpicker('hide');
-        // });
-    // });
 });
+
+scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function($scope, Facebook) {
+   
+    $scope.user = {};
+    // Defining user logged status
+    $scope.logged = false;
+
+    // And some fancy flags to display messages upon user status change
+    $scope.byebye = false;
+    $scope.salutation = false;
+    
+    // Here, usually you should watch for when Facebook is ready and loaded
+    $scope.$watch(function() {
+        return Facebook.isReady(); // This is for convenience, to notify if Facebook is loaded and ready to go.
+    }, function(newVal) {
+        $scope.facebookReady = true; // You might want to use this to disable/show/hide buttons and else
+    });
+
+    // From now and on you can use the Facebook service just as Facebook api says
+    // Take into account that you will need $scope.$apply when being inside Facebook functions scope and not angular
+    $scope.login = function() {
+        Facebook.login(function(response) {
+            // Do something with response. Don't forget here you are on Facebook scope so use $scope.$apply
+            $scope.getLoginStatus();
+        });
+    };
+    $scope.logout = function() {
+        Facebook.logout(function() {
+            $scope.$apply(function() {
+                $scope.user   = {};
+                $scope.loggedIn = false;  
+            });
+        });
+    }
+
+    $scope.getLoginStatus = function() {
+        Facebook.getLoginStatus(function(response) {
+            if(response.status == 'connected') {
+                $scope.$apply(function() {
+                    $scope.loggedIn = true;
+                    $scope.me();
+                });
+            } else {
+                $scope.$apply(function() {
+                    $scope.loggedIn = false;
+                });
+            }
+        });
+    };
+
+    $scope.me = function() {
+        Facebook.api('/me', function(response) {
+            $scope.$apply(function() {
+                // Here you could re-check for user status (just in case)
+                $scope.user = response;
+            });
+        });
+    };
+}]);
