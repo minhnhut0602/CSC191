@@ -59,7 +59,7 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
     $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
 });
 
-scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function($scope, Facebook) {
+scheduleControllers.controller('AuthController', ['$scope', '$rootScope', 'Facebook', function($scope, $rootScope, Facebook) {
    
     $scope.user = {};
     // Defining user logged status
@@ -106,7 +106,9 @@ scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function
             $scope.$apply(function() {
                 // Here you could re-check for user status (just in case)
                 $scope.user = response;
-                console.log(response);
+                $rootScope.user = $scope.user;
+                console.log($rootScope);
+                console.log($scope);
             });
         });
     };
