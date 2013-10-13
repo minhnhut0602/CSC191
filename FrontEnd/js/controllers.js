@@ -1,5 +1,14 @@
 var scheduleControllers = angular.module('scheduleControllers', []);
 
+
+//   /$$$$$$   /$$$$$$  /$$       /$$$$$$$$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$$ 
+//  /$$__  $$ /$$__  $$| $$      | $$_____/| $$$ | $$| $$__  $$ /$$__  $$| $$__  $$
+// | $$  \__/| $$  \ $$| $$      | $$      | $$$$| $$| $$  \ $$| $$  \ $$| $$  \ $$
+// | $$      | $$$$$$$$| $$      | $$$$$   | $$ $$ $$| $$  | $$| $$$$$$$$| $$$$$$$/
+// | $$      | $$__  $$| $$      | $$__/   | $$  $$$$| $$  | $$| $$__  $$| $$__  $$
+// | $$    $$| $$  | $$| $$      | $$      | $$\  $$$| $$  | $$| $$  | $$| $$  \ $$
+// |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
+//  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
 scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($scope) {
     $scope.calendar = function(year, monthIndex, day) {
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -59,7 +68,16 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
     $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
 });
 
-scheduleControllers.controller('AuthController', ['$scope', '$rootScope', 'Facebook', function($scope, $rootScope, Facebook) {
+
+//  /$$$$$$$$ /$$$$$$   /$$$$$$  /$$$$$$$$ /$$$$$$$   /$$$$$$   /$$$$$$  /$$   /$$
+// | $$_____//$$__  $$ /$$__  $$| $$_____/| $$__  $$ /$$__  $$ /$$__  $$| $$  /$$/
+// | $$     | $$  \ $$| $$  \__/| $$      | $$  \ $$| $$  \ $$| $$  \ $$| $$ /$$/ 
+// | $$$$$  | $$$$$$$$| $$      | $$$$$   | $$$$$$$ | $$  | $$| $$  | $$| $$$$$/  
+// | $$__/  | $$__  $$| $$      | $$__/   | $$__  $$| $$  | $$| $$  | $$| $$  $$  
+// | $$     | $$  | $$| $$    $$| $$      | $$  \ $$| $$  | $$| $$  | $$| $$\  $$ 
+// | $$     | $$  | $$|  $$$$$$/| $$$$$$$$| $$$$$$$/|  $$$$$$/|  $$$$$$/| $$ \  $$
+// |__/     |__/  |__/ \______/ |________/|_______/  \______/  \______/ |__/  \__/
+scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$location', 'Facebook', function($scope, $rootScope, $location, Facebook) {
    
     $scope.user = {};
     // Defining user logged status
@@ -109,7 +127,30 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', 'Faceb
                 $rootScope.user = $scope.user;
                 console.log($rootScope);
                 console.log($scope);
+                $location.path('client-landing');
             });
         });
     };
 }]);
+
+
+//   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$          
+//  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/          
+// | $$  \__/| $$        | $$  | $$      | $$$$| $$   | $$             
+// | $$      | $$        | $$  | $$$$$   | $$ $$ $$   | $$             
+// | $$      | $$        | $$  | $$__/   | $$  $$$$   | $$             
+// | $$    $$| $$        | $$  | $$      | $$\  $$$   | $$             
+// |  $$$$$$/| $$$$$$$$ /$$$$$$| $$$$$$$$| $$ \  $$   | $$             
+//  \______/ |________/|______/|________/|__/  \__/   |__/             
+//  /$$        /$$$$$$  /$$   /$$ /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$ 
+// | $$       /$$__  $$| $$$ | $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$
+// | $$      | $$  \ $$| $$$$| $$| $$  \ $$  | $$  | $$$$| $$| $$  \__/
+// | $$      | $$$$$$$$| $$ $$ $$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$
+// | $$      | $$__  $$| $$  $$$$| $$  | $$  | $$  | $$  $$$$| $$|_  $$
+// | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
+// | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
+// |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
+scheduleControllers.controller('ClientLandingController', ['$scope', '$rootScope', function($scope, $rootScope) {
+
+}]);
+
