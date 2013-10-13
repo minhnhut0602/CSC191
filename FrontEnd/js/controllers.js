@@ -94,6 +94,7 @@ scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function
             if(response.status == 'connected') {
                 $scope.loggedIn = true;
                 $scope.me();
+                console.log(response);
             } else {
                 $scope.login();
             }
