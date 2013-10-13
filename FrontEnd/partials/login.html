@@ -1,5 +1,6 @@
 <div class="container">
-    <ul class="pagination" ng-click="staff = false; client = true;">
+    <div class="ng-container" ng-click="staff = false; client = true; ">
+    <ul class="pagination" >
         <li><a href="" ><span class="label label-default">Staff</span></a></li>
         <li><a href="#"><span class="label label-primary" ng-click="staff = true; client = false;">Client</span></a></li>
     </ul>
@@ -19,4 +20,5 @@
         <button type="button" class="btn btn-danger btn-large btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
         <!-- <button type="button" class="btn btn-primary">Yahoo!</button> -->
     </form>
+    <div>
 </div>
