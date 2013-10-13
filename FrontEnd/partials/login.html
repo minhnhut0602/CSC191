@@ -14,9 +14,9 @@
     </form>
 
     <form class="form-signin client" ng-hide="client">
-        <button type="button" class="btn btn-primary">Google</button>
-        <button type="button" class="btn btn-primary btn-large" data-ng-show="!logged" data-ng-disabled="!facebookReady" data-ng-click="login()">Facebook</button>
-          <button type="button" class="btn btn-danger btn-large" data-ng-show="logged" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
-        <button type="button" class="btn btn-primary">Yahoo!</button>
+        <!-- <button type="button" class="btn btn-primary">Google</button> -->
+        <button type="button" class="btn btn-primary btn-large btn-block" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="getLoginStatus()">Facebook</button>
+        <button type="button" class="btn btn-danger btn-large btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
+        <!-- <button type="button" class="btn btn-primary">Yahoo!</button> -->
     </form>
 </div>

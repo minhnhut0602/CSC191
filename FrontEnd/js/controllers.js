@@ -63,11 +63,7 @@ scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function
    
     $scope.user = {};
     // Defining user logged status
-    $scope.logged = false;
-
-    // And some fancy flags to display messages upon user status change
-    $scope.byebye = false;
-    $scope.salutation = false;
+    $scope.loggedIn = false;
     
     // Here, usually you should watch for when Facebook is ready and loaded
     $scope.$watch(function() {
@@ -96,14 +92,10 @@ scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function
     $scope.getLoginStatus = function() {
         Facebook.getLoginStatus(function(response) {
             if(response.status == 'connected') {
-                $scope.$apply(function() {
-                    $scope.loggedIn = true;
-                    $scope.me();
-                });
+                $scope.loggedIn = true;
+                $scope.me();
             } else {
-                $scope.$apply(function() {
-                    $scope.loggedIn = false;
-                });
+                $scope.login();
             }
         });
     };
@@ -113,6 +105,7 @@ scheduleControllers.controller('AuthController', ['$scope', 'Facebook', function
             $scope.$apply(function() {
                 // Here you could re-check for user status (just in case)
                 $scope.user = response;
+                console.log(response);
             });
         });
     };
