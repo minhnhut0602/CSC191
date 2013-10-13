@@ -5,7 +5,7 @@
 
 <div class="wrapper">
     <div class="jumbotron">
-        <h3>Hello, Sandy Johnson!</h3>
+        <h3>Hello, {{user.name}}!</h3>
         <p>Here, you can edit some profile information. If you see that some of the items are disabled, its because we are pulling that information from your user from google</p>
     </div>
 
@@ -15,7 +15,7 @@
             <h2 class="form-signin-heading">Edit Information</h2>
 
             <span class="label label-primary">Name</span>
-            <input type="text" class="form-control" placeholder="Sandy Johnson" autofocus="" readonly>
+            <input type="text" class="form-control" placeholder="{{user.name}}" autofocus="" readonly>
 
             <span class="label label-primary">Phone</span>
             <input type="text" class="form-control" placeholder="(916) 555-1234">
