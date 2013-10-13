@@ -1,8 +1,7 @@
 <div class="container">
-    <div class="ng-container" ng-click="staff = false; client = true; ">
-    <ul class="pagination" >
-        <li><a href="" ><span class="label label-default">Staff</span></a></li>
-        <li><a href="#"><span class="label label-primary" ng-click="staff = true; client = false;">Client</span></a></li>
+    <ul class="pagination" ng-init="staff=true;" >
+        <li><a href=""><span class="label label-default" ng-click="staff = false; client = true; ">Staff</span></a></li>
+        <li><a href=""><span class="label label-primary" ng-click="staff = true; client = false;">Client</span></a></li>
     </ul>
     <form class="form-signin" ng-hide="staff" >
         <h2 class="form-signin-heading">Please sign in</h2>
@@ -20,5 +19,4 @@
         <button type="button" class="btn btn-danger btn-large btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
         <!-- <button type="button" class="btn btn-primary">Yahoo!</button> -->
     </form>
-    <div>
 </div>
