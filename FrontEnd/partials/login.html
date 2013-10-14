@@ -1,22 +1,26 @@
 <div class="container">
-    <ul class="pagination" ng-init="staff=true;" >
-        <li><a href=""><span class="label label-default" ng-click="staff = false; client = true; ">Staff</span></a></li>
-        <li><a href=""><span class="label label-primary" ng-click="staff = true; client = false;">Client</span></a></li>
-    </ul>
-    <form class="form-signin" ng-hide="staff" >
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="form-control" placeholder="Email address" autofocus="">
-        <input type="password" class="form-control" placeholder="Password">
-        <label class="checkbox">
-            <input type="checkbox" value="remember-me"> Remember me
-        </label>
+    <p class="login-staff-client-selection" ng-init="client=true; staff=false;">
+        <button type="button" class="btn btn-lg" ng-class="{true:'btn-primary', false:'btn-default'}[staff]" ng-click="staff=true; client=false; ">Staff</button>
+        <button type="button" class="btn btn-lg" ng-class="{true:'btn-primary', false:'btn-default'}[client]" ng-click="staff=false; client=true;">Client</button>
+    </p>
+    <form ng-show="staff" >
+        <h2>Please sign in</h2>
+        <div class="form-group">
+            <label for="email-input">Email</label>
+            <input type="text" class="form-control" id="email-input" placeholder="Email address" autofocus="">
+        </div>
+        <div class="form-group">
+            <label for="password-input">Password</label>
+            <input type="password" class="form-control" id="password-input" placeholder="Password">
+        </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 
-    <form class="form-signin client" ng-hide="client">
-        <!-- <button type="button" class="btn btn-primary">Google</button> -->
-        <button type="button" class="btn btn-primary btn-large btn-block" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="getLoginStatus()">Facebook</button>
-        <button type="button" class="btn btn-danger btn-large btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
-        <!-- <button type="button" class="btn btn-primary">Yahoo!</button> -->
+    <form ng-show="client">
+        <h2>Please sign in with one of the following services</h2>
+        <div class="form-group">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="getLoginStatus()">Facebook</button>
+            <button type="button" class="btn btn-danger btn-lg btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
+        </div>
     </form>
 </div>

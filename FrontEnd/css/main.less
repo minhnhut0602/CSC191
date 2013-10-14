@@ -9,7 +9,7 @@
 /* ==========================================================================
    Base styles: opinionated defaults
    ========================================================================== */
-@import url(color.less);
+@import url('constants.less');
 
 html,
 button,
@@ -94,22 +94,198 @@ textarea {
     padding: 0.2em 0;
 }
 
-/* =============================================================================================== *
- *   /$$      /$$ /$$     /$$        /$$$$$$  /$$$$$$$$ /$$     /$$ /$$       /$$$$$$$$  /$$$$$$   *
- *  | $$$    /$$$|  $$   /$$/       /$$__  $$|__  $$__/|  $$   /$$/| $$      | $$_____/ /$$__  $$  *
- *  | $$$$  /$$$$ \  $$ /$$/       | $$  \__/   | $$    \  $$ /$$/ | $$      | $$      | $$  \__/  *
- *  | $$ $$/$$ $$  \  $$$$/        |  $$$$$$    | $$     \  $$$$/  | $$      | $$$$$   |  $$$$$$   *
- *  | $$  $$$| $$   \  $$/          \____  $$   | $$      \  $$/   | $$      | $$__/    \____  $$  *
- *  | $$\  $ | $$    | $$           /$$  \ $$   | $$       | $$    | $$      | $$       /$$  \ $$  *
- *  | $$ \/  | $$    | $$          |  $$$$$$/   | $$       | $$    | $$$$$$$$| $$$$$$$$|  $$$$$$/  *
- *  |__/     |__/    |__/           \______/    |__/       |__/    |________/|________/ \______/   *
- * =============================================================================================== */
+/* ================================================ *
+ *  /$$$$$$ /$$   /$$ /$$$$$$$  /$$$$$$$$ /$$   /$$
+ * |_  $$_/| $$$ | $$| $$__  $$| $$_____/| $$  / $$
+ *   | $$  | $$$$| $$| $$  \ $$| $$      |  $$/ $$/
+ *   | $$  | $$ $$ $$| $$  | $$| $$$$$    \  $$$$/ 
+ *   | $$  | $$  $$$$| $$  | $$| $$__/     >$$  $$ 
+ *   | $$  | $$\  $$$| $$  | $$| $$       /$$/\  $$
+ *  /$$$$$$| $$ \  $$| $$$$$$$/| $$$$$$$$| $$  \ $$
+ * |______/|__/  \__/|_______/ |________/|__/  |__/
+ * ================================================ */
+
+.nav-bar {
+    position:fixed;
+    top:0;
+    background:@baseBackground;
+    width:100%;
+    height: @navBarHeight;
+    line-height:@navBarHeight;
+    color:white;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.15);
+    border-color: #463265;
+    box-shadow: 0 1px 0 rgba(255,255,255,.1);
+    z-index: 1000;
+}
+.nav-bar .avatar {
+    margin-top:-4px;
+    margin-right:10px;
+    width: @avatarSize;
+}
+
+#content {
+    padding-top:@navBarHeight+10px;
+}
 
 .wrapper {
     max-width: 1140px;
     margin: 0 auto;
 }
 
+.top{
+    width: 100%;
+    height: @topHeight;
+    border-bottom: 1px solid @boarderColor;
+    line-height: @topHeight;
+    overflow: hidden;
+}
+.top h2 {
+    float: left;
+    display: inline-block;
+    margin: 0;
+    line-height: @topHeight;
+    margin-bottom: @bottomPadding;
+}
+.top .btn {
+    display: block;
+}
+.top .vertical-center-parent {
+    position: relative;
+    height: @topHeight;
+}
+.top .vertical-center-child {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    height: @topHeight;
+    margin-top: (-@topHeight/4);
+}
+.left{
+    float:left;
+}
+.right{
+    float:right;
+}
+
+/* ============================================= *
+ *  /$$        /$$$$$$   /$$$$$$  /$$$$$$ /$$   /$$
+ * | $$       /$$__  $$ /$$__  $$|_  $$_/| $$$ | $$
+ * | $$      | $$  \ $$| $$  \__/  | $$  | $$$$| $$
+ * | $$      | $$  | $$| $$ /$$$$  | $$  | $$ $$ $$
+ * | $$      | $$  | $$| $$|_  $$  | $$  | $$  $$$$
+ * | $$      | $$  | $$| $$  \ $$  | $$  | $$\  $$$
+ * | $$$$$$$$|  $$$$$$/|  $$$$$$/ /$$$$$$| $$ \  $$
+ * |________/ \______/  \______/ |______/|__/  \__/
+ * ============================================= */
+.container {
+    width:600px;
+}
+
+.login-staff-client-selection {
+    padding-bottom: @bottomPadding;
+    overflow: hidden;
+}
+.login-staff-client-selection .btn{
+    float: left;
+    display: block;
+    width: 48%;
+}
+.login-staff-client-selection .btn:first-child{
+    margin-right: 1%
+}
+.login-staff-client-selection .btn:last-child{
+    margin-left: 1%
+}
+
+.client a {
+    text-decoration:none;
+}
+
+/* ================================================================= *
+ *   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$          
+ *  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/          
+ * | $$  \__/| $$        | $$  | $$      | $$$$| $$   | $$             
+ * | $$      | $$        | $$  | $$$$$   | $$ $$ $$   | $$             
+ * | $$      | $$        | $$  | $$__/   | $$  $$$$   | $$             
+ * | $$    $$| $$        | $$  | $$      | $$\  $$$   | $$             
+ * |  $$$$$$/| $$$$$$$$ /$$$$$$| $$$$$$$$| $$ \  $$   | $$             
+ *  \______/ |________/|______/|________/|__/  \__/   |__/             
+ *                                                                     
+ *  /$$        /$$$$$$  /$$   /$$ /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$ 
+ * | $$       /$$__  $$| $$$ | $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$
+ * | $$      | $$  \ $$| $$$$| $$| $$  \ $$  | $$  | $$$$| $$| $$  \__/
+ * | $$      | $$$$$$$$| $$ $$ $$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$
+ * | $$      | $$__  $$| $$  $$$$| $$  | $$  | $$  | $$  $$$$| $$|_  $$
+ * | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
+ * | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
+ * |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
+ * ================================================================= */
+.upcoming-appointments {
+    width:50%;
+}
+
+#alert-icon {
+    position:relative !important; 
+    float:right !important; 
+    font-size:20px;
+}
+
+.alert-success:before{
+    float:right;
+    font-family:FontAwesome;
+    font-size:20px;
+    content:"\F00C";
+
+}
+
+
+.alert-warning:before{
+    float:right;
+    font-family:FontAwesome;
+    font-size:20px;
+    content:"\F128";
+}
+
+.alert-danger:before{
+    float:right;
+    font-family:FontAwesome;
+    font-size:20px;
+    content:"\F00D";
+}
+
+
+
+
+.right .day{
+    height:40px;
+}
+
+.right .week{
+    height:40px;
+}
+.month-name {
+    display:inline;
+}
+
+.calendar {
+    height:100px;
+    width:30%;
+}
+
+
+
+
+/* ============================================================================= *
+ *   /$$$$$$   /$$$$$$  /$$       /$$$$$$$$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$$ 
+ *  /$$__  $$ /$$__  $$| $$      | $$_____/| $$$ | $$| $$__  $$ /$$__  $$| $$__  $$
+ * | $$  \__/| $$  \ $$| $$      | $$      | $$$$| $$| $$  \ $$| $$  \ $$| $$  \ $$
+ * | $$      | $$$$$$$$| $$      | $$$$$   | $$ $$ $$| $$  | $$| $$$$$$$$| $$$$$$$/
+ * | $$      | $$__  $$| $$      | $$__/   | $$  $$$$| $$  | $$| $$__  $$| $$__  $$
+ * | $$    $$| $$  | $$| $$      | $$      | $$\  $$$| $$  | $$| $$  | $$| $$  \ $$
+ * |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
+ *  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
+ * ============================================================================= */
 .month {
     margin-bottom: 60px;
 }
@@ -159,8 +335,6 @@ textarea {
     border-width: 0 0 1px 0;
 }
 
-
-
 .sunday {
     left: @sundayShift;
 }
@@ -192,17 +366,55 @@ textarea {
     height: 40px;
 }
 
+.clock {
+    display:inline;
+    widht:40px;
+}
 
+.popover-title {
+    color: white;
+    background-color: #563d7c;
+}
+.popover-content .new-appointment-form {
+    width: 250px;
+}
+.popover-content .control-label, 
+.popover-content .appointment-type-selection,
+.popover-content .appointment-stylist-selection,
+.popover-content .appointment-start-time,
+.popover-content .appointment-start-time-colon {
+    float: left;
+}
+.popover-content .control-label {
+    line-height: 34px;
+    width: 30%;
+}
+.popover-content .appointment-type-selection,
+.popover-content .appointment-stylist-selection {
+    width: 65%;
+}
+.popover-content .appointment-start-time {
+    width: 30%;
+}
+.popover-content .appointment-start-time-colon {
+    line-height: 34px;
+    width: 5%;
+    text-align: center;
+}
 
+.ng-binding {
+    min-width: 34px;
+}
 
-
-
-
-
-
-
-
-
+.month-selection ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.month-selection-names {
+    float: left;
+    padding: 0 10px;
+}
 
 /* ==========================================================================
    Helper classes
@@ -395,126 +607,3 @@ textarea {
 }
 
 
-//      ____.           ___.   .__        
-//     |    | ____  __ _\_ |__ |__| ____  
-//     |    |/  _ \|  |  \ __ \|  |/    \ 
-// /\__|    (  <_> )  |  / \_\ \  |   |  \
-// \________|\____/|____/|___  /__|___|  /
-//                           \/        \/ 
-
-
-.topUserBar {
-
-    position:fixed;
-    top:0;
-    background:@BaseBackground;
-    width:100%;
-    height: @UserBarHeight;
-    line-height:@UserBarHeight;
-    color:white;
-    text-shadow: 0 -1px 0 rgba(0,0,0,.15);
-    border-color: #463265;
-    box-shadow: 0 1px 0 rgba(255,255,255,.1);
-    z-index: 10000000;
-
-
-}
-
-.topUserBar img {
-    margin-top:-4px;
-    margin-right:10px;
-}
-
-#content {
-    padding-top:@UserBarHeight;
-}
-
-.upcoming-appointments {
-    width:50%;
-}
-
-#alert-icon {
-    position:relative !important; 
-    float:right !important; 
-    font-size:20px;
-}
-
-.alert-success:before{
-    float:right;
-    font-family:FontAwesome;
-    font-size:20px;
-    content:"\F00C";
-
-}
-
-
-.alert-warning:before{
-    float:right;
-    font-family:FontAwesome;
-    font-size:20px;
-    content:"\F128";
-}
-
-.alert-danger:before{
-    float:right;
-    font-family:FontAwesome;
-    font-size:20px;
-    content:"\F00D";
-}
-.top{
-    width:100%;
-    height:100px;
-    border-bottom:1px solid @BoarderColor;
-    line-height:100px;
-    font-size:20px;
-}
-.left{
-    height:100px;
-    width:60%;
-    position:relative;
-    float:left;
-}
-
-.right{
-    position:relative;
-    float:right;
-
-}
-.right .day{
-    height:40px;
-}
-
-.right .week{
-    height:40px;
-}
-.month-name {
-    display:inline;
-}
-
-.calendar {
-    height:100px;
-    width:30%;
-}
-
-.asd {
-    top:35%;
-    z-index: -1 !important;
-}
-
-.container {
-    width:300px;
-}
-
-.client {
-    font-size: 40px;
-}
-
-.client a {
-    text-decoration:none;
-}
-
-.pagination {
-    font-size:30px;
-    text-align:center;
-    padding-left:5%;
-}

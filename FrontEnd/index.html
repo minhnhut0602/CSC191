@@ -18,6 +18,7 @@
     <link rel="stylesheet/less" href="css/main.less">
 
     <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <script type="text/javascript">less = { env: 'development' };</script>
     <script src="js/vendor/less.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
@@ -36,15 +37,15 @@
 
 <!-- Add your site or application content here -->
 
-<div class="topUserBar" >
+<div class="nav-bar" >
     <div class="wrapper">
-        <a href='#/client-landing'>
-            <img src="https://graph.facebook.com/{{user.username}}/picture" class="img-rounded">
+        <a href='#/client-landing' ng-show="user">
+            <img class="avatar" src="https://graph.facebook.com/{{user.username}}/picture">
         </a>
         <a href="#/edit-profile">
             <span>{{user.name}}</span>
         </a>
-    </div>  
+    </div>
 </div>
 
 
