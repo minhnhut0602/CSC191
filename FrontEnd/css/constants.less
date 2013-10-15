@@ -1,11 +1,15 @@
 // General
 @navBarHeight: 50px;
 @avatarSize: 44px;
-@baseBackground: #563d7c;
-@boarderColor: (@baseBackground);
+@color: #3276b1; //blue
+// @color: #d9534f; //red
+// @color: #563d7c; //purple
+@darkColor: darken(@color, 30%);
+@lightColor: lighten(@color, 30%);
 @bottomPadding: 40px;
-@topHeight: (@navBarHeight*1.618);
-
+@topHeight: (@navBarHeight * 1.618);
+@darkBorder: 1px @darkColor solid;
+@lightBorder: 1px @lightColor solid;
 
 
 // Calendar
@@ -17,4 +21,3 @@
 @fridayShift: 14.285714286% * 5;
 @saturdayShift: 14.285714286% * 6;
 @dayHeight: 100px;
-@border: 0 #ddd solid;

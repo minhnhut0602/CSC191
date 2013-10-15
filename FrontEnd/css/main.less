@@ -108,7 +108,7 @@ textarea {
 .nav-bar {
     position:fixed;
     top:0;
-    background:@baseBackground;
+    background:@color;
     width:100%;
     height: @navBarHeight;
     line-height:@navBarHeight;
@@ -117,11 +117,15 @@ textarea {
     border-color: #463265;
     box-shadow: 0 1px 0 rgba(255,255,255,.1);
     z-index: 1000;
+    border-bottom: 1px @darkColor solid;
 }
 .nav-bar .avatar {
     margin-top:-4px;
     margin-right:10px;
     width: @avatarSize;
+}
+.nav-bar .user-name {
+    color: white;
 }
 
 #content {
@@ -136,16 +140,16 @@ textarea {
 .top{
     width: 100%;
     height: @topHeight;
-    border-bottom: 1px solid @boarderColor;
+    border-bottom: 1px solid @darkColor;
     line-height: @topHeight;
     overflow: hidden;
+    margin-bottom: (@bottomPadding / 2);
 }
 .top h2 {
     float: left;
     display: inline-block;
     margin: 0;
     line-height: @topHeight;
-    margin-bottom: @bottomPadding;
 }
 .top .btn {
     display: block;
@@ -269,7 +273,6 @@ textarea {
 }
 
 .calendar {
-    height:100px;
     width:30%;
 }
 
@@ -293,35 +296,24 @@ textarea {
 
 .week {
     position: relative;
-    overflow: hidden;
     height: @dayHeight;
-    border: @border;
+    border: @lightBorder;
     border-width: 0 0 1px 0;
 }
 
 .day {
     position: absolute;
+    z-index: 2;
     height: @dayHeight;
     width: 14.285714286%;
-    border: @border;
+    border: @lightBorder;
+    transition: all 0.25s;
+    -webkit-transition: all 0.25s;
 }
 .day:hover {
-    background: #eee;
+    // background: @lightColor;
 }
-.inactive:hover {
-    background: none;
-}
-.inactive strong {
-    color: #ccc;
-}
-.today {
-    // background: #d0e3f0;
-}
-.today strong {
-    background: #428bca;
-    border-radius: 0 0 10px 10px;
-    color:white;
-}
+
 .week .day {
     border-width: 1px 0 1px 0;
 }
@@ -333,6 +325,17 @@ textarea {
 }
 .week:last-child .day{
     border-width: 0 0 1px 0;
+}
+
+.week .day:hover {
+    border-radius: 2px;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px @color;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px @color;
+}
+.week .day.inactive:hover {
+    -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.0);
+    box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.0);
 }
 
 .sunday {
@@ -357,9 +360,21 @@ textarea {
     left: @saturdayShift;
 }
 .day strong {
-    margin-left: 4px;
-    padding: 6px;
+    position: absolute;
+    min-width: 30px;
+    padding: 0 4px;
+    //top:4px;
+    //left:4px;
     font-size: 18px;
+    color: @darkColor;
+}
+.today strong {
+    background: @color;
+    border-radius: 0 0 4px 4px;
+    color:white;
+}
+.inactive strong {
+    color: @lightColor;
 }
 
 .day-info {
@@ -373,7 +388,7 @@ textarea {
 
 .popover-title {
     color: white;
-    background-color: #563d7c;
+    background-color: @color;
 }
 .popover-content .new-appointment-form {
     width: 250px;
@@ -400,10 +415,6 @@ textarea {
     line-height: 34px;
     width: 5%;
     text-align: center;
-}
-
-.ng-binding {
-    min-width: 34px;
 }
 
 .month-selection ul {

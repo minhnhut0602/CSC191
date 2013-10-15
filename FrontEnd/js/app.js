@@ -17,11 +17,13 @@ scheduleApp.config(['$routeProvider', 'FacebookProvider',
                 templateUrl: 'partials/edit-profile.html'
             }).
             when('/login', {
-                templateUrl: 'partials/login.html',
-                controller: 'AuthController'
+                templateUrl: 'partials/login.html'
+            }).
+            when('/loading', {
+                templateUrl: 'partials/loading.html'
             }).
             otherwise({
-                redirectTo: '/login'
+                redirectTo: '/loading'
             });
         FacebookProvider.init('197300770451342');
     }]);

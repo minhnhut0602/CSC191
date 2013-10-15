@@ -11,16 +11,17 @@ var scheduleControllers = angular.module('scheduleControllers', []);
 //  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
 scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($scope) {
     $scope.calendar = function(year, monthIndex, day) {
+        if (year === undefined &&
+            month === undefined &&
+            day === undefined) {
+            var d = new Date();
+            year = d.getFullYear();
+            monthIndex = d.getMonth();
+            day = d.getDate();
+        }
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-        if (year === undefined &&
-            monthIndex === undefined &&
-            day === undefined) {
-            var setCurrentDate = new Date();
-            year = setCurrentDate.getYear();
-            monthIndex = setCurrentDate.getMonth();
-            day = 0;
-        }
+
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
         var month = {};
@@ -88,6 +89,9 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         return Facebook.isReady(); // This is for convenience, to notify if Facebook is loaded and ready to go.
     }, function(newVal) {
         $scope.facebookReady = true; // You might want to use this to disable/show/hide buttons and else
+        if ($scope.facebookReady) {
+            $scope.getLoginStatus();
+        }
     });
 
     // From now and on you can use the Facebook service just as Facebook api says
@@ -96,25 +100,33 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         Facebook.login(function(response) {
             // Do something with response. Don't forget here you are on Facebook scope so use $scope.$apply
             $scope.getLoginStatus();
+            $location.path('client-landing');
         });
     };
     $scope.logout = function() {
         Facebook.logout(function() {
             $scope.$apply(function() {
                 $scope.user   = {};
-                $scope.loggedIn = false;  
+                $scope.loggedIn = false;
             });
         });
-    }
+    };
 
     $scope.getLoginStatus = function() {
+        console.log('before');
         Facebook.getLoginStatus(function(response) {
+            console.log(response);
             if(response.status == 'connected') {
                 $scope.loggedIn = true;
                 $scope.me();
                 console.log(response);
             } else {
-                $scope.login();
+                // $scope.login();
+                //bring them to the login page
+                console.log('send to login');
+                $scope.$apply(function() {
+                    $location.path('login');
+                });
             }
         });
     };
@@ -125,9 +137,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 // Here you could re-check for user status (just in case)
                 $scope.user = response;
                 $rootScope.user = $scope.user;
-                console.log($rootScope);
-                console.log($scope);
-                $location.path('client-landing');
+                console.log(response);
             });
         });
     };
@@ -151,6 +161,6 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
 scheduleControllers.controller('ClientLandingController', ['$scope', '$rootScope', function($scope, $rootScope) {
-
+    
 }]);
 

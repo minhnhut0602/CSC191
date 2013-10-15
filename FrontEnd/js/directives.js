@@ -2,6 +2,9 @@ var scheduleDirectives = angular.module('scheduleDirectives', []);
 
 scheduleDirectives.directive('initCalendar', function() {
     return function(scope, element, attrs) {
+        var visiblePopover;
+
+        // enable popovers - all of mine in this instance have a class of .hov
         $('body').popover({selector: '.day:not(.inactive)', html: true, placement:'bottom', container:'.wrapper', content: function() {
             var year = $(this).attr('data-year');
             var month = $(this).attr('data-month');
@@ -50,16 +53,19 @@ scheduleDirectives.directive('initCalendar', function() {
                         '</div>' +
                     '</form>';
         }});
+        
+        // only allow 1 popover at a time
+        // all my popovers hav
+        $('body').on('click', '.day:not(.inactive)', function(e) {
+            // don't fall through
+            e.stopPropagation();
+            //$('.day:not(.inactive)').not(this).popover('hide');
+        });
 
-        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker({container: 'body'});
 
         $('body').on('shown.bs.popover', '.day:not(.inactive)', function () {
             $('.selectpicker-popover').selectpicker();
-        });
-
-        $('body:not(.day)').mousedown(function() {
-            //$('.day:not(.inactive)').popover('destroy');
-            //$('.selectpicker-popover').selectpicker('hide');
         });
     };
 });
