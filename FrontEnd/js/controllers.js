@@ -108,6 +108,8 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.$apply(function() {
                 $scope.user   = {};
                 $scope.loggedIn = false;
+                $location.path('login');
+
             });
         });
     };
