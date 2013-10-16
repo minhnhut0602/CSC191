@@ -4,6 +4,7 @@
 *.war
 *.properties
 */.idea/
+*/target/*
 sftp-config.json
 *.sublime-workspace
 *.sublime-project
