@@ -39,15 +39,19 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RequestMapping("/appointments")
 public class AppointmentController {
 
-    private static final Log L = LogFactory.getLog(AppointmentController.class);
+    private static final Log L = LogFactory.getLog(AppointmentController.class); // This logs out to STDOUT
 
     @Autowired
-    private AppointmentRepository appointmentRepository;
+    private AppointmentRepository appointmentRepository; // Database for dealing appointments.
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository; // User Database.
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE) // Getting all appointments
     public ResponseEntity<List<Appointment>> getAppointments() {
+        /*
+        TODO Throw a generic exception because
+        catching specific excpetions are "Stupid" accordint to Scott. :)
+        */
         List<Appointment> appointments = appointmentRepository.findAll();
 
         return new ResponseEntity<List<Appointment>>(appointments, HttpStatus.OK);
@@ -78,6 +82,13 @@ public class AppointmentController {
         return new ResponseEntity<Void>(headers, HttpStatus.OK);
     }
 
-    // TODO changeTime()
-    // TODO
+    // TODO Edit Appointment()
+    @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> editAppointment(@RequestBody Appointment put){
+        // Incomplete
+        // TODO
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+
 }
