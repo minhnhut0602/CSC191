@@ -36,16 +36,18 @@ scheduleDirectives.directive('initCalendar', function() {
                                 '</select>' +
                             '</div>' +
                         '</div>' +
-                        '<div class="clearfix">' +
-                            '<label class="control-label">Start</label>' +
-                            '<div class="appointment-start-time">' +
-                                '<input type="text" class="form-control" id="start-time-hour" placeholder="Hour">' +
+                         '<div class="clearfix">' +
+                            '<label class="control-label appointment-type-label">Type</label>' +
+                            '<div class="appointment-type-selection">' +
+                                '<select class="selectpicker-popover" id="appointment-type" data-width="100%">' +
+                                    '<option>12:00pm</option>' +
+                                    '<option>1:00pm</option>' +
+                                    '<option>2:00pm</option>' +
+                                    '<option>3:00pm</option>' +
+                                    '<option>4:00pm</option>' +
+                                '</select>' +
                             '</div>' +
-                            '<div class="appointment-start-time-colon">:</div>' +
-                            '<div class="appointment-start-time">' +
-                                '<input type="text" class="form-control" id="start-time-minute" placeholder="Minute">' +
-                            '</div>' +
-                        '</div>' +
+                        '</div>' +                       
                         '<div class="form-group">' +
                             '<div class="submit-button">' +
                                 '<button type="submit" class="btn btn-primary">Done</button>' +
