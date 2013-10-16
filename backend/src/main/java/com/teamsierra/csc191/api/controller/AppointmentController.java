@@ -47,9 +47,8 @@ public class AppointmentController {
     private UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Appointment>> getAppointments(@CookieValue(value = "authToken", required = false) String token) {
-        User user = userRepository.findByToken(token);
-        List<Appointment> appointments = appointmentRepository.findAll(user);
+    public ResponseEntity<List<Appointment>> getAppointments() {
+        List<Appointment> appointments = appointmentRepository.findAll();
 
         return new ResponseEntity<List<Appointment>>(appointments, HttpStatus.OK);
     }

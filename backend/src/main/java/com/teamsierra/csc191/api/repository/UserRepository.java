@@ -63,6 +63,10 @@ public class UserRepository {
         L.info("Finding a user by id: "+ id);
         return mongoTemplate.findOne(query(where("_id").is(id)), User.class);
     }
+    public User findByOAuthId(String id) {
+        L.info("Finding a user by OAuth id: "+ id);
+        return mongoTemplate.findOne(query(where("oauthId").is(id)), User.class);
+    }
     public User findByToken(String token) {
         L.info("Finding a user by token: "+ token);
         return mongoTemplate.findOne(query(where("token").is(token)), User.class);

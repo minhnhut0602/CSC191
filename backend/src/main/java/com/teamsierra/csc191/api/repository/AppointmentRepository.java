@@ -63,9 +63,9 @@ public class AppointmentRepository {
         L.debug("Finding an appointment by _id:"+ id);
         return mongoTemplate.findOne(query(where("_id").is(id)), Appointment.class);
     }
-    public List<Appointment> findAll(User user) {
-        L.debug("Finding all appointments for user: "+ user);
-        return mongoTemplate.find(query(where("clientID").is(user.getId())), Appointment.class);
+    public List<Appointment> findAll() {
+//        L.debug("Finding all appointments for user: "+ user);
+        return mongoTemplate.findAll(Appointment.class);
     }
 
 

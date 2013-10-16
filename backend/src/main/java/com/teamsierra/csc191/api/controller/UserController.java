@@ -27,8 +27,6 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private AuthInterceptor authInterceptor;
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addUser(@RequestHeader Map<String, String> headers,
