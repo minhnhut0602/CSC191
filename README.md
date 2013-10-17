@@ -14,7 +14,7 @@ The goal of this class is to actively develop a software using industry standard
      
 Our Sponser, a business whom we are developing for is Dragon Hair and Nail Salon.
 
-They have asked us to develop a scheduling system that will enable their cliental to schedule appointments. In turn, this enables their staff to accept and schedules customers as well. 
+They have asked us to develop a scheduling system that will enable their cliental to schedule appointments. In turn, this enables their staff to accept and schedule customers as well. 
 
 
 
