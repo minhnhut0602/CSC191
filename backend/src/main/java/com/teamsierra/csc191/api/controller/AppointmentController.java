@@ -89,6 +89,4 @@ public class AppointmentController {
         // TODO
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
-
-
 }

@@ -36,8 +36,8 @@ public class AuthenticationController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String authenticate(HttpServletResponse response, @ModelAttribute("login")
-                               LoginForm login,
+    public String authenticate(HttpServletResponse response,
+                               @ModelAttribute("login") LoginForm login,
                                BindingResult result) {
         User user = userRepository.findByEmail(login.getUsername());
 
