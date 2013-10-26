@@ -71,3 +71,4 @@ scheduleDirectives.directive('initCalendar', function() {
         });
     };
 });
+
