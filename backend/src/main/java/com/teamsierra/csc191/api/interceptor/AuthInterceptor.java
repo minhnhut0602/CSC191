@@ -33,6 +33,8 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) {
 
+        final String accessToken = "accessToken";
+
         String id = request.getHeader("fbUserId");
         User user = userRepository.findByOAuthId(id);
 
