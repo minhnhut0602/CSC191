@@ -43,7 +43,7 @@
                         <input placeholder="Search" type="search" class="gn-search">
                     </li>
                     <li>
-                        <a class="gn-icon">
+                        <a class="gn-icon" href="#/calendar/">
                             <i class="fa fa-plus"></i>
                             <span>Make an Appointment</span>
                         </a>
@@ -55,14 +55,17 @@
                         </a>
                     </li>
                     <li>
-                        <a class="gn-icon">
+                        <a class="gn-icon" href="#/edit-profile">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit Profile</span>
                         </a>
                     </li>
                     <li>
-                        <a class="gn-icon">
-                            <i class="fa fa-times"></i>
+                        <i class="fa fa-times"></i>
+                        <a class="gn-icon" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login()">
+                            <span>Login</span>
+                        </a>
+                        <a class="gn-icon" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">
                             <span>Logout</span>
                         </a>
                     </li>
