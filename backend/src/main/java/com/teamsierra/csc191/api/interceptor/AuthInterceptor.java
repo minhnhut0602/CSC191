@@ -2,9 +2,12 @@ package com.teamsierra.csc191.api.interceptor;
 
 import com.teamsierra.csc191.api.controller.GenericController;
 import com.teamsierra.csc191.api.model.GenericModel;
+import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -31,6 +34,9 @@ public class AuthInterceptor implements HandlerInterceptor{
     private UserRepository userRepository;
 
     private Properties p;
+    private String AUTH_TOKEN;
+    private String ID;
+    private int AUTH_TYPE;
 
     public AuthInterceptor() {
         super();
@@ -49,47 +55,64 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) {
 
-        final String accessToken = "accessToken";
+        AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
+        ID = request.getHeader(p.getProperty("headers.id"));
+        AUTH_TYPE = Integer.parseInt(request.getHeader(p.getProperty("headers.authType")));
 
-        String id = request.getHeader("fbUserId");
-        User user = userRepository.findByOAuthId(id);
+        User user = userRepository.findByOAuthId(ID);
 
-
+        boolean returnValue = false;
         if (user != null) { //user exists
-            if (user.getToken().equals(request.getHeader(p.getProperty("headers.authToken")))) { //access token is good
+            if (user.getToken().equals(AUTH_TOKEN)) { //access token is good
                 return true;
             } else { //access token is bad
-                //TODO validate the id returned is user.oauthId
-                facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
+                switch (AUTH_TYPE) {
+                    case 0:
+                        //client
+                        if (facebookChallenge(ID, AUTH_TOKEN, response)) {
+                            //TODO update user authToken
+                            returnValue = true;
+                        } else {
+                            returnValue = false;
+                        }
+                        break;
+                    case 1:
+                        //stylist
+                        break;
+                    case 2:
+                        //admin
+                        break;
+                }
+
             }
         } else { //user does not exist
-            //TODO challenge header.fbAccessToken with facebook
-            facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
-            //TODO create user???
-        }
-
-        if (handler instanceof GenericController)
-        {
-            GenericController controller = (GenericController)handler;
-            String cookieToken = "";
-            Cookie[] cookies = request.getCookies();
-
-            controller.setId("1");
-            controller.setAuthType(GenericModel.UserType.CLIENT);
-
-            for (Cookie cookie: cookies)
-            {
-                controller.setAuthToken(cookie.getValue());
+            switch (AUTH_TYPE) {
+                case 0:
+                    //client
+                    if (facebookChallenge(ID, AUTH_TOKEN, response)) {
+                        //TODO add user to database
+                        returnValue = true;
+                    } else {
+                        returnValue = false;
+                    }
+                    break;
+                case 1:
+                    //stylist
+                    break;
+                case 2:
+                    //admin
+                    break;
             }
 
-            controller.setAuthToken("1234567890abcdef");
-            controller.setUserRepository(userRepository);
         }
-        return true;
 
+        if (returnValue) {
+            fillInGenericController(handler);
+        }
+        return returnValue;
     }
 
-    public boolean facebookChallenge(String id, String token) {
+    private boolean facebookChallenge(String id, String token, HttpServletResponse response) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -114,9 +137,53 @@ public class AuthInterceptor implements HandlerInterceptor{
         challengeVars.put("appToken", appAccess);
 
         String fbChallenge = restTemplate.getForObject(apiUrl, String.class, challengeVars);
-        L.info(fbChallenge);
 
-        return true;
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = null;
+        try {
+            root = mapper.readValue(fbChallenge, JsonNode.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JsonNode data = root.get("data");
+        if (data.get("is_valid").asBoolean() &&
+            id.equals(data.get("user_id"))) {
+            return true;
+        } else {
+            try {
+                response.sendError(401);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
+    private void fillInGenericController(Object handler) {
+        if (handler instanceof GenericController)
+        {
+            GenericController controller = (GenericController)handler;
+
+            //set the id and user type
+            controller.setId(ID);
+            switch (AUTH_TYPE) {
+                case 0:
+                    controller.setAuthType(GenericModel.UserType.CLIENT);
+                    break;
+                case 1:
+                    controller.setAuthType(GenericModel.UserType.STYLIST);
+                    break;
+                case 2:
+                    controller.setAuthType(GenericModel.UserType.ADMIN);
+                    break;
+            }
+
+            //set the auth_token
+            controller.setAuthToken(AUTH_TOKEN);
+
+            controller.setUserRepository(userRepository);
+        }
     }
 
     @Override

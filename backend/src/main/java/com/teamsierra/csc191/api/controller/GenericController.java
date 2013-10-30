@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
+import java.util.Map;
+
 /**
  * @Author: Alex Chernyak
  * @Date: 10/29/13
@@ -49,7 +51,6 @@ public abstract class GenericController
 
 
     @ExceptionHandler(Exception.class)
-    @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView handleException(Exception e)
     {
