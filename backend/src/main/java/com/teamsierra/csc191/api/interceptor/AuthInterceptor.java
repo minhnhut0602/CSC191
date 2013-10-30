@@ -1,6 +1,7 @@
 package com.teamsierra.csc191.api.interceptor;
 
-import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.controller.GenericController;
+import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
@@ -28,6 +30,20 @@ public class AuthInterceptor implements HandlerInterceptor{
     @Autowired
     private UserRepository userRepository;
 
+    private Properties p;
+
+    public AuthInterceptor() {
+        super();
+        this.p = new Properties();
+        try {
+            this.p.load(this.getClass().getClassLoader().getResourceAsStream("system.properties"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
@@ -40,30 +56,40 @@ public class AuthInterceptor implements HandlerInterceptor{
 
 
         if (user != null) { //user exists
-            if (user.getToken().equals(request.getHeader("fbAccessToken"))) { //access token is good
+            if (user.getToken().equals(request.getHeader(p.getProperty("headers.authToken")))) { //access token is good
                 return true;
             } else { //access token is bad
                 //TODO validate the id returned is user.oauthId
-                facebookChallenge(request.getHeader("fbUserId"), request.getHeader("fbAccessToken"));
+                facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
             }
         } else { //user does not exist
             //TODO challenge header.fbAccessToken with facebook
-            facebookChallenge(request.getHeader("fbUserId"), request.getHeader("fbAccessToken"));
+            facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
             //TODO create user???
         }
 
+        if (handler instanceof GenericController)
+        {
+            GenericController controller = (GenericController)handler;
+            String cookieToken = "";
+            Cookie[] cookies = request.getCookies();
+
+            controller.setId("1");
+            controller.setAuthType(GenericModel.UserType.CLIENT);
+
+            for (Cookie cookie: cookies)
+            {
+                controller.setAuthToken(cookie.getValue());
+            }
+
+            controller.setAuthToken("1234567890abcdef");
+            controller.setUserRepository(userRepository);
+        }
         return true;
+
     }
 
     public boolean facebookChallenge(String id, String token) {
-        Properties p = new Properties();
-        try {
-            p.load(this.getClass().getClassLoader().getResourceAsStream("system.properties"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -97,11 +123,13 @@ public class AuthInterceptor implements HandlerInterceptor{
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response,
                            Object handler,
-                           ModelAndView modelAndView) {}
+                           ModelAndView modelAndView)
+    { }
 
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response,
                                 Object handler,
-                                Exception e) throws Exception {}
+                                Exception e) throws Exception
+    {}
 }

@@ -1,13 +1,14 @@
 package com.teamsierra.csc191.api.repository;
 
-import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.model.Appointment;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import com.teamsierra.csc191.api.model.Appointment;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -59,12 +60,54 @@ public class AppointmentRepository {
     //  | $$        | $$  | $$\  $$$| $$  | $$
     //  | $$       /$$$$$$| $$ \  $$| $$$$$$$/
     //  |__/      |______/|__/  \__/|_______/
-    public Appointment findByID(String id) {
-        L.debug("Finding an appointment by _id:"+ id);
-        return mongoTemplate.findOne(query(where("_id").is(id)), Appointment.class);
+    public Appointment findByID(String appointmentID)
+    {
+        L.debug("Finding an appointment by _id:"+ appointmentID);
+        return mongoTemplate.findOne(query(where("_id").is(appointmentID)), Appointment.class);
     }
-    public List<Appointment> findAll() {
-//        L.debug("Finding all appointments for user: "+ user);
+
+    /**
+     * Find all appointments that match search criteria
+     * by build a filter query
+     * @param appointment
+     * @return
+     */
+    public List<Appointment> findByCriteria(Appointment appointment)
+    {
+        L.debug("Finding appointments by filters:"+appointment.toString());
+        Query query = new Query();
+
+        //Define search keywords
+        String appointmentId = appointment.getId();
+        String stylistID = appointment.getStylistID();
+        String clientID = appointment.getClientID();
+        Appointment.AppointmentStatus appointmentStatus = appointment.getAppointmentStatus();
+        Date startDate = appointment.getStartTime();
+        Date endDate = appointment.getEndTime();
+
+        if (!appointmentId.isEmpty())
+            query.addCriteria(where("_id").is(appointmentId));
+
+        if (!stylistID.isEmpty())
+            query.addCriteria(where("stylistID").is(stylistID));
+
+        if (!clientID.isEmpty())
+            query.addCriteria(where("clientID").is(clientID));
+
+        if (appointmentStatus != null)
+            query.addCriteria(where("appointmentStatus").is(appointmentStatus));
+
+        if (startDate != null)
+            query.addCriteria(where("startTime").gte(startDate));
+
+        if (endDate != null)
+            query.addCriteria(where("endTime").lte(endDate));
+
+        return mongoTemplate.find(query, Appointment.class);
+    }
+
+    public List<Appointment> findAll()
+    {
         return mongoTemplate.findAll(Appointment.class);
     }
 

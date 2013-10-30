@@ -1,33 +1,28 @@
 package com.teamsierra.csc191.api.model;
 
-import org.springframework.data.annotation.Id;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
+
 /**
- * User: scott
- * Date: 9/8/13
- * Time: 8:26 PM
+ * @Author: Alex Chernyak
+ * @Date: 10/29/13
+ * @Project: salon-scheduler-api
+ * @Package: com.teamsierra.csc191.api.model
+ * @Description: model representing a single appointment. Extends GenericModel
  */
-
 @Document(collection = "appointments")
-public class Appointment {
-
-    @Id
-    private String id;
+public class Appointment extends GenericModel
+{
     private String clientID;
     private String stylistID;
-    private Integer startTime;
-    private Integer endTime;
-    private String status;
+    private Date startTime;
+    private Date endTime;
+    private AppointmentStatus appointmentStatus;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    @JsonIgnore
     public String getClientID() {
         return clientID;
     }
@@ -36,6 +31,7 @@ public class Appointment {
         this.clientID = clientID;
     }
 
+    @JsonIgnore
     public String getStylistID() {
         return stylistID;
     }
@@ -44,38 +40,28 @@ public class Appointment {
         this.stylistID = stylistID;
     }
 
-    public Integer getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Integer startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public Integer getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Integer endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public String getStatus() {
-        return status;
+    public AppointmentStatus getAppointmentStatus() {
+        return appointmentStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
     }
 
-//    @Override
-//    public String toString() {
-//        return "{" +
-//                    "\"clientID\":"+ getClientID() +","+
-//                    "\"stylistID\":"+ getStylistID() +","+
-//                    "\"startTime\":"+ getStartTime() +","+
-//                    "\"endTime\":"+ getEndTime() +","+
-//                    "\"status\":\""+ getStatus() +"\""+
-//                "}";
-//    }
 }
