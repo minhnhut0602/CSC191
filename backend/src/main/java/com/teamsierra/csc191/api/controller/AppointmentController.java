@@ -307,7 +307,6 @@ public class AppointmentController extends GenericController
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-
     private String validateAvailability(String clientID, String stylistID, Date startTime, Date endTime)
     {
         Appointment findAppointment = new Appointment();

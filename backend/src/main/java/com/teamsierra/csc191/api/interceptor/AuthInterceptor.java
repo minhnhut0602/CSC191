@@ -57,6 +57,8 @@ public class AuthInterceptor implements HandlerInterceptor{
         return true;
 
         /*
+        final String accessToken = "accessToken";
+
         String id = request.getHeader("fbUserId");
         User user = userRepository.findByOAuthId(id);
 
@@ -91,7 +93,10 @@ public class AuthInterceptor implements HandlerInterceptor{
         RestTemplate restTemplate = new RestTemplate();
 
 
-        String appAccessUrl = "https://graph.facebook.com/oauth/access_token?client_id={id}&client_secret={secret}&grant_type=client_credentials";
+        String appAccessUrl = "https://graph.facebook.com/oauth/access_token?"+
+                              "client_id={id}"+
+                              "&client_secret={secret}"+
+                              "&grant_type=client_credentials";
         Map<String, String> getAppAccessVars = new HashMap<>();
         getAppAccessVars.put("id", "197300770451342");
         getAppAccessVars.put("secret", p.getProperty("facebookSecret"));
@@ -100,7 +105,9 @@ public class AuthInterceptor implements HandlerInterceptor{
         L.info(appAccess);
         appAccess = appAccess.substring(appAccess.indexOf('=')+1);
 
-        String apiUrl = "https://graph.facebook.com/debug_token?input_token={accessToken}&access_token={appToken}";
+        String apiUrl = "https://graph.facebook.com/debug_token?"+
+                        "input_token={accessToken}"+
+                        "&access_token={appToken}";
         Map<String, String> challengeVars = new HashMap<>();
         challengeVars.put("accessToken", token);
         challengeVars.put("appToken", appAccess);
