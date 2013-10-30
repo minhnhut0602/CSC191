@@ -12,14 +12,13 @@
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap-select.min.css">
     <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet/less" href="css/component.less" />
     <link rel="stylesheet/less" href="css/main.less">
-    <link rel="stylesheet" href="css/demo.css">
-
     <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-    <script src="js/gnmenu.js"></script>
+
 
     <script type="text/javascript">less = { env: 'development' };</script>
     <script src="js/vendor/less.min.js"></script>
@@ -35,14 +34,47 @@
 <body ng-controller="AuthController">
 <ul id="gn-menu" class="gn-menu-main">
     <li class="gn-trigger">
-        <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+        <a class="gn-icon gn-icon-menu"><i class="fa fa-reorder"></i></a>
         <nav class="gn-menu-wrapper">
-            asdasdsd
+            <div class="gn-scroller">
+                <ul class="gn-menu">
+                    <li class="gn-search-item">
+                        <a class="gn-icon"><i class="fa fa-search"></i></a>
+                        <input placeholder="Search" type="search" class="gn-search">
+                    </li>
+                    <li>
+                        <a class="gn-icon" href="#/calendar/">
+                            <i class="fa fa-plus"></i>
+                            <span>Make an Appointment</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="gn-icon">
+                            <i class="fa fa-clock-o"></i>
+                            <span>View History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="gn-icon" href="#/edit-profile">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <span>Edit Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <i class="fa fa-times"></i>
+                        <a class="gn-icon" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login()">
+                            <span>Login</span>
+                        </a>
+                        <a class="gn-icon" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div><!-- /gn-scroller -->
         </nav>
     </li>
-    <li><a href="http://tympanus.net/codrops">Codrops</a></li>
-    <li><!-- ... --></li>
-    <!-- ... -->
+    <li><a href="#/client-landing"><h2>Salon Scheduler<h2></a></li>
+    <li><a href="#/edit-profile">{{user.name}}<img class="avatar" src="https://graph.facebook.com/{{user.username}}/picture"></a></li>
 </ul>
 
 
@@ -53,7 +85,7 @@
 
 <!-- Add your site or application content here -->
 
-<div class="nav-bar">
+<div class="nav-bar" style="display: none;">
     <div class="wrapper">
         <a href='#/client-landing' ng-show="user.name">
             <img class="avatar" src="https://graph.facebook.com/{{user.username}}/picture">
@@ -70,6 +102,8 @@
 <script src="js/vendor/bootstrap-select.min.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/main.js"></script>
+<script src="js/classie.js"></script>
+<script src="js/gnmenu.js"></script>
 <script>
     // $(document).ready(function() {
     //     setInterval(function(){
@@ -80,6 +114,9 @@
     //         }
     //     }, 50);
     // });
+</script>
+<script>
+    new gnMenu( document.getElementById( 'gn-menu' ) );
 </script>
 
 
