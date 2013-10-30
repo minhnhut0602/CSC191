@@ -70,7 +70,9 @@ public class AuthInterceptor implements HandlerInterceptor{
                     case 0:
                         //client
                         if (facebookChallenge(ID, AUTH_TOKEN, response)) {
-                            //TODO update user authToken
+                            //update user authToken
+                            user.setToken(AUTH_TOKEN);
+                            userRepository.save(user);
                             returnValue = true;
                         } else {
                             returnValue = false;
@@ -90,7 +92,11 @@ public class AuthInterceptor implements HandlerInterceptor{
                 case 0:
                     //client
                     if (facebookChallenge(ID, AUTH_TOKEN, response)) {
-                        //TODO add user to database
+                        //add user to database
+                        User newUser = new User();
+                        newUser.setOauthId(ID);
+                        newUser.setToken(AUTH_TOKEN);
+                        userRepository.insert(newUser);
                         returnValue = true;
                     } else {
                         returnValue = false;
