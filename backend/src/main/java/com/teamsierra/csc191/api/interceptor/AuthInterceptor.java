@@ -1,6 +1,7 @@
 package com.teamsierra.csc191.api.interceptor;
 
-import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.controller.GenericController;
+import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
@@ -33,6 +35,28 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) {
 
+        //TODO implement authentication
+
+        if (handler instanceof GenericController)
+        {
+            GenericController controller = (GenericController)handler;
+            String cookieToken = "";
+            Cookie[] cookies = request.getCookies();
+
+            controller.setId("1");
+            controller.setAuthType(GenericModel.UserType.CLIENT);
+
+            for (Cookie cookie: cookies)
+            {
+                controller.setAuthToken(cookie.getValue());
+            }
+
+            controller.setAuthToken("1234567890abcdef");
+            controller.setUserRepository(userRepository);
+        }
+        return true;
+
+        /*
         String id = request.getHeader("fbUserId");
         User user = userRepository.findByOAuthId(id);
 
@@ -51,6 +75,7 @@ public class AuthInterceptor implements HandlerInterceptor{
         }
 
         return true;
+        */
     }
 
     public boolean facebookChallenge(String id, String token) {
@@ -90,11 +115,13 @@ public class AuthInterceptor implements HandlerInterceptor{
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response,
                            Object handler,
-                           ModelAndView modelAndView) {}
+                           ModelAndView modelAndView)
+    { }
 
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response,
                                 Object handler,
-                                Exception e) throws Exception {}
+                                Exception e) throws Exception
+    {}
 }
