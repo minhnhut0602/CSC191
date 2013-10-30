@@ -1,6 +1,9 @@
 package com.teamsierra.csc191.api.repository;
 
+import java.util.List;
+
 import com.teamsierra.csc191.api.model.User;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +73,14 @@ public class UserRepository {
     public User findByToken(String token) {
         L.info("Finding a user by token: "+ token);
         return mongoTemplate.findOne(query(where("token").is(token)), User.class);
+    }
+    public List<User> findAllActive(){
+    	L.info("Finding all active users: ");
+    	return mongoTemplate.find(query(where("active").is(true)), User.class);
+    }
+    public List<User> findAll(){
+    	L.info("Finding all users:");
+    	return mongoTemplate.findAll(User.class);
     }
 
 

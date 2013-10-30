@@ -8,3 +8,7 @@
 sftp-config.json
 *.sublime-workspace
 *.sublime-project
+*.classpath
+*.project
+*/.settings/*
+*/.metadata/*
