@@ -28,27 +28,40 @@ public class AuthInterceptor implements HandlerInterceptor{
     @Autowired
     private UserRepository userRepository;
 
+    private Properties p;
+
+    public AuthInterceptor() {
+        super();
+        this.p = new Properties();
+        try {
+            this.p.load(this.getClass().getClassLoader().getResourceAsStream("system.properties"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) {
 
-        final String accessToken = "accessToken";
 
         String id = request.getHeader("fbUserId");
         User user = userRepository.findByOAuthId(id);
 
 
         if (user != null) { //user exists
-            if (user.getToken().equals(request.getHeader("fbAccessToken"))) { //access token is good
+            if (user.getToken().equals(request.getHeader(p.getProperty("headers.authToken")))) { //access token is good
                 return true;
             } else { //access token is bad
                 //TODO validate the id returned is user.oauthId
-                facebookChallenge(request.getHeader("fbUserId"), request.getHeader("fbAccessToken"));
+                facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
             }
         } else { //user does not exist
             //TODO challenge header.fbAccessToken with facebook
-            facebookChallenge(request.getHeader("fbUserId"), request.getHeader("fbAccessToken"));
+            facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
             //TODO create user???
         }
 
@@ -56,14 +69,6 @@ public class AuthInterceptor implements HandlerInterceptor{
     }
 
     public boolean facebookChallenge(String id, String token) {
-        Properties p = new Properties();
-        try {
-            p.load(this.getClass().getClassLoader().getResourceAsStream("system.properties"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         RestTemplate restTemplate = new RestTemplate();
 
