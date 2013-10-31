@@ -4,12 +4,15 @@ import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: Alex Chernyak
@@ -20,33 +23,13 @@ import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
  */
 public abstract class GenericController
 {
-    protected static final Log L = LogFactory.getLog(AppointmentController.class); // This logs out to STDOUT
+    protected static final Log L = LogFactory.getLog(GenericController.class); // This logs out to STDOUT
     protected String authToken;
     protected String id;
     protected GenericModel.UserType authType;
+
+    @Autowired
     protected UserRepository userRepository;
-
-
-    public void setAuthType(GenericModel.UserType authType)
-    {
-        this.authType = authType;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-
-    public void setAuthToken(String authToken)
-    {
-        this.authToken = authToken;
-    }
-
-    public void setUserRepository(UserRepository userRepository)
-    {
-        this.userRepository = userRepository;
-    }
-
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
@@ -58,6 +41,13 @@ public abstract class GenericController
         reason.addObject("message", e.getMessage());
         reason.addObject("cause", e.getCause().toString());
         return reason;
+    }
+
+    protected void setRequestControllerState(HttpServletRequest request)
+    {
+        this.authToken = request.getAttribute("authToken").toString();
+        this.id = request.getAttribute("id").toString();
+        this.authType = GenericModel.UserType.valueOf(request.getAttribute("authType").toString());
     }
 }
 

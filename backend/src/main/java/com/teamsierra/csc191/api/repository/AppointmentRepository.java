@@ -85,23 +85,32 @@ public class AppointmentRepository {
         Date startDate = appointment.getStartTime();
         Date endDate = appointment.getEndTime();
 
-        if (!appointmentId.isEmpty())
+        if (appointmentId != null && !appointmentId.isEmpty())
             query.addCriteria(where("_id").is(appointmentId));
 
-        if (!stylistID.isEmpty())
+        if (stylistID != null && !stylistID.isEmpty())
             query.addCriteria(where("stylistID").is(stylistID));
 
-        if (!clientID.isEmpty())
+        if (clientID != null && !clientID.isEmpty())
             query.addCriteria(where("clientID").is(clientID));
 
         if (appointmentStatus != null)
             query.addCriteria(where("appointmentStatus").is(appointmentStatus));
 
-        if (startDate != null)
-            query.addCriteria(where("startTime").gte(startDate));
+        // Get appointments in the give time range
+        if (startDate != null & endDate != null)
+        {
+            query.addCriteria(where("starTime").lt(endDate).andOperator(where("startTime").gt(startDate)));
+            query.addCriteria(where("endDate").gt(startDate).andOperator(where("endDate").lt(endDate)));
+        }
+        else
+        {
+            if (startDate != null)
+                query.addCriteria(where("startTime").gte(startDate));
 
-        if (endDate != null)
-            query.addCriteria(where("endTime").lte(endDate));
+            if (endDate != null)
+                query.addCriteria(where("endTime").lte(endDate));
+        }
 
         return mongoTemplate.find(query, Appointment.class);
     }

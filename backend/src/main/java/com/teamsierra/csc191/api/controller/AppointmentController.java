@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,19 +21,26 @@ import java.util.List;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
- * User: scott
- * Date: 9/4/13
- * Time: 4:17 PM
+ * @author Alex Chernyak
+ * Controller managing appointment business logic
  *
- * getAppointments()
- * getAppointment()
- * addAppointment
- * changeTime()
- * approveAppointment()
- * cancelAppointment()
+ * Public methods:
+ * getAppointments(HttpServletRequest)
+ * gets all appointments relevant to the user type of a caller
+ *
+ * getAppointment(String, HttpServletRequest)
+ * get a specific appointment specificed a appointmentID
+ *
+ * searchForAppointments(Appointment, HttpServletRequest)
+ * search appointments that match search fields
+ *
+ * addAppointment(Appointment, HttpServletRequest)
+ * add appointment to database
+ *
+ * editAppointment(Appointment, String, HttpServletRequest)
+ * edit an exisit appointment
  *
  */
-
 @Controller
 @RequestMapping(value = "/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AppointmentController extends GenericController
@@ -48,12 +56,15 @@ public class AppointmentController extends GenericController
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Resource<Appointment>>> getAppointments() throws Exception
+    public ResponseEntity<List<Resource<Appointment>>> getAppointments(HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
+
         HttpStatus httpStatus;
         Appointment findAppointment = new Appointment();
         List<Resource<Appointment>> appointmentResources = new ArrayList<>();
         List<Appointment> appointments = new ArrayList<>();
+
         switch (this.authType)
         {
             case CLIENT:
@@ -70,7 +81,6 @@ public class AppointmentController extends GenericController
             default:
             break;
         }
-
 
         appointments = appointmentRepository.findByCriteria(findAppointment);
 
@@ -93,8 +103,11 @@ public class AppointmentController extends GenericController
      */
     @RequestMapping(value = "/{appointmentID}",  method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Resource<Appointment>> getAppointment(@PathVariable String appointmentID) throws Exception
+    public ResponseEntity<Resource<Appointment>> getAppointment(@PathVariable String appointmentID,
+                                                                HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
+
         Appointment findAppointment = new Appointment();
         Resource<Appointment> appointmentResource;
         List<Appointment> appointments;
@@ -135,8 +148,11 @@ public class AppointmentController extends GenericController
 
     @RequestMapping(value = "/searchAppointments", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<Resource<Appointment>>> searchForAppointments(@RequestBody Appointment requestAppointment) throws Exception
+    public ResponseEntity<List<Resource<Appointment>>> searchForAppointments(@RequestBody Appointment requestAppointment,
+                                                                             HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
+
         List<Resource<Appointment>> appointmentResources = new ArrayList<>();
         List<Appointment> appointments;
         HttpStatus httpStatus;
@@ -179,8 +195,11 @@ public class AppointmentController extends GenericController
      */
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Resource<GenericModel>> addAppointment(@RequestBody Appointment appointment) throws Exception
+    public ResponseEntity<Resource<GenericModel>> addAppointment(@RequestBody Appointment appointment,
+                                                                 HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
+
         StringBuilder errors = new StringBuilder();
         switch (this.authType)
         {
@@ -242,8 +261,11 @@ public class AppointmentController extends GenericController
      */
     @RequestMapping(value = "/{appointmentID}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<GenericModel>> editAppointment(@RequestBody Appointment appointment,
-                                                                  @PathVariable String appointmentID) throws Exception
+                                                                  @PathVariable String appointmentID,
+                                                                  HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
+
         Appointment findAppointment = new Appointment();
         switch (this.authType)
         {
@@ -269,9 +291,9 @@ public class AppointmentController extends GenericController
                 break;
         }
 
-        if ((appointment.getStartTime() != null) ^ (appointment.getEndTime() != null))
+        if (appointment.getStartTime() != null || appointment.getEndTime() != null)
         {
-            throw new Exception("Time range is missing start or an end");
+            throw new Exception("Start and end times cannot be changed. Please cancel current appointment and make a new one");
         }
 
         findAppointment.setId(appointmentID);
@@ -307,6 +329,15 @@ public class AppointmentController extends GenericController
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+
+    /**
+     * Business logic to validate user and/or stylists hours of availability
+     * @param clientID
+     * @param stylistID
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     private String validateAvailability(String clientID, String stylistID, Date startTime, Date endTime)
     {
         Appointment findAppointment = new Appointment();
