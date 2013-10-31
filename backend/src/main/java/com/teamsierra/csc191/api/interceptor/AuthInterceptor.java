@@ -5,6 +5,8 @@ import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -30,6 +32,9 @@ public class AuthInterceptor implements HandlerInterceptor{
     private UserRepository userRepository;
 
     private Properties p;
+    private String AUTH_TOKEN;
+    private String ID;
+    private int AUTH_TYPE;
 
     public AuthInterceptor() {
         super();
@@ -48,33 +53,95 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
-        final String accessToken = "accessToken";
+        AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
+        ID = request.getHeader(p.getProperty("headers.id"));
+        AUTH_TYPE = Integer.parseInt(request.getHeader(p.getProperty("headers.authType")));
+        L.info(AUTH_TYPE);
 
-        String id = request.getHeader("fbUserId");
-        User user = userRepository.findByOAuthId(id);
+        User user = userRepository.findByOAuthId(ID);
+
+        boolean returnValue = false;
 
         if (user != null) { //user exists
-            if (user.getToken().equals(request.getHeader(p.getProperty("headers.authToken")))) { //access token is good
-                return true;
+            L.info("user found");
+            if (user.getToken().equals(AUTH_TOKEN)) { //access token is good
+                returnValue = true;
             } else { //access token is bad
-                //TODO validate the id returned is user.oauthId
-                facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
+                switch (AUTH_TYPE) {
+                    case 0:
+                        //client
+                        if (facebookChallenge(ID, AUTH_TOKEN, response)) {
+                            //update user authToken
+                            user.setToken(AUTH_TOKEN);
+                            userRepository.save(user);
+                            returnValue = true;
+                        } else {
+                            returnValue = false;
+                        }
+                        break;
+                    case 1:
+                        //stylist
+                        break;
+                    case 2:
+                        //admin
+                        break;
+                }
+
             }
+
         } else { //user does not exist
-            //TODO challenge header.fbAccessToken with facebook
-            facebookChallenge(request.getHeader(p.getProperty("headers.id")), request.getHeader(p.getProperty("headers.authToken")));
-            //TODO create user???
+            L.info("user not found");
+            switch (AUTH_TYPE) {
+                case 0:
+                    //client
+                    if (facebookChallenge(ID, AUTH_TOKEN, response)) {
+                        //add user to database
+                        L.info("adding user to the db");
+                        User newUser = new User();
+                        newUser.setOauthId(ID);
+                        newUser.setToken(AUTH_TOKEN);
+                        userRepository.insert(newUser);
+                        L.info(newUser +" added");
+                        returnValue = true;
+                    } else {
+                        L.info("fb challenge failed, returning 401");
+                        returnValue = false;
+                    }
+                    break;
+                case 1:
+                    //stylist
+                    break;
+                case 2:
+                    //admin
+                    break;
+            }
         }
 
-        // TODO set actual values from headers, fb api and db
-        request.setAttribute("authToken", "1234567890abcdef");
-        request.setAttribute("id", "2");
-        request.setAttribute("authType", GenericModel.UserType.CLIENT.toString());
+        if (returnValue) {
+            L.info("filling in generic controller");
 
-        return true;
+            //set the id and user type
+            request.setAttribute("id", ID);
+            switch (AUTH_TYPE) {
+                case 0:
+                    request.setAttribute("authType", GenericModel.UserType.CLIENT);
+                    break;
+                case 1:
+                    request.setAttribute("authType", GenericModel.UserType.STYLIST);
+                    break;
+                case 2:
+                    request.setAttribute("authType", GenericModel.UserType.ADMIN);
+                    break;
+            }
+
+            //set the auth_token
+            request.setAttribute("authToken", AUTH_TOKEN);
+        }
+
+        return returnValue;
     }
 
-    public boolean facebookChallenge(String id, String token) {
+    private boolean facebookChallenge(String id, String token, HttpServletResponse response) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -88,7 +155,6 @@ public class AuthInterceptor implements HandlerInterceptor{
         getAppAccessVars.put("secret", p.getProperty("facebookSecret"));
 
         String appAccess = restTemplate.getForObject(appAccessUrl, String.class, getAppAccessVars);
-        L.info(appAccess);
         appAccess = appAccess.substring(appAccess.indexOf('=')+1);
 
         String apiUrl = "https://graph.facebook.com/debug_token?"+
@@ -99,22 +165,39 @@ public class AuthInterceptor implements HandlerInterceptor{
         challengeVars.put("appToken", appAccess);
 
         String fbChallenge = restTemplate.getForObject(apiUrl, String.class, challengeVars);
-        L.info(fbChallenge);
 
-        return true;
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = null;
+        try {
+            root = mapper.readValue(fbChallenge, JsonNode.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JsonNode data = root.get("data");
+        if (data.get("is_valid").asBoolean() &&
+            id.equals(data.get("user_id").asText())) {
+            return true;
+        } else {
+            try {
+                response.sendError(401);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
     }
+
 
     @Override
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response,
                            Object handler,
-                           ModelAndView modelAndView)
-    { }
+                           ModelAndView modelAndView) {}
 
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response,
                                 Object handler,
-                                Exception e) throws Exception
-    {}
+                                Exception e) throws Exception {}
 }

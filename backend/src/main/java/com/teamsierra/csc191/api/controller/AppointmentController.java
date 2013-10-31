@@ -59,11 +59,13 @@ public class AppointmentController extends GenericController
     public ResponseEntity<List<Resource<Appointment>>> getAppointments(HttpServletRequest request) throws Exception
     {
         this.setRequestControllerState(request);
+        L.info(this.authType +" , "+ this.id +" , "+ this.authToken);
 
         HttpStatus httpStatus;
         Appointment findAppointment = new Appointment();
         List<Resource<Appointment>> appointmentResources = new ArrayList<>();
         List<Appointment> appointments = new ArrayList<>();
+
 
         switch (this.authType)
         {

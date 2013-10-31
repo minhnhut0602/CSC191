@@ -23,6 +23,7 @@ public class User {
     private String token;
     private String avatarURL;
     private String phone;
+    private boolean active;
 
     public String getId() {
         return id;
@@ -96,7 +97,7 @@ public class User {
         this.avatarURL = avatarURL;
     }
 
-    public String getPhone() {
+	public String getPhone() {
         return phone;
     }
 
@@ -104,7 +105,15 @@ public class User {
         this.phone = phone;
     }
 
-    @Override
+    public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@Override
     public String toString() {
         return "{" +
                 "id='" + id + '\'' +
@@ -116,6 +125,7 @@ public class User {
                 ", token='" + token + '\'' +
                 ", avatarURL='" + avatarURL + '\'' +
                 ", phone='" + phone + '\'' +
+                ", active='" + active + '\'' +
                 '}';
     }
 }

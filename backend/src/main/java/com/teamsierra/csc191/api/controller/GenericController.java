@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 /**
  * @Author: Alex Chernyak
  * @Date: 10/29/13
@@ -32,8 +33,8 @@ public abstract class GenericController
     protected UserRepository userRepository;
 
     @ExceptionHandler(Exception.class)
-    @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
     public ModelAndView handleException(Exception e)
     {
         MappingJacksonJsonView jsonView = new MappingJacksonJsonView();
