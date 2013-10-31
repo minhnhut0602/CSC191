@@ -54,6 +54,7 @@ public class AppointmentController extends GenericController
         Appointment findAppointment = new Appointment();
         List<Resource<Appointment>> appointmentResources = new ArrayList<>();
         List<Appointment> appointments = new ArrayList<>();
+        L.info(this.authType +" , "+ this.id +" , "+ this.authToken);
         switch (this.authType)
         {
             case CLIENT:

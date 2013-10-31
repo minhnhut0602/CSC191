@@ -5,6 +5,7 @@ import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,6 +53,7 @@ public abstract class GenericController
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
     public ModelAndView handleException(Exception e)
     {
         MappingJacksonJsonView jsonView = new MappingJacksonJsonView();

@@ -58,13 +58,15 @@ public class AuthInterceptor implements HandlerInterceptor{
         AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
         ID = request.getHeader(p.getProperty("headers.id"));
         AUTH_TYPE = Integer.parseInt(request.getHeader(p.getProperty("headers.authType")));
+        L.info(AUTH_TYPE);
 
         User user = userRepository.findByOAuthId(ID);
 
         boolean returnValue = false;
         if (user != null) { //user exists
+            L.info("user found");
             if (user.getToken().equals(AUTH_TOKEN)) { //access token is good
-                return true;
+                returnValue = true;
             } else { //access token is bad
                 switch (AUTH_TYPE) {
                     case 0:
@@ -88,17 +90,21 @@ public class AuthInterceptor implements HandlerInterceptor{
 
             }
         } else { //user does not exist
+            L.info("user not found");
             switch (AUTH_TYPE) {
                 case 0:
                     //client
                     if (facebookChallenge(ID, AUTH_TOKEN, response)) {
                         //add user to database
+                        L.info("adding user to the db");
                         User newUser = new User();
                         newUser.setOauthId(ID);
                         newUser.setToken(AUTH_TOKEN);
                         userRepository.insert(newUser);
+                        L.info(newUser +" added");
                         returnValue = true;
                     } else {
+                        L.info("fb challenge failed, returning 401");
                         returnValue = false;
                     }
                     break;
@@ -113,7 +119,31 @@ public class AuthInterceptor implements HandlerInterceptor{
         }
 
         if (returnValue) {
-            fillInGenericController(handler);
+            L.info("filling in generic controller");
+            if (handler instanceof GenericController)
+            {
+                L.info("hander is instanceof GenericController");
+                GenericController controller = (GenericController)handler;
+
+                //set the id and user type
+                controller.setId(ID);
+                switch (AUTH_TYPE) {
+                    case 0:
+                        controller.setAuthType(GenericModel.UserType.CLIENT);
+                        break;
+                    case 1:
+                        controller.setAuthType(GenericModel.UserType.STYLIST);
+                        break;
+                    case 2:
+                        controller.setAuthType(GenericModel.UserType.ADMIN);
+                        break;
+                }
+
+                //set the auth_token
+                controller.setAuthToken(AUTH_TOKEN);
+
+                controller.setUserRepository(userRepository);
+            }
         }
         return returnValue;
     }
@@ -132,7 +162,6 @@ public class AuthInterceptor implements HandlerInterceptor{
         getAppAccessVars.put("secret", p.getProperty("facebookSecret"));
 
         String appAccess = restTemplate.getForObject(appAccessUrl, String.class, getAppAccessVars);
-        L.info(appAccess);
         appAccess = appAccess.substring(appAccess.indexOf('=')+1);
 
         String apiUrl = "https://graph.facebook.com/debug_token?"+
@@ -154,7 +183,7 @@ public class AuthInterceptor implements HandlerInterceptor{
 
         JsonNode data = root.get("data");
         if (data.get("is_valid").asBoolean() &&
-            id.equals(data.get("user_id"))) {
+            id.equals(data.get("user_id").asText())) {
             return true;
         } else {
             try {
@@ -166,43 +195,16 @@ public class AuthInterceptor implements HandlerInterceptor{
         }
     }
 
-    private void fillInGenericController(Object handler) {
-        if (handler instanceof GenericController)
-        {
-            GenericController controller = (GenericController)handler;
-
-            //set the id and user type
-            controller.setId(ID);
-            switch (AUTH_TYPE) {
-                case 0:
-                    controller.setAuthType(GenericModel.UserType.CLIENT);
-                    break;
-                case 1:
-                    controller.setAuthType(GenericModel.UserType.STYLIST);
-                    break;
-                case 2:
-                    controller.setAuthType(GenericModel.UserType.ADMIN);
-                    break;
-            }
-
-            //set the auth_token
-            controller.setAuthToken(AUTH_TOKEN);
-
-            controller.setUserRepository(userRepository);
-        }
-    }
 
     @Override
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response,
                            Object handler,
-                           ModelAndView modelAndView)
-    { }
+                           ModelAndView modelAndView) {}
 
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response,
                                 Object handler,
-                                Exception e) throws Exception
-    {}
+                                Exception e) throws Exception {}
 }
