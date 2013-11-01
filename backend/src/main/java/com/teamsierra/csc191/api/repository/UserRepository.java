@@ -79,8 +79,12 @@ public class UserRepository {
     	return mongoTemplate.find(query(where("active").is(true)), User.class);
     }
     public List<User> findAll(){
-    	L.info("Finding all users:");
+    	L.info("Finding all users: ");
     	return mongoTemplate.findAll(User.class);
+    }
+    public List<User> findAllByGroup(int group){
+    	L.info("Finding all users by group: " + group);
+    	return mongoTemplate.find(query(where("group").is(group)), User.class);
     }
 
 

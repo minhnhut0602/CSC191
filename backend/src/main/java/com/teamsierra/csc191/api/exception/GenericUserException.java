@@ -5,10 +5,6 @@ import org.springframework.http.HttpStatus;
 public class GenericUserException extends Exception{
 	private HttpStatus status;
 	
-	public GenericUserException(String message){
-		super(message);
-	}
-	
 	public GenericUserException(String message, HttpStatus status){
 		super(message);
 		

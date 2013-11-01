@@ -16,7 +16,7 @@ public class User {
     @Id
     private String id;
     private String oauthId;
-    private String group;
+    private int group;
     private String firstName;
     private String lastName;
     private String email;
@@ -44,11 +44,11 @@ public class User {
         this.oauthId = oauthId;
     }
 
-    public String getGroup() {
+    public int getGroup() {
         return group;
     }
 
-    public void setGroup(String group) {
+    public void setGroup(int group) {
         this.group = group;
     }
 

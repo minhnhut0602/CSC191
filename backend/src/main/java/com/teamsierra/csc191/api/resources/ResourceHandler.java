@@ -43,7 +43,8 @@ public class ResourceHandler extends ResourceSupport
             return null;
 
         // generate links
-        resource.add(linkTo(AppointmentController.class).slash(user).withSelfRel());
+        //resource.add(linkTo(AppointmentController.class).slash(user).withSelfRel());
+        resource.add(linkTo(UserController.class).slash(user.getId()).withSelfRel());
 
         return resource;
     }
