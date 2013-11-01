@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: scott
@@ -34,6 +35,10 @@ public class UserController{
 
     @Autowired
     private UserRepository userRepository;
+    
+    //headers
+    private static final String AUTH_TYPE = "authtype";
+    private static final String AUTH_TOKEN = "authtoken"; 
 
     /**
      * A method to retrieve all of the users that the current user has access to.
@@ -50,17 +55,23 @@ public class UserController{
     	
     	try
     	{
-    		authType = Integer.parseInt(headers.get("authType"));
+    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
     	}
     	catch(Exception e)
     	{
+    		String s = "";
+    		Set<String> set= headers.keySet();
+    		for(String string : set)
+    		{
+    			s += string + "\n";
+    		}
     		throw new GenericUserException("Unable to resolve authType header to type int. "
-	    			+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
+	    			+ "Exception generated in call to getUsers().\n" + s, HttpStatus.BAD_REQUEST);
     	}
     	
 		switch(authType)
 		{
-    		case 0:	String authToken = headers.get("authToken");
+    		case 0:	String authToken = headers.get(AUTH_TOKEN);
 					if(authToken == null)
 				    {
 				    	throw new GenericUserException("Unable to find authToken header. "
@@ -108,7 +119,7 @@ public class UserController{
     	
     	try
     	{
-    		authType = Integer.parseInt(headers.get("authType"));
+    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
     	}
     	catch(Exception e)
     	{
@@ -182,7 +193,7 @@ public class UserController{
     	
     	try
     	{
-    		authType = Integer.parseInt(headers.get("authType"));
+    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
     	}
     	catch(Exception e)
     	{
@@ -194,7 +205,7 @@ public class UserController{
     	{
     		switch(authType)
     		{
-	    		case 0:	String authToken = headers.get("authToken");
+	    		case 0:	String authToken = headers.get(AUTH_TOKEN);
 		    			if(authToken == null)
 					    {
 					    	throw new GenericUserException("Unable to find authToken header. "
@@ -252,7 +263,7 @@ public class UserController{
     	
     	try
     	{
-    		authType = Integer.parseInt(headers.get("authType"));
+    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
     	}
     	catch(Exception e)
     	{
@@ -270,7 +281,7 @@ public class UserController{
     		
     		switch(authType)
     		{
-	    		case 0:	authToken = headers.get("authToken");
+	    		case 0:	authToken = headers.get(AUTH_TOKEN);
 		    			if(authToken == null)
 					    {
 					    	throw new GenericUserException("Unable to find authToken header. "
@@ -296,7 +307,7 @@ public class UserController{
 	    				user.setAvatarURL(curUser.getAvatarURL());
 	    				user.setActive(curUser.isActive());
 		    			break;
-	    		case 1: authToken = headers.get("authToken");
+	    		case 1: authToken = headers.get(AUTH_TOKEN);
 		    			if(authToken == null)
 					    {
 					    	throw new GenericUserException("Unable to find authToken header. "
@@ -451,10 +462,15 @@ public class UserController{
     }
 
     // TODO Exception handling
-    @ExceptionHandler()
+    /*@ExceptionHandler()
     public ResponseEntity<String> notFound(Exception e) 
     {
-        String reason = String.format("\"reason\": \"%s\" " + e.toString() + "\n" + e.fillInStackTrace(), e.getMessage());
+    	StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+        String reason = String.format("\"reason\": \"%s\" " + e.toString() + "\n", e.getMessage());
+        for(StackTraceElement te : ste)
+        {
+        	reason += te + "\n";
+        }
         return new ResponseEntity<String>(reason, HttpStatus.NOT_FOUND);
-    }
+    }*/
 }
