@@ -1,5 +1,6 @@
 package com.teamsierra.csc191.api.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,8 +25,8 @@ public class User {
     private String avatarURL;
     private String phone;
     private boolean active;
-    private GenericModel.UserType type;
-
+    
+    @JsonIgnore
     public String getId() {
         return id;
     }
@@ -33,7 +34,8 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
-
+    
+    @JsonIgnore
     public String getOauthId() {
         return oauthId;
     }
@@ -73,7 +75,8 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -82,6 +85,7 @@ public class User {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getToken() {
         return token;
     }
@@ -128,15 +132,5 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", active='" + active + '\'' +
                 '}';
-    }
-
-    public GenericModel.UserType getType()
-    {
-        return type;
-    }
-
-    public void setType(GenericModel.UserType type)
-    {
-        this.type = type;
     }
 }
