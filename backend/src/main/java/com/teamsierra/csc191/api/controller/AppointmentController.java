@@ -201,7 +201,7 @@ public class AppointmentController extends GenericController
     {
         this.setRequestControllerState(request);
         User client, stylist;
-        Appointment findAppointment = new Appointment();
+        Appointment targetAppointment = new Appointment();
         List<Appointment> appointments;
 
         StringBuilder errors = new StringBuilder("");
@@ -281,11 +281,12 @@ public class AppointmentController extends GenericController
         }
 
         // Validate requested appointment dates
-        findAppointment.setStartTime(requestData.getStartTime());
-        findAppointment.setEndTime(requestData.getEndTime());
-        findAppointment.setStylistID(requestData.getStylistID());
-        findAppointment.setClientID(requestData.getClientID());
-        appointments = appointmentRepository.findByCriteria(findAppointment);
+        // These 4 properties define an appointment, other properties are for description and shouldn't be used
+        targetAppointment.setStartTime(requestData.getStartTime());
+        targetAppointment.setEndTime(requestData.getEndTime());
+        targetAppointment.setStylistID(requestData.getStylistID());
+        targetAppointment.setClientID(requestData.getClientID());
+        appointments = appointmentRepository.findByCriteria(targetAppointment);
         for (Appointment a: appointments)
         {
             switch (a.getAppointmentStatus())
@@ -334,14 +335,12 @@ public class AppointmentController extends GenericController
                 if (requestData.getAppointmentStatus() != null &&
                     requestData.getAppointmentStatus() != GenericModel.AppointmentStatus.CANCELED)
                 {
-                    throw new Exception("Clients can only change the requestData status to canceled.");
+                    throw new Exception("Clients can only change the appointment status to canceled.");
                 }
-                requestData.setClientID(id);
                 targetAppointment.setClientID(id);
                 break;
 
             case STYLIST:
-                requestData.setStylistID(id);
                 targetAppointment.setStylistID(id);
                 break;
 
@@ -355,11 +354,11 @@ public class AppointmentController extends GenericController
         // Notify caller of update constraints
         if (requestData.getStartTime() != null || requestData.getEndTime() != null)
         {
-            throw new Exception("Start and end times cannot be changed. Please cancel current requestData and make a new one");
+            throw new Exception("Start and end times cannot be changed. Cancel current appointment and make a new one");
         }
         if (requestData.getStylistID() != null || requestData.getClientID() != null)
         {
-            throw new Exception("Client and Stylists cannot be changed.");
+            throw new Exception("Assigned client or stylist cannot be changed.");
         }
 
         // Attempt to find a single appointment with supplied id, constrained by caller authType
@@ -372,17 +371,27 @@ public class AppointmentController extends GenericController
         targetAppointment = appointments.get(0);
 
         // Appointment is found, check if caller is authorized to modify it
-        GenericModel.AppointmentStatus status = targetAppointment.getAppointmentStatus();
-        if (this.authType == GenericModel.UserType.CLIENT &&
-            status != GenericModel.AppointmentStatus.APPROVED &&
-            status != GenericModel.AppointmentStatus.NEW)
+        switch (targetAppointment.getAppointmentStatus())
         {
-            throw new Exception("Client cannot update an requestData if it's not NEW or APPROVED");
-        }
-        if (this.authType == GenericModel.UserType.STYLIST &&
-            status == GenericModel.AppointmentStatus.COMPLETED)
-        {
-            throw new Exception("Stylist cannot update COMPLETED appointments");
+            case NEW:
+                break;
+
+            case APPROVED:
+                break;
+
+            case COMPLETED:
+                if (this.authType == GenericModel.UserType.STYLIST)
+                {
+                    throw new Exception("Stylist cannot update COMPLETED appointments");
+                }
+                break;
+
+            default:
+                // Restrict client initiated updates for other appointment statuses
+                if (this.authType == GenericModel.UserType.CLIENT)
+                {
+                    throw new Exception("Client cannot update an appointment if it's not NEW or APPROVED");
+                }
         }
 
         // Update target appointment with parameters supplied by requestData

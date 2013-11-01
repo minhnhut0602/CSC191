@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 /**
  * User: scott
@@ -61,13 +60,9 @@ public class AppointmentRepository {
     //  | $$        | $$  | $$\  $$$| $$  | $$
     //  | $$       /$$$$$$| $$ \  $$| $$$$$$$/
     //  |__/      |______/|__/  \__/|_______/
-    public Appointment findByID(String appointmentID)
-    {
-        L.debug("Finding an appointment by _id:"+ appointmentID);
-        return mongoTemplate.findOne(query(where("_id").is(appointmentID)), Appointment.class);
-    }
-
     /**
+     * Author: Alex Chernyak
+     * Date: 10/31/2013
      * Find all appointments that match search criteria
      * by build a filter query
      * @param appointment
@@ -101,7 +96,7 @@ public class AppointmentRepository {
         // Get appointments in the give time range
         if (startTime != null & endTime != null)
         {
-            // This basically calculates collisions
+            // This basically calculates collisions for a give time range
             Criteria timeRanges = new Criteria().orOperator(
                 where("startTime").gte(startTime).lte(endTime),
                 where("endTime").gte(startTime).lte(endTime),
@@ -119,12 +114,6 @@ public class AppointmentRepository {
         }
 
         return mongoTemplate.find(query, Appointment.class);
-    }
-
-
-    public List<Appointment> findAll()
-    {
-        return mongoTemplate.findAll(Appointment.class);
     }
 
 
