@@ -1,5 +1,6 @@
 package com.teamsierra.csc191.api.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,7 +25,8 @@ public class User {
     private String avatarURL;
     private String phone;
     private boolean active;
-
+    
+    @JsonIgnore
     public String getId() {
         return id;
     }
@@ -32,7 +34,8 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
-
+    
+    @JsonIgnore
     public String getOauthId() {
         return oauthId;
     }
@@ -72,7 +75,8 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -81,6 +85,7 @@ public class User {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getToken() {
         return token;
     }
