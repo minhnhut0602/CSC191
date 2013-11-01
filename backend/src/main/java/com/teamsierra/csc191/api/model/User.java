@@ -24,6 +24,7 @@ public class User {
     private String avatarURL;
     private String phone;
     private boolean active;
+    private GenericModel.UserType type;
 
     public String getId() {
         return id;
@@ -127,5 +128,15 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", active='" + active + '\'' +
                 '}';
+    }
+
+    public GenericModel.UserType getType()
+    {
+        return type;
+    }
+
+    public void setType(GenericModel.UserType type)
+    {
+        this.type = type;
     }
 }

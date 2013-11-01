@@ -8,6 +8,10 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -200,4 +204,15 @@ public class AuthInterceptor implements HandlerInterceptor{
                                 HttpServletResponse response,
                                 Object handler,
                                 Exception e) throws Exception {}
+
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public HashMap<String, String> handleException(Exception e)
+    {
+        HashMap<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return error;
+    }
 }
