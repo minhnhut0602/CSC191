@@ -9,10 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 
 /**
@@ -35,15 +34,17 @@ public abstract class GenericController
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public ModelAndView handleException(Exception e)
+    public HashMap<String, String> handleException(Exception e)
     {
-        MappingJacksonJsonView jsonView = new MappingJacksonJsonView();
-        ModelAndView reason = new ModelAndView(jsonView);
-        reason.addObject("message", e.getMessage());
-        reason.addObject("cause", e.getCause().toString());
-        return reason;
+        HashMap<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return error;
     }
 
+    /**
+     * Set appropriate request attributes to be used in controller methods
+     * @param request
+     */
     protected void setRequestControllerState(HttpServletRequest request)
     {
         this.authToken = request.getAttribute("authToken").toString();

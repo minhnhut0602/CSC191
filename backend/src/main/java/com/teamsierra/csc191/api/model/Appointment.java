@@ -1,6 +1,7 @@
 package com.teamsierra.csc191.api.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -27,6 +28,7 @@ public class Appointment extends GenericModel
         return clientID;
     }
 
+    @JsonProperty(value = "clientID")
     public void setClientID(String clientID) {
         this.clientID = clientID;
     }
@@ -36,6 +38,7 @@ public class Appointment extends GenericModel
         return stylistID;
     }
 
+    @JsonProperty(value = "stylistID")
     public void setStylistID(String stylistID) {
         this.stylistID = stylistID;
     }

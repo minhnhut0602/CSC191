@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 /**
  * User: scott
@@ -60,13 +60,9 @@ public class AppointmentRepository {
     //  | $$        | $$  | $$\  $$$| $$  | $$
     //  | $$       /$$$$$$| $$ \  $$| $$$$$$$/
     //  |__/      |______/|__/  \__/|_______/
-    public Appointment findByID(String appointmentID)
-    {
-        L.debug("Finding an appointment by _id:"+ appointmentID);
-        return mongoTemplate.findOne(query(where("_id").is(appointmentID)), Appointment.class);
-    }
-
     /**
+     * Author: Alex Chernyak
+     * Date: 10/31/2013
      * Find all appointments that match search criteria
      * by build a filter query
      * @param appointment
@@ -82,8 +78,8 @@ public class AppointmentRepository {
         String stylistID = appointment.getStylistID();
         String clientID = appointment.getClientID();
         Appointment.AppointmentStatus appointmentStatus = appointment.getAppointmentStatus();
-        Date startDate = appointment.getStartTime();
-        Date endDate = appointment.getEndTime();
+        Date startTime = appointment.getStartTime();
+        Date endTime = appointment.getEndTime();
 
         if (appointmentId != null && !appointmentId.isEmpty())
             query.addCriteria(where("_id").is(appointmentId));
@@ -98,26 +94,26 @@ public class AppointmentRepository {
             query.addCriteria(where("appointmentStatus").is(appointmentStatus));
 
         // Get appointments in the give time range
-        if (startDate != null & endDate != null)
+        if (startTime != null & endTime != null)
         {
-            query.addCriteria(where("starTime").lt(endDate).andOperator(where("startTime").gt(startDate)));
-            query.addCriteria(where("endDate").gt(startDate).andOperator(where("endDate").lt(endDate)));
+            // This basically calculates collisions for a give time range
+            Criteria timeRanges = new Criteria().orOperator(
+                where("startTime").gte(startTime).lte(endTime),
+                where("endTime").gte(startTime).lte(endTime),
+                where("startTime").lte(startTime).and("endTime").gte(endTime));
+
+            query.addCriteria(timeRanges);
         }
         else
         {
-            if (startDate != null)
-                query.addCriteria(where("startTime").gte(startDate));
+            if (startTime != null)
+                query.addCriteria(where("startTime").gte(startTime));
 
-            if (endDate != null)
-                query.addCriteria(where("endTime").lte(endDate));
+            if (endTime != null)
+                query.addCriteria(where("endTime").lte(endTime));
         }
 
         return mongoTemplate.find(query, Appointment.class);
-    }
-
-    public List<Appointment> findAll()
-    {
-        return mongoTemplate.findAll(Appointment.class);
     }
 
 
