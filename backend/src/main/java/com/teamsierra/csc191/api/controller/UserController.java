@@ -59,14 +59,8 @@ public class UserController{
     	}
     	catch(Exception e)
     	{
-    		String s = "";
-    		Set<String> set= headers.keySet();
-    		for(String string : set)
-    		{
-    			s += string + "\n";
-    		}
     		throw new GenericUserException("Unable to resolve authType header to type int. "
-	    			+ "Exception generated in call to getUsers().\n" + s, HttpStatus.BAD_REQUEST);
+	    			+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
     	}
     	
 		switch(authType)
@@ -133,35 +127,43 @@ public class UserController{
 	    	{
 	    		//TODO validate password
 	    		//TODO check on oauthID/token/active
+	    		// required fields
 	    		if(!validateGroup(user.getGroup()))
 	    		{
 	    			throw new GenericUserException("Invalid group number. Group should be between 1 and 2. "
 	    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
 	    		}
-	    		if(!validateName(user.getFirstName()))
+	    		if(user.getFirstName() == null || !validateName(user.getFirstName()))
 	    		{
 	    			throw new GenericUserException("Invalid first name. Names should consist of only unicode letters. "
 	    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
 	    		}
-	    		if(!validateName(user.getLastName()))
+	    		if(user.getLastName() == null || !validateName(user.getLastName()))
 	    		{
 	    			throw new GenericUserException("Invalid last name. Names should consist of only unicode letters. "
 	    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
 	    		}
-	    		if(!validateEmail(user.getEmail()))
+	    		if(user.getEmail() == null || !validateEmail(user.getEmail()))
 	    		{
 	    			throw new GenericUserException("Invalid email. "
 	    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
 	    		}
-	    		if(!validateAvatarURL(user.getAvatarURL()))
+	    		//optional fields
+	    		if(user.getAvatarURL() != null)
 	    		{
-	    			throw new GenericUserException("Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif. "
-	    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
+		    		if(!validateAvatarURL(user.getAvatarURL()))
+		    		{
+		    			throw new GenericUserException("Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif. "
+		    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
+		    		}
 	    		}
-	    		if(!validatePhoneNumber(user.getPhone()))
+	    		if(user.getPhone() != null)
 	    		{
-	    			throw new GenericUserException("Invalid phone number. The phone number should consist of 10 digits. "
-	    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
+		    		if(!validatePhoneNumber(user.getPhone()))
+		    		{
+		    			throw new GenericUserException("Invalid phone number. The phone number should consist of 10 digits. "
+		    					+ "Exception generated in call to addUser().", HttpStatus.BAD_REQUEST);
+		    		}
 	    		}
 	    		userRepository.insert(user);
 	    		Resource<User> resource = ResourceHandler.createResource(user);
@@ -295,8 +297,7 @@ public class UserController{
 		    						+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 		    			}
 	    				
-	    				//TODO client un-editable fields
-	    				//TODO ask about fields clients can edit
+	    				//TODO determine editable fields for client
 	    				user.setOauthId(curUser.getOauthId());
 	    				user.setGroup(curUser.getGroup());
 	    				user.setFirstName(curUser.getFirstName());
@@ -321,32 +322,35 @@ public class UserController{
 		    						+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 		    			}
 	    				
-	    				//TODO ask about password
+	    				//TODO ask about password changes
 	    				user.setOauthId(curUser.getOauthId());
 	    				user.setGroup(curUser.getGroup());
 	    				user.setToken(curUser.getToken());
 	    				user.setActive(curUser.isActive());
 	    				
-	    				if(!validateName(user.getFirstName()))
+	    				if(user.getFirstName() == null || !validateName(user.getFirstName()))
 	    				{
 	    					throw new GenericUserException("Invalid first name. Names should consist of only unicode letters. "
 	    	    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 	    				}
-	    				if(!validateName(user.getLastName()))
+	    				if(user.getLastName() == null || !validateName(user.getLastName()))
 	    				{
 	    					throw new GenericUserException("Invalid last name. Names should consist of only unicode letters. "
 	    	    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 	    				}
-	    				if(!validateEmail(user.getEmail()))
+	    				if(user.getEmail() == null || !validateEmail(user.getEmail()))
 	    				{
 	    					throw new GenericUserException("Invalid email. "
 	    	    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 	    				}
-	    				if(!validateAvatarURL(user.getAvatarURL()))
-			    		{
-			    			throw new GenericUserException("Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif. "
-			    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
-			    		}
+	    				if(user.getAvatarURL() != null)
+	    				{
+		    				if(!validateAvatarURL(user.getAvatarURL()))
+				    		{
+				    				throw new GenericUserException("Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif. "
+				    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+				    		}	
+	    				}
 	    				break;
 	    		case 2: curUser = userRepository.findById(userID);
 	    		
@@ -355,17 +359,17 @@ public class UserController{
 						
 						if(curUser.getGroup() != 0)
 						{
-							if(!validateName(user.getFirstName()))
+							if(user.getFirstName() == null || !validateName(user.getFirstName()))
 				    		{
 				    			throw new GenericUserException("Invalid first name. Names should consist of only unicode letters. "
 				    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 				    		}
-				    		if(!validateName(user.getLastName()))
+				    		if(user.getLastName() == null || !validateName(user.getLastName()))
 				    		{
 				    			throw new GenericUserException("Invalid last name. Names should consist of only unicode letters. "
 				    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 				    		}
-				    		if(!validateEmail(user.getEmail()))
+				    		if(user.getEmail() == null || !validateEmail(user.getEmail()))
 				    		{
 				    			throw new GenericUserException("Invalid email. "
 				    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
@@ -375,10 +379,13 @@ public class UserController{
 				    			throw new GenericUserException("Invalid group number. Group should be between 1 and 2. "
 				    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
 				    		}
-				    		if(!validateAvatarURL(user.getAvatarURL()))
+				    		if(user.getAvatarURL() != null)
 				    		{
-				    			throw new GenericUserException("Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif. "
-				    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+					    		if(!validateAvatarURL(user.getAvatarURL()))
+					    		{
+					    			throw new GenericUserException("Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif. "
+					    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+					    		}
 				    		}
 						}
 						else
@@ -398,10 +405,13 @@ public class UserController{
     		}
     		
     		//TODO validate all other fields
-    		if(!validatePhoneNumber(user.getPhone()))
+    		if(user.getPhone() != null)
     		{
-    			throw new GenericUserException("Invalid phone number. The phone number should consist of 10 digits. "
-    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+	    		if(!validatePhoneNumber(user.getPhone()))
+	    		{
+	    			throw new GenericUserException("Invalid phone number. The phone number should consist of 10 digits. "
+	    					+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+	    		}
     		}
     		userRepository.save(user);
         	return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(user), HttpStatus.ACCEPTED);
