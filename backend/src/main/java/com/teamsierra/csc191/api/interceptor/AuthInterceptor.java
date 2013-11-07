@@ -57,14 +57,12 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
-        // TODO remove?
-        Boolean isDebug = !request.getHeader("debug").isEmpty();
-        if (isDebug)
+        // TODO remove from production
+        if (!request.getHeader("debug").isEmpty())
         {
-            request.setAttribute("authToken", "token");
+            request.setAttribute("authToken", request.getHeader("authToken"));
             request.setAttribute("id", request.getHeader("id"));
             request.setAttribute("authType", request.getHeader("authType"));
-
             return true;
         }
 

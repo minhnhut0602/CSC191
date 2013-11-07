@@ -1,14 +1,16 @@
 package com.teamsierra.csc191.api.controller;
 
+import com.teamsierra.csc191.api.exception.GenericUserException;
+import com.teamsierra.csc191.api.exception.UserAlreadyExistsException;
 import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -31,15 +33,28 @@ public abstract class GenericController
     @Autowired
     protected UserRepository userRepository;
 
-    @ExceptionHandler(IndexOutOfBoundsException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
-    public HashMap<String, String> handleException(Exception e)
+    public ResponseEntity<HashMap<String, String>> handleException(Exception e)
     {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         HashMap<String, String> error = new HashMap<>();
-        error.put("details",e.toString());
-        error.put("error", e.getMessage());
-        return error;
+
+        if (e instanceof GenericUserException)
+        {
+            // do something
+        }
+        else if (e instanceof UserAlreadyExistsException)
+        {
+            // do something
+        }
+        else
+        {
+            // Generic error
+            error.put("error", e.getMessage());
+        }
+
+        return new ResponseEntity<>(error, status);
     }
 
 
@@ -50,13 +65,9 @@ public abstract class GenericController
      */
     protected void setRequestControllerState(HttpServletRequest request) throws Exception
     {
-        Object authToken = null;
-        Object id = null;
-        Object authType = null;
-
-        authToken = request.getAttribute("authToken").toString();
-        id = request.getAttribute("id");
-        authType = request.getAttribute("authType");
+        Object authToken = request.getAttribute("authToken");
+        Object id = request.getAttribute("id");
+        Object authType = request.getAttribute("authType");
 
         if (authToken == null || authToken.toString().isEmpty())
             throw new Exception("authToken is missing from the request");

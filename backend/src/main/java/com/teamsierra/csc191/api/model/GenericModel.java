@@ -13,8 +13,8 @@ import org.springframework.hateoas.Identifiable;
  */
 public abstract class GenericModel implements Identifiable<String>
 {
-    public enum AppointmentStatus {NEW, CANCELED, APPROVED, REJECTED, MISSED, COMPLETED};
-    public enum UserType {CLIENT, STYLIST, ADMIN};
+    public static enum AppointmentStatus {NEW, CANCELED, APPROVED, REJECTED, MISSED, COMPLETED};
+    public static enum UserType {CLIENT, STYLIST, ADMIN};
 
     @Id
     private String id;
