@@ -14,19 +14,30 @@ public class Availability implements Collection<DateRange>
 		availability = new ArrayList<DateRange>();
 	}
 	
+	/**
+	 * Convenience method which creates a {@link DateRange} from the two
+	 * params and then calls {@link #add(DateRange)}. 
+	 * 
+	 * @param startDate see {@link DateRange}.
+	 * @param endDate see {@link DateRange}.
+	 * @return see {@link #add(DateRange)}.
+	 */
 	public boolean addRange(Date startDate, Date endDate)
 	{
 		return add(new DateRange(startDate, endDate));
 	}
 	
+	/**
+	 * Convenience method which creates a {@link DateRange} from the two
+	 * params and then calls {@link #remove(Object)}.
+	 * 
+	 * @param startDate see {@link DateRange}.
+	 * @param endDate see {@link DateRange}.
+	 * @return see {@link #remove(Object)}.
+	 */
 	public boolean removeRange(Date startDate, Date endDate)
 	{
 		return remove(new DateRange(startDate, endDate));
-	}
-	
-	public boolean remove(DateRange dateRange)
-	{
-		return remove(dateRange);
 	}
 	
 	@Override
@@ -58,6 +69,14 @@ public class Availability implements Collection<DateRange>
 		return string;
 	}
 
+	/**
+	 * Adds a {@link DateRange} to the collection. does not work in the
+	 * traditional manor that a collection add method does. This method
+	 * will take into account the DateRanges already in the collection
+	 * and merge the new addition with any DateRanges that it overlaps.
+	 * 
+	 * Should always return true due to the way this collection works.
+	 */
 	@Override
 	public boolean add(DateRange dateRange)
 	{
@@ -97,7 +116,12 @@ public class Availability implements Collection<DateRange>
 		
 		return true;
 	}
-
+	
+	/**
+	 * Iterates through the collection and calls {@link #add(DateRange)}.
+	 * 
+	 * Should always return true due to the way this colleciton works.
+	 */
 	@Override
 	public boolean addAll(Collection<? extends DateRange> c) 
 	{
@@ -136,6 +160,19 @@ public class Availability implements Collection<DateRange>
 	/**
 	 * ONLY works if param is a {@link DateRange}. Will return false
 	 * if any other object is passed in.
+	 * 
+	 * This method does not work in the traditional collection remove sense.
+	 * It will remove the DateRange from the collection in such a way that
+	 * the remaining collection is the original DateRanges less the DateRange
+	 * passed in.
+	 * 
+	 * e.g. given that there is a DateRange with startDate at 1am and an endDate
+	 * on the same day at 10am, removing a DateRange from 4am to 7am on that
+	 * same day would result in the collection containing a DateRange from 
+	 * 1am to 4am, and another DateRange from 7am to 10am.
+	 * 
+	 * @return returns false if the object passes in is not an instance of
+	 * {@link DateRange}, true otherwise. 
 	 * 
 	 */
 	@Override
@@ -201,7 +238,13 @@ public class Availability implements Collection<DateRange>
 		
 		return true;
 	}
-
+	
+	/**
+	 * Iterates through the collection calling {@link #remove(Object)}.
+	 * 
+	 * Should always return true due to the way remove works in this
+	 * collection.
+	 */
 	@Override
 	public boolean removeAll(Collection<?> c) 
 	{
@@ -214,7 +257,7 @@ public class Availability implements Collection<DateRange>
 	}
 	
 	/**
-	 * NOT IMPLEMENTED.
+	 * NOT IMPLEMENTED. Always returns false.
 	 * 
 	 */
 	@Override

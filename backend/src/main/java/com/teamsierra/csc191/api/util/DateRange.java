@@ -7,6 +7,14 @@ public class DateRange
 	private Date startDate;
 	private Date endDate;
 	
+	/**
+	 * Creates a DateRange with the given params. can throw an 
+	 * {@link IllegalArgumentException} if the start date is after the
+	 * end date.
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 */
 	public DateRange(Date startDate, Date endDate)
 	{
 		this.startDate = startDate;
@@ -17,7 +25,14 @@ public class DateRange
 	{
 		return startDate;
 	}
-
+	
+	/**
+	 * Sets the start date of the DateRange. Can throw an 
+	 * {@link IllegalArgumentException} if the start date is after
+	 * the current end date.
+	 * 
+	 * @param startDate
+	 */
 	public void setStartDate(Date startDate) 
 	{
 		if(startDate.compareTo(endDate) <= 0)
@@ -34,7 +49,14 @@ public class DateRange
 	{
 		return endDate;
 	}
-
+	
+	/**
+	 * Sets the end date of the DateRange. can throw an 
+	 * {@link IllegalArgumentException} if the end date is before the
+	 * current start date.
+	 * 
+	 * @param endDate
+	 */
 	public void setEndDate(Date endDate)
 	{
 		if(endDate.compareTo(startDate) >= 0)
@@ -47,6 +69,14 @@ public class DateRange
 		}
 	}
 	
+	/**
+	 * Sets the range for the DateRange. can throw an 
+	 * {@link IllegalArgumentException} if the start date is not
+	 * before the end date.
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 */
 	public void setRange(Date startDate, Date endDate)
 	{
 		if(startDate.compareTo(endDate) <= 0)
@@ -60,6 +90,13 @@ public class DateRange
 		}
 	}
 	
+	/**
+	 * Returns a new DateRange which is the concatenation of this DateRange with
+	 * the param DateRange and any time that might span between them.
+	 * 
+	 * @param dateRange
+	 * @return
+	 */
 	public DateRange mergeDateRange(DateRange dateRange)
 	{
 		Date drStart = dateRange.getStartDate();
@@ -78,6 +115,12 @@ public class DateRange
 		return new DateRange(drStart, drEnd);
 	}
 	
+	/**
+	 * Returns true if this DateRange overlaps with the param DateRange.
+	 * 
+	 * @param dateRange
+	 * @return
+	 */
 	public boolean isOverlapping(DateRange dateRange)
 	{
 		Date drStart = dateRange.getStartDate();
