@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -44,9 +45,23 @@ public class StylistAvailabilityRepository
    //    | $$  | $$\  $$$ /$$  \ $$| $$      | $$  \ $$   | $$
    //   /$$$$$$| $$ \  $$|  $$$$$$/| $$$$$$$$| $$  | $$   | $$
    //  |______/|__/  \__/ \______/ |________/|__/  |__/   |__/
-   public void insert(StylistAvailability stylistAvailability) {
+   public void insert(StylistAvailability stylistAvailability) 
+   {
        L.info("Inserting new StylistAvailability: "+ stylistAvailability);
-       mongoTemplate.insert(stylistAvailability);
+       
+       StylistAvailability sa = findByStylistID(stylistAvailability.getStylistID());
+       if(sa != null)
+       {
+    	   Availability avail = sa.getAvailability();
+    	   
+    	   avail.addAll(stylistAvailability.getAvailability());
+    	   
+    	   this.save(sa);
+       }
+       else
+       {
+    	   mongoTemplate.insert(stylistAvailability);
+       }
    }
 
 
@@ -62,10 +77,10 @@ public class StylistAvailabilityRepository
        L.info("Finding a StylistAvailabilty by id: "+ id);
        return mongoTemplate.findOne(query(where("_id").is(id)), StylistAvailability.class);
    }
-   public List<StylistAvailability> findByStylistID(String stylistID)
+   public StylistAvailability findByStylistID(String stylistID)
    {
 	   L.info("Finding a StylistAvailabilty by stylistID: "+ stylistID);
-       return mongoTemplate.find(query(where("stylistID").is(stylistID)), StylistAvailability.class);
+       return mongoTemplate.findOne(query(where("stylistID").is(stylistID)), StylistAvailability.class);
    }
    public List<StylistAvailability> findAll()
    {
@@ -164,11 +179,11 @@ public class StylistAvailabilityRepository
 	   
 	   Availability newAvail = new Availability();
 	   
-	   for(DateRange dr : sa.getAvailability().getAvailability())
+	   for(DateRange dr : sa.getAvailability())
 	   {
 		   if(dr.isOverlapping(dateRange))
 		   {
-			   newAvail.addRange(dr);
+			   newAvail.add(dr);
 		   }
 	   }
 	   
@@ -198,11 +213,11 @@ public class StylistAvailabilityRepository
 	   {
 		   newAvail = new Availability();
 		   
-		   for(DateRange dr : sa.getAvailability().getAvailability())
+		   for(DateRange dr : sa.getAvailability())
 		   {
 			   if(dr.isOverlapping(dateRange))
 			   {
-				   newAvail.addRange(dr);
+				   newAvail.add(dr);
 			   }
 		   }
 		   

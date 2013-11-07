@@ -5,13 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-public class Availability 
-{
-	public enum Day
-	{
-		SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
-	}
-	
+public class Availability implements Collection<DateRange>
+{	
 	private Collection<DateRange> availability;
 	
 	public Availability()
@@ -19,13 +14,53 @@ public class Availability
 		availability = new ArrayList<DateRange>();
 	}
 	
-	public void addRange(Date startDate, Date endDate)
+	public boolean addRange(Date startDate, Date endDate)
 	{
-		addRange(new DateRange(startDate, endDate));
+		return add(new DateRange(startDate, endDate));
 	}
 	
-	public void addRange(DateRange dateRange)
+	public boolean removeRange(Date startDate, Date endDate)
+	{
+		return remove(new DateRange(startDate, endDate));
+	}
+	
+	public boolean remove(DateRange dateRange)
+	{
+		return remove(dateRange);
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return availability.isEmpty();
+	}
+	
+	@Override
+	public String toString()
 	{		
+		String string = "{";
+		Iterator<DateRange> iterator = availability.iterator();
+		
+		if(iterator.hasNext())
+		{
+			string += "availability[" + 0 + "]='" + iterator.next() + '\'';
+			
+			int i = 1;
+			while(iterator.hasNext())
+			{
+				string += ", availability[" + i + "]='" + iterator.next() + '\'';
+				i++;
+			}
+		}
+		
+		string += "}";
+		
+		return string;
+	}
+
+	@Override
+	public boolean add(DateRange dateRange)
+	{
 		if(availability.isEmpty())
 		{
 			availability.add(dateRange);
@@ -59,10 +94,64 @@ public class Availability
 				availability.add(overlapDate);
 			}
 		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends DateRange> c) 
+	{
+		for(DateRange dr : c)
+		{
+			this.add(dr);
+		}
+		
+		return true;
+	}
+
+	@Override
+	public void clear() 
+	{
+		availability = new ArrayList<DateRange>();
+	}
+
+	@Override
+	public boolean contains(Object o) 
+	{		
+		return availability.contains(o);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) 
+	{
+		return availability.containsAll(c);
+	}
+
+	@Override
+	public Iterator<DateRange> iterator()
+	{
+		return availability.iterator();
 	}
 	
-	public void removeRange(DateRange dateRange)
+	/**
+	 * ONLY works if param is a {@link DateRange}. Will return false
+	 * if any other object is passed in.
+	 * 
+	 */
+	@Override
+	public boolean remove(Object o) 
 	{
+		DateRange dateRange;
+
+		if(o instanceof DateRange)
+		{
+			dateRange = (DateRange) o; 
+		}
+		else
+		{
+			return false;
+		}
+		
 		if(!availability.isEmpty())
 		{
 			ArrayList<DateRange> removeList = new ArrayList<DateRange>();
@@ -109,38 +198,46 @@ public class Availability
 				availability.remove(dr);
 			}
 		}
-	}
-	
-	public Collection<DateRange> getAvailability()
-	{
-		return availability;
-	}
-	
-	public boolean isEmpty()
-	{
-		return availability.isEmpty();
-	}
-	
-	@Override
-	public String toString()
-	{		
-		String string = "{";
-		Iterator<DateRange> iterator = availability.iterator();
 		
-		if(iterator.hasNext())
+		return true;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) 
+	{
+		for(Object o : c)
 		{
-			string += "availability[" + 0 + "]='" + iterator.next() + '\'';
-			
-			int i = 1;
-			while(iterator.hasNext())
-			{
-				string += ", availability[" + i + "]='" + iterator.next() + '\'';
-				i++;
-			}
+			remove(o);
 		}
 		
-		string += "}";
-		
-		return string;
+		return true;
+	}
+	
+	/**
+	 * NOT IMPLEMENTED.
+	 * 
+	 */
+	@Override
+	public boolean retainAll(Collection<?> c)
+	{
+		return false;
+	}
+
+	@Override
+	public int size() 
+	{
+		return availability.size();
+	}
+
+	@Override
+	public Object[] toArray() 
+	{
+		return availability.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a) 
+	{
+		return availability.toArray(a);
 	}
 }
