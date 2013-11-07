@@ -2,6 +2,7 @@ package com.teamsierra.csc191.api.repository;
 
 import java.util.List;
 
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.User;
 
 import org.apache.commons.logging.Log;
@@ -82,7 +83,7 @@ public class UserRepository {
     	L.info("Finding all users: ");
     	return mongoTemplate.findAll(User.class);
     }
-    public List<User> findAllByGroup(int group){
+    public List<User> findAllByGroup(UserType group){
     	L.info("Finding all users by group: " + group);
     	return mongoTemplate.find(query(where("group").is(group)), User.class);
     }

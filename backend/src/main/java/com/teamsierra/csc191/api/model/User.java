@@ -1,7 +1,7 @@
 package com.teamsierra.csc191.api.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.springframework.data.annotation.Id;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -11,12 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 
 @Document(collection = "users")
-public class User {
-
-    @Id
-    private String id;
+public class User extends GenericModel 
+{
     private String oauthId;
-    private int group;
+    private UserType group;
     private String firstName;
     private String lastName;
     private String email;
@@ -27,32 +25,24 @@ public class User {
     private boolean active;
     
     @JsonIgnore
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    @JsonIgnore
     public String getOauthId() {
         return oauthId;
     }
-
+    
+    @JsonProperty(value = "oauthId")
     public void setOauthId(String oauthId) {
         this.oauthId = oauthId;
     }
 
-    public int getGroup() {
-        return group;
-    }
+    public UserType getGroup() {
+		return group;
+	}
 
-    public void setGroup(int group) {
-        this.group = group;
-    }
+	public void setGroup(UserType group) {
+		this.group = group;
+	}
 
-    public String getFirstName() {
+	public String getFirstName() {
         return firstName;
     }
 
@@ -80,7 +70,8 @@ public class User {
     public String getPassword() {
         return password;
     }
-
+    
+    @JsonProperty(value = "password")
     public void setPassword(String password) {
         this.password = password;
     }
@@ -89,7 +80,8 @@ public class User {
     public String getToken() {
         return token;
     }
-
+    
+    @JsonProperty(value = "token")
     public void setToken(String token) {
         this.token = token;
     }
@@ -121,7 +113,7 @@ public class User {
 	@Override
     public String toString() {
         return "{" +
-                "id='" + id + '\'' +
+                "id='" + this.getId() + '\'' +
                 ", group='" + group + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

@@ -1,6 +1,7 @@
 package com.teamsierra.csc191.api.controller;
 
 import com.teamsierra.csc191.api.exception.GenericUserException;
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
@@ -18,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: scott
@@ -29,16 +29,12 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/users")
-public class UserController{
-
+public class UserController extends GenericController
+{
     private static final Log L = LogFactory.getLog(UserController.class);
 
     @Autowired
-    private UserRepository userRepository;
-    
-    //headers
-    private static final String AUTH_TYPE = "authtype";
-    private static final String AUTH_TOKEN = "authtoken"; 
+    private UserRepository userRepository; 
 
     /**
      * A method to retrieve all of the users that the current user has access to.
@@ -48,44 +44,36 @@ public class UserController{
      * @throws GenericUserException see message for why exception was thrown
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Resource<User>>> getUsers(@RequestHeader Map<String, String> headers) throws GenericUserException
+    public ResponseEntity<List<Resource<User>>> getUsers(HttpServletRequest request) throws GenericUserException
     {
-    	List<User> users;
-    	int authType;
+    	L.info("GET called at path /.");
+    	this.setRequestControllerState(request);
+    	List<User> users = null;
     	
     	try
     	{
-    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
+			switch(authType)
+			{
+	    		case CLIENT: users = new ArrayList<User>();
+							 User user = userRepository.findByToken(authToken);
+							 if(user != null)
+							 {
+								users.add(userRepository.findByToken(authToken));
+							 }
+			    			
+			    			 break;
+	    		case STYLIST: users = userRepository.findAllActive();
+	    					  break;
+	    		case ADMIN: users = userRepository.findAll();
+	    					break;
+				default: throw new GenericUserException("Unknown authType header. "
+								+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
+			}
     	}
-    	catch(Exception e)
-    	{
-    		throw new GenericUserException("Unable to resolve authType header to type int. "
-	    			+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
-    	}
-    	
-		switch(authType)
+		catch(Exception e)
 		{
-    		case 0:	String authToken = headers.get(AUTH_TOKEN);
-					if(authToken == null)
-				    {
-				    	throw new GenericUserException("Unable to find authToken header. "
-				    			+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
-				    }
-					
-					users = new ArrayList<User>();
-					User user = userRepository.findByToken(authToken);
-					if(user != null)
-					{
-						users.add(userRepository.findByToken(authToken));
-					}
-	    			
-	    			break;
-    		case 1: users = userRepository.findAllActive();
-    				break;
-    		case 2: users = userRepository.findAll();
-    				break;
-			default: throw new GenericUserException("Unknown authType header. "
-							+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
+			throw new GenericUserException("Unknown authType header. "
+					+ "Exception generated in call to getUsers().", HttpStatus.BAD_REQUEST);
 		}
     	
     	if(users != null && !users.isEmpty())
@@ -101,29 +89,20 @@ public class UserController{
     	else
     	{
     		throw new GenericUserException("No users found in the database. "
-    				+ "Exception generated in call to getUsers()", HttpStatus.NOT_FOUND);
+    				+ "Exception generated in call to getUsers()", HttpStatus.INTERNAL_SERVER_ERROR);
     	}
     }
     
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource<User>> addUser(@RequestHeader Map<String, String> headers,
+    public ResponseEntity<Resource<User>> addUser(HttpServletRequest request,
                                         		  @RequestBody User user) throws GenericUserException 
     {
-    	int authType;
+    	L.info("POST called at path /.");
+    	this.setRequestControllerState(request);
     	
     	try
     	{
-    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
-    	}
-    	catch(Exception e)
-    	{
-    		throw new GenericUserException("Unable to resolve authType header to type int. "
-	    			+ "Exception generated in call to addUsers().", HttpStatus.BAD_REQUEST);
-    	}
-    	
-    	try
-    	{
-	    	if(authType == 2)
+	    	if(authType == UserType.ADMIN)
 	    	{
 	    		//TODO validate password
 	    		// required fields
@@ -187,47 +166,31 @@ public class UserController{
     
     @RequestMapping(value = "/{userID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<User>> getUser(@PathVariable String userID,
-    											  @RequestHeader Map<String, String> headers) throws GenericUserException
+    											  HttpServletRequest request) throws GenericUserException
     {
+    	L.info("GET called at path /{userID}.");
+    	this.setRequestControllerState(request);
     	User user;
-    	int authType;
-    	
-    	try
-    	{
-    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
-    	}
-    	catch(Exception e)
-    	{
-    		throw new GenericUserException("Unable to resolve authType header to type int. "
-	    			+ "Exception generated in call to getUser().", HttpStatus.BAD_REQUEST);
-    	}
     	
     	try
     	{
     		switch(authType)
     		{
-	    		case 0:	String authToken = headers.get(AUTH_TOKEN);
-		    			if(authToken == null)
-					    {
-					    	throw new GenericUserException("Unable to find authToken header. "
-					    			+ "Exception generated in call to getUser().", HttpStatus.BAD_REQUEST);
-					    }
-		    			
-		    			user = userRepository.findByToken(authToken);
-		    			if(!user.getId().equals(userID))
-		    			{
-		    				throw new GenericUserException("A client only has access to their own user from the repository. "
-		    						+ "Exception generated in call to getUser().", HttpStatus.FORBIDDEN);
-		    			}
-		    			break;
-	    		case 1: user = userRepository.findById(userID);
-	    				if(!user.isActive())
-	    				{
-	    					user = null;
-	    				}
-	    				break;
-	    		case 2: user = userRepository.findById(userID);
-	    				break;
+	    		case CLIENT: user = userRepository.findByToken(authToken);
+			    			 if(!user.getId().equals(userID))
+			    			 {
+			    				 throw new GenericUserException("A client only has access to their own user from the repository. "
+			    						+ "Exception generated in call to getUser().", HttpStatus.FORBIDDEN);
+			    			 }
+			    			 break;
+	    		case STYLIST: user = userRepository.findById(userID);
+		    				  if(!user.isActive())
+		    				  {
+		    					  user = null;
+		    				  }
+		    				  break;
+	    		case ADMIN: user = userRepository.findById(userID);
+	    					break;
     			default: throw new GenericUserException("Unknown authType header. "
     							+ "Exception generated in call to getUser().", HttpStatus.BAD_REQUEST);
     		}
@@ -255,69 +218,45 @@ public class UserController{
     
     @RequestMapping(value = "/{userID}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<User>> updateUser(@PathVariable String userID,
-    									   			 @RequestHeader Map<String, String> headers,
+    												 HttpServletRequest request,
     									   			 @RequestBody User user) throws GenericUserException
     {
-    	String authToken;
-    	int authType;
+    	L.info("PUT called at path /{userID}.");
+    	this.setRequestControllerState(request);
     	User curUser;
-    	
-    	try
-    	{
-    		authType = Integer.parseInt(headers.get(AUTH_TYPE));
-    	}
-    	catch(Exception e)
-    	{
-    		throw new GenericUserException("Unable to resolve authType header to type int. "
-	    			+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
-    	}
     	
     	try
     	{
     		switch(authType)
     		{
-	    		case 0:	authToken = headers.get(AUTH_TOKEN);
-		    			if(authToken == null)
-					    {
-					    	throw new GenericUserException("Unable to find authToken header. "
-					    			+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
-					    }
-		    			
-		    			curUser = userRepository.findByToken(authToken);
-	    				if(!curUser.getId().equals(userID))
-		    			{
-		    				throw new GenericUserException("A client only has access to their own user from the repository. "
-		    						+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
-		    			}
-	    				// update client specific editable fields
-	    				// currently none
-		    			break;
-	    		case 1: authToken = headers.get(AUTH_TOKEN);
-		    			if(authToken == null)
-					    {
-					    	throw new GenericUserException("Unable to find authToken header. "
-					    			+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
-					    }
-		    			
-		    			curUser = userRepository.findByToken(authToken);
-	    				if(!curUser.getId().equals(userID))
-		    			{
-		    				throw new GenericUserException("A stylist only has access to their own user from the repository. "
-		    						+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
-		    			}
-	    				// update stylist specific editable fields
-	    				updateStylist(user, curUser);
-	    				break;
-	    		case 2: curUser = userRepository.findById(userID);
+	    		case CLIENT: curUser = userRepository.findByToken(authToken);
+		    				 if(!curUser.getId().equals(userID))
+			    			 {
+		    					 throw new GenericUserException("A client only has access to their own user from the repository. "
+			    						+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+			    			 }
+		    				 // update client specific editable fields
+		    				 // currently none
+		    				 break;
+	    		case STYLIST: curUser = userRepository.findByToken(authToken);
+		    				  if(!curUser.getId().equals(userID))
+			    			  {
+		    					  throw new GenericUserException("A stylist only has access to their own user from the repository. "
+			    						+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
+			    			  }
+		    				  // update stylist specific editable fields
+		    				  updateStylist(user, curUser);
+		    				  break;
+	    		case ADMIN: curUser = userRepository.findById(userID);
 						
-						if(curUser.getGroup() != 0)
-						{
-							// currently, admin and stylist editable fields are the same
-							updateStylist(user, curUser);
-						}
-						
-						curUser.setActive(user.isActive());
-	    				break;
+							if(curUser.getGroup() != UserType.CLIENT)
+							{
+								// currently, admin and stylist editable fields are the same
+								updateStylist(user, curUser);
+							}
+							
+							curUser.setActive(user.isActive());
+		    				break;
     			default: throw new GenericUserException("Unknown authType header. "
     							+ "Exception generated in call to updateUser().", HttpStatus.BAD_REQUEST);
     		}
@@ -402,9 +341,9 @@ public class UserController{
 		}
     }
     
-    private boolean isValidGroup(int group)
+    private boolean isValidGroup(UserType group)
     {
-    	if(group > 0 && group < 3)
+    	if(group == UserType.STYLIST || group == UserType.ADMIN)
     	{
     		return true;
     	}
@@ -449,10 +388,10 @@ public class UserController{
     public ResponseEntity<String> handleGenericUserException(GenericUserException e)
     {
     	String reason = String.format("\"reason\": \"%s\"", e.getMessage());
+    	L.error("Exception thrown: ", e);
     	return new ResponseEntity<String>(reason, e.getStatus());
     }
-
-    // TODO Exception handling
+    
     /*@ExceptionHandler()
     public ResponseEntity<String> notFound(Exception e) 
     {
