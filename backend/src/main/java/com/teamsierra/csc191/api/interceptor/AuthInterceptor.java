@@ -57,6 +57,15 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
+        // TODO remove from production
+        if (!request.getHeader("debug").isEmpty())
+        {
+            request.setAttribute("authToken", request.getHeader("authToken"));
+            request.setAttribute("id", request.getHeader("id"));
+            request.setAttribute("authType", request.getHeader("authType"));
+            return true;
+        }
+
         AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
         ID = request.getHeader(p.getProperty("headers.id"));
         AUTH_TYPE = Integer.parseInt(request.getHeader(p.getProperty("headers.authType")));
@@ -212,7 +221,7 @@ public class AuthInterceptor implements HandlerInterceptor{
     public HashMap<String, String> handleException(Exception e)
     {
         HashMap<String, String> error = new HashMap<>();
-        error.put("error", e.getMessage());
+        error.put("authError", e.getMessage());
         return error;
     }
 }

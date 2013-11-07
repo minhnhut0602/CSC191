@@ -1,6 +1,5 @@
 package com.teamsierra.csc191.api.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.hateoas.Identifiable;
 
@@ -14,14 +13,13 @@ import org.springframework.hateoas.Identifiable;
  */
 public abstract class GenericModel implements Identifiable<String>
 {
-    public enum AppointmentStatus {NEW, CANCELED, APPROVED, DENIED, MISSED, COMPLETED};
-    public enum UserType {CLIENT, STYLIST, ADMIN};
+    public static enum AppointmentStatus {NEW, CANCELED, APPROVED, REJECTED, MISSED, COMPLETED};
+    public static enum UserType {CLIENT, STYLIST, ADMIN};
 
     @Id
     private String id;
 
     @Override
-    @JsonIgnore
     public String getId()
     {
         return this.id;

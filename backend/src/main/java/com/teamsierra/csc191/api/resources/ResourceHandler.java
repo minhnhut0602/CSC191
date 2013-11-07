@@ -1,8 +1,10 @@
 package com.teamsierra.csc191.api.resources;
 
 import com.teamsierra.csc191.api.controller.AppointmentController;
+import com.teamsierra.csc191.api.controller.AppointmentTypeController;
 import com.teamsierra.csc191.api.controller.UserController;
 import com.teamsierra.csc191.api.model.Appointment;
+import com.teamsierra.csc191.api.model.AppointmentType;
 import com.teamsierra.csc191.api.model.User;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceSupport;
@@ -30,6 +32,7 @@ public class ResourceHandler extends ResourceSupport
         resource.add(linkTo(AppointmentController.class).slash(appointment).withSelfRel());
         resource.add(linkTo(UserController.class).slash(appointment.getStylistID()).withRel("stylist"));
         resource.add(linkTo(UserController.class).slash(appointment.getClientID()).withRel("client"));
+        resource.add(linkTo(AppointmentType.class).slash(appointment.getAppointmentTypeID()).withRel("appointmentType"));
 
         return resource;
     }
@@ -43,8 +46,24 @@ public class ResourceHandler extends ResourceSupport
             return null;
 
         // generate links
-        //resource.add(linkTo(AppointmentController.class).slash(user).withSelfRel());
         resource.add(linkTo(UserController.class).slash(user.getId()).withSelfRel());
+
+        return resource;
+    }
+
+    public static Resource<AppointmentType> createResource(AppointmentType type)
+    {
+        Resource<AppointmentType> resource;
+        if (type != null)
+            resource = new Resource<>(type);
+        else
+            return null;
+
+        // generate links
+        for (String stylistID : type.getStylists())
+            resource.add(linkTo(UserController.class).slash(stylistID).withRel("stylist"));
+
+        resource.add(linkTo(AppointmentTypeController.class).slash(type.getId()).withSelfRel());
 
         return resource;
     }

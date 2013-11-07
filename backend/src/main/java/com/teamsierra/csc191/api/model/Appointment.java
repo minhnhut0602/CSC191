@@ -22,23 +22,21 @@ public class Appointment extends GenericModel
     private Date startTime;
     private Date endTime;
     private AppointmentStatus appointmentStatus;
+    private String appointmentType;
+    private String appointmentTypeID;
 
-    @JsonIgnore
     public String getClientID() {
         return clientID;
     }
 
-    @JsonProperty(value = "clientID")
     public void setClientID(String clientID) {
         this.clientID = clientID;
     }
 
-    @JsonIgnore
     public String getStylistID() {
         return stylistID;
     }
 
-    @JsonProperty(value = "stylistID")
     public void setStylistID(String stylistID) {
         this.stylistID = stylistID;
     }
@@ -67,4 +65,25 @@ public class Appointment extends GenericModel
         this.appointmentStatus = appointmentStatus;
     }
 
+    public String getAppointmentType()
+    {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(String appointmentType)
+    {
+        this.appointmentType = appointmentType;
+    }
+
+    @JsonIgnore
+    public String getAppointmentTypeID()
+    {
+        return appointmentTypeID;
+    }
+
+    @JsonProperty(value = "appointmentTypeID")
+    public void setAppointmentTypeID(String appointmentTypeID)
+    {
+        this.appointmentTypeID = appointmentTypeID;
+    }
 }

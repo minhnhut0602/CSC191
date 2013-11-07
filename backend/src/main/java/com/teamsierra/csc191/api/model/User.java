@@ -33,7 +33,7 @@ public class User extends GenericModel
     public void setOauthId(String oauthId) {
         this.oauthId = oauthId;
     }
-
+    
     public UserType getGroup() {
 		return group;
 	}

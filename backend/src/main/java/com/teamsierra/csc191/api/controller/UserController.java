@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -47,7 +48,15 @@ public class UserController extends GenericController
     public ResponseEntity<List<Resource<User>>> getUsers(HttpServletRequest request) throws GenericUserException
     {
     	L.info("GET called at path /.");
-    	this.setRequestControllerState(request);
+    	try
+    	{
+			this.setRequestControllerState(request);
+		} 
+    	catch (Exception e) 
+    	{
+			throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+    	
     	List<User> users = null;
     	
     	try
@@ -98,7 +107,14 @@ public class UserController extends GenericController
                                         		  @RequestBody User user) throws GenericUserException 
     {
     	L.info("POST called at path /.");
-    	this.setRequestControllerState(request);
+    	try
+    	{
+			this.setRequestControllerState(request);
+		} 
+    	catch (Exception e) 
+    	{
+			throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
     	
     	try
     	{
@@ -169,7 +185,15 @@ public class UserController extends GenericController
     											  HttpServletRequest request) throws GenericUserException
     {
     	L.info("GET called at path /{userID}.");
-    	this.setRequestControllerState(request);
+    	try
+    	{
+			this.setRequestControllerState(request);
+		} 
+    	catch (Exception e) 
+    	{
+			throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+    	
     	User user;
     	
     	try
@@ -222,7 +246,15 @@ public class UserController extends GenericController
     									   			 @RequestBody User user) throws GenericUserException
     {
     	L.info("PUT called at path /{userID}.");
-    	this.setRequestControllerState(request);
+    	try
+    	{
+			this.setRequestControllerState(request);
+		} 
+    	catch (Exception e) 
+    	{
+			throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+    	
     	User curUser;
     	
     	try
