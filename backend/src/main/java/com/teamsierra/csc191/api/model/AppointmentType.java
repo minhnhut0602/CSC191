@@ -1,5 +1,7 @@
 package com.teamsierra.csc191.api.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  * @Author: Alex Chernyak
  * @Date: 11/5/13
@@ -7,6 +9,7 @@ package com.teamsierra.csc191.api.model;
  * @Package: com.teamsierra.csc191.api.model
  * @Description: place short description here
  */
+@Document(collection = "appointmentTypes")
 public class AppointmentType extends GenericModel
 {
     private String type;
