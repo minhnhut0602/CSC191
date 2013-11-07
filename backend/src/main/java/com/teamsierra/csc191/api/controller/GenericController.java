@@ -31,25 +31,43 @@ public abstract class GenericController
     @Autowired
     protected UserRepository userRepository;
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(IndexOutOfBoundsException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public HashMap<String, String> handleException(Exception e)
     {
         HashMap<String, String> error = new HashMap<>();
+        error.put("details",e.toString());
         error.put("error", e.getMessage());
         return error;
     }
 
+
     /**
      * Set appropriate request attributes to be used in controller methods
-     * @param request
+     * @param request bla
+     * @throws Exception
      */
-    protected void setRequestControllerState(HttpServletRequest request)
+    protected void setRequestControllerState(HttpServletRequest request) throws Exception
     {
-        this.authToken = request.getAttribute("authToken").toString();
-        this.id = request.getAttribute("id").toString();
-        this.authType = GenericModel.UserType.valueOf(request.getAttribute("authType").toString());
+        Object authToken = null;
+        Object id = null;
+        Object authType = null;
+
+        authToken = request.getAttribute("authToken").toString();
+        id = request.getAttribute("id");
+        authType = request.getAttribute("authType");
+
+        if (authToken == null || authToken.toString().isEmpty())
+            throw new Exception("authToken is missing from the request");
+        if (id == null || id.toString().isEmpty())
+            throw new Exception("id is missing from the request");
+        if (authType == null || authType.toString().isEmpty())
+            throw new Exception("authType is missing from the request");
+
+        this.authToken = authToken.toString();
+        this.id = id.toString();
+        this.authType = GenericModel.UserType.valueOf(authType.toString().toUpperCase());
     }
 }
 

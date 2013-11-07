@@ -77,6 +77,7 @@ public class AppointmentRepository {
         String appointmentId = appointment.getId();
         String stylistID = appointment.getStylistID();
         String clientID = appointment.getClientID();
+        String appointmentType = appointment.getAppointmentType();
         Appointment.AppointmentStatus appointmentStatus = appointment.getAppointmentStatus();
         Date startTime = appointment.getStartTime();
         Date endTime = appointment.getEndTime();
@@ -89,6 +90,9 @@ public class AppointmentRepository {
 
         if (clientID != null && !clientID.isEmpty())
             query.addCriteria(where("clientID").is(clientID));
+
+        if (appointmentType != null)
+            query.addCriteria(where("appointmentType").is(appointmentType));
 
         if (appointmentStatus != null)
             query.addCriteria(where("appointmentStatus").is(appointmentStatus));
@@ -116,7 +120,6 @@ public class AppointmentRepository {
         return mongoTemplate.find(query, Appointment.class);
     }
 
-
     //    /$$$$$$   /$$$$$$  /$$    /$$ /$$$$$$$$
     //   /$$__  $$ /$$__  $$| $$   | $$| $$_____/
     //  | $$  \__/| $$  \ $$| $$   | $$| $$
@@ -125,8 +128,9 @@ public class AppointmentRepository {
     //   /$$  \ $$| $$  | $$  \  $$$/  | $$
     //  |  $$$$$$/| $$  | $$   \  $/   | $$$$$$$$
     //   \______/ |__/  |__/    \_/    |________/
-    public void save(Appointment appointment) {
+    public Appointment save(Appointment appointment) {
         L.debug("Saving the following appointment object: " + appointment);
         mongoTemplate.save(appointment);
+        return appointment;
     }
 }

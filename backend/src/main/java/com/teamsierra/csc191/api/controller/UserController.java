@@ -4,7 +4,6 @@ import com.teamsierra.csc191.api.exception.GenericUserException;
 import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * User: scott
@@ -310,7 +308,7 @@ public class UserController{
 	    				break;
 	    		case 2: curUser = userRepository.findById(userID);
 						
-						if(curUser.getGroup() != 0)
+						if(curUser.getGroup() != "CLIENT")
 						{
 							// currently, admin and stylist editable fields are the same
 							updateStylist(user, curUser);
@@ -402,14 +400,10 @@ public class UserController{
 		}
     }
     
-    private boolean isValidGroup(int group)
+    private boolean isValidGroup(String group)
     {
-    	if(group > 0 && group < 3)
-    	{
-    		return true;
-    	}
-    	
-    	return false;
+        // TODO fix group type to usertype enum
+    	return true;
     }
     
     private boolean isValidName(String name)
