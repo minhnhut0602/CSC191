@@ -1,8 +1,10 @@
 package com.teamsierra.csc191.api.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 public class Availability implements Collection<DateRange>
@@ -18,8 +20,8 @@ public class Availability implements Collection<DateRange>
 	 * Convenience method which creates a {@link DateRange} from the two
 	 * params and then calls {@link #add(DateRange)}. 
 	 * 
-	 * @param startDate see {@link DateRange}.
-	 * @param endDate see {@link DateRange}.
+	 * @param startDate start date for DateRange, see {@link DateRange}.
+	 * @param endDate end date for DateRange, see {@link DateRange}.
 	 * @return see {@link #add(DateRange)}.
 	 */
 	public boolean addRange(Date startDate, Date endDate)
@@ -31,13 +33,54 @@ public class Availability implements Collection<DateRange>
 	 * Convenience method which creates a {@link DateRange} from the two
 	 * params and then calls {@link #remove(Object)}.
 	 * 
-	 * @param startDate see {@link DateRange}.
-	 * @param endDate see {@link DateRange}.
+	 * @param startDate start date for DateRange, see {@link DateRange}.
+	 * @param endDate end date for DateRange, see {@link DateRange}.
 	 * @return see {@link #remove(Object)}.
 	 */
 	public boolean removeRange(Date startDate, Date endDate)
 	{
 		return remove(new DateRange(startDate, endDate));
+	}
+	
+	/**
+	 * Clears all availability prior to the date param.
+	 * 
+	 * @param date
+	 */
+	public void removePriorAvailability(Date date)
+	{
+		remove(new DateRange(new Date(Long.MIN_VALUE), date));
+	}
+	
+	/**
+	 * Clears all availability prior to the time at which this method
+	 * is called.
+	 * 
+	 */
+	public void removeOldAvailability()
+	{
+		Calendar cal = new GregorianCalendar();
+		removePriorAvailability(cal.getTime());
+	}
+	
+	/**
+	 * Returns true if available for the entire {@link DateRange} specified.
+	 * 
+	 * @param dateRange
+	 * @return
+	 */
+	public boolean isAvailable(DateRange dateRange)
+	{
+		for(DateRange dr : availability)
+		{
+			if(dr.getStartDate().compareTo(dateRange.getStartDate()) >= 0 &&
+					dr.getEndDate().compareTo(dateRange.getEndDate()) <= 0)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override

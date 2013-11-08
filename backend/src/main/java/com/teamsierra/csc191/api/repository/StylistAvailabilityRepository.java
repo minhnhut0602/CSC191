@@ -94,8 +94,9 @@ public class StylistAvailabilityRepository
     * date param with the time set to all max values. The return value is all the
     * availabilities that over lap this DateRange.
     * 
-    * Guaranteed to return a StylistAvailability, however the availability
-    * field my be an empty collection.
+    * Guaranteed to return a StylistAvailability if the stylist has a StylistAvailability
+    * in the repo, however the availability field my be an empty collection. If the
+    * stylist has no StylistAvailability in the repo, returns null.
     * 
     * Returns the same value as if the above specified DateRange and stylistID
     * were used as the params for {@link #findByDateRange(DateRange, String)}.
@@ -165,8 +166,9 @@ public class StylistAvailabilityRepository
     * Find all availability within the specified {@link DateRange} for the specified
     * stylist. 
     * 
-    * Guaranteed to return a StylistAvailability, however the availability
-    * field my be an empty collection. 
+    * Guaranteed to return a StylistAvailability if the stylist has a StylistAvailability
+    * in the repo, however the availability field my be an empty collection. If the
+    * stylist has no StylistAvailability in the repo, returns null. 
     * 
     * @param dateRange
     * @param stylistID
@@ -176,15 +178,22 @@ public class StylistAvailabilityRepository
    {
 	   StylistAvailability sa = mongoTemplate.findOne(query(where("stylistID").is(stylistID)), StylistAvailability.class);
 	   
-	   Availability newAvail = new Availability();
+	   if(sa == null)
+	   {
+		   return null;
+	   }
 	   
+	   Availability newAvail = new Availability();
 	   for(DateRange dr : sa.getAvailability())
 	   {
 		   if(dr.isOverlapping(dateRange))
-		   {
-			   newAvail.add(dr);
+		   {			   
+			   newAvail.add(dr.clone());
 		   }
 	   }
+	   
+	   newAvail.removeRange(new Date(Long.MIN_VALUE), dateRange.getStartDate());
+	   newAvail.removeRange(dateRange.getEndDate(), new Date(Long.MAX_VALUE));
 	   
 	   StylistAvailability returnSA = new StylistAvailability();
 	   returnSA.setStylistID(stylistID);
@@ -210,22 +219,16 @@ public class StylistAvailabilityRepository
 	   ArrayList<StylistAvailability> returnList = new ArrayList<StylistAvailability>();
 	   for(StylistAvailability sa : stylists)
 	   {
-		   newAvail = new Availability();
+		   returnSA = findByDateRange(dateRange, sa.getStylistID());
 		   
-		   for(DateRange dr : sa.getAvailability())
+		   if(returnSA != null)
 		   {
-			   if(dr.isOverlapping(dateRange))
+			   newAvail = returnSA.getAvailability();
+			   
+			   if(!newAvail.isEmpty())
 			   {
-				   newAvail.add(dr);
+				   returnList.add(returnSA);
 			   }
-		   }
-		   
-		   if(!newAvail.isEmpty())
-		   {
-			   returnSA = new StylistAvailability();
-			   returnSA.setStylistID(sa.getStylistID());
-			   returnSA.setAvailability(newAvail);
-			   returnList.add(returnSA);
 		   }
 	   }
 	   
@@ -244,5 +247,34 @@ public class StylistAvailabilityRepository
    public void save(StylistAvailability stylistAvailability) {
        L.info("Saving the following StylistAvailabilty object: " + stylistAvailability);
        mongoTemplate.save(stylistAvailability);
+   }
+   
+   
+    //    /$$$$$$  /$$$$$$$$ /$$   /$$ /$$$$$$$$ /$$$$$$$ 
+	//   /$$__  $$|__  $$__/| $$  | $$| $$_____/| $$__  $$
+	//  | $$  \ $$   | $$   | $$  | $$| $$      | $$  \ $$
+	//  | $$  | $$   | $$   | $$$$$$$$| $$$$$   | $$$$$$$/
+	//  | $$  | $$   | $$   | $$__  $$| $$__/   | $$__  $$
+	//  | $$  | $$   | $$   | $$  | $$| $$      | $$  \ $$
+	//  |  $$$$$$/   | $$   | $$  | $$| $$$$$$$$| $$  | $$
+	//   \______/    |__/   |__/  |__/|________/|__/  |__/
+   /**
+    * Convenience method to determine if a specific stylist has any availability
+    * within the DateRange.
+    * 
+    * @param dateRange
+    * @param stylistID
+    * @return
+    */
+   public boolean hasAvailability(DateRange dateRange, String stylistID)
+   {
+	   StylistAvailability sa = findByDateRange(dateRange, stylistID);
+	   
+	   if(sa != null && !sa.getAvailability().isEmpty())
+	   {
+		   return true;
+	   }
+	   
+	   return false;
    }
 }

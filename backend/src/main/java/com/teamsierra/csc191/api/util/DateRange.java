@@ -150,5 +150,27 @@ public class DateRange
 				"startDate='" + startDate + '\'' +
 				", endDate='" + endDate + '\'' +
 				"}";
-	}	
+	}
+	
+	@Override
+	public DateRange clone()
+	{
+		return new DateRange(startDate, endDate);
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		DateRange dateRange;
+		if(!(o instanceof DateRange))
+		{
+			return false;
+		}
+		else
+		{
+			dateRange = (DateRange) o;
+			
+			return (startDate.compareTo(dateRange.getStartDate()) == 0 && endDate.compareTo(dateRange.getEndDate()) == 0);
+		}
+	}
 }
