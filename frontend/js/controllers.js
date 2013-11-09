@@ -10,6 +10,8 @@ var scheduleControllers = angular.module('scheduleControllers', []);
 // |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
 //  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
 scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($scope) {
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     $scope.calendar = function(year, monthIndex, day) {
         if (year === undefined &&
             month === undefined &&
@@ -19,8 +21,6 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
             monthIndex = d.getMonth();
             day = d.getDate();
         }
-        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
@@ -67,6 +67,11 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
     };
     var d = new Date();
     $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
+    $scope.dayNow = d.getDate();
+    $scope.monthNow = {"num": d.getMonth(), "name":monthNames[d.getMonth()]};
+    $scope.yearNow = d.getFullYear();
+    $scope.monthNames = monthNames;
+
 });
 
 
@@ -245,7 +250,6 @@ scheduleControllers.controller('adminController', function adminController($scop
                                                                                                                                                                                             
 scheduleControllers.controller('userAuthController', function userAuthController($scope, $http) {
   $http.get('json/userAuthController.json').success(function(data) {
-    gnMenu.bodyClickFn;
     $scope.currentUserAuth = data;
   });
 });
@@ -277,3 +281,25 @@ scheduleControllers.controller('indexController', function indexController($scop
 });
 
                                                                                                 
+//   /$$$$$$  /$$$$$$$$ /$$$$$$  /$$$$$$$$ /$$$$$$$$
+//  /$$__  $$|__  $$__//$$__  $$| $$_____/| $$_____/
+// | $$  \__/   | $$  | $$  \ $$| $$      | $$      
+// |  $$$$$$    | $$  | $$$$$$$$| $$$$$   | $$$$$   
+//  \____  $$   | $$  | $$__  $$| $$__/   | $$__/   
+//  /$$  \ $$   | $$  | $$  | $$| $$      | $$      
+// |  $$$$$$/   | $$  | $$  | $$| $$      | $$      
+//  \______/    |__/  |__/  |__/|__/      |__/      
+//  /$$       /$$$$$$  /$$$$$$  /$$$$$$$$           
+// | $$      |_  $$_/ /$$__  $$|__  $$__/           
+// | $$        | $$  | $$  \__/   | $$              
+// | $$        | $$  |  $$$$$$    | $$              
+// | $$        | $$   \____  $$   | $$              
+// | $$        | $$   /$$  \ $$   | $$              
+// | $$$$$$$$ /$$$$$$|  $$$$$$/   | $$              
+// |________/|______/ \______/    |__/              
+
+scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
+  $http.get('json/stylists.json').success(function(data) {
+    $scope.allStaff = data;
+  });
+});                                                 

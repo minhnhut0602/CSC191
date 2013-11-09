@@ -1,30 +1,20 @@
-<div class="top">
-    <select class="selectpicker" multiple data-live-search="true" data-width="40%">
-        <option selected>Alex Johnson</option>
-        <option selected>Shoni Summers</option>
-        <option selected>Amanda Rinkey</option>
+<div class="top" ng-controller="stafflist">
+    <select class="selectpicker" multiple data-live-search="true" data-width="40%" >
+        <option ng-repeat="staff in allStaff" >{{staff.name}} </option>
+
     </select>
+<!-- {{allStaff[$last].name}} -->
 </div>
+
 <ul class="pagination">
-  <li><a href="#">&laquo;</a></li>
-  <li><a href="#">January</a></li>
-  <li><a href="#">February</a></li>
-  <li><a href="#">March</a></li>
-  <li><a href="#">April</a></li>
-  <li><a href="#">May</a></li>
-  <li><a href="#">June</a></li>
-  <li><a href="#">July</a></li>
-  <li><a href="#">August</a></li>
-  <li><a href="#">September</a></li>
-  <li><a href="#">October</a></li>
-  <li><a href="#">November</a></li>
-  <li><a href="#">December</a></li>
-  <li><a href="#">&raquo;</a></li>
+
+
+  <li ng-repeat="name in monthNames"><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+$index)%12],(monthNow.num+$index)%12,1)">{{monthNames[((monthNow.num+$index)%12)]}} </a></li>
 </ul>
 
 <div class="clearfix"></div>
 <div class="month">
-    <div class="month-name"><h1>{{month.name}}</h1></div>
+    <div class="month-name"><h1>{{month.name}} {{month.year}}</h1></div>
     <div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">
         <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">
             <strong>{{day.number}}</strong>
