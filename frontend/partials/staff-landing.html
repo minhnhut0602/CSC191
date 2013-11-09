@@ -15,7 +15,8 @@
         <div ng-repeat="appointment in appointments">
             <div class="alert alert-{{appointment.status}} " ng-click="calendar(appointment.dateYear,appointment.dateMonth,appointment.dateDay)">Appointment with {{appointment.client}} at {{(appointment.time-1)%12+1}}{{(appointment.time>=12) && 'pm' || 'am'}}<br/>
                 <input ng-disabled="appointment.disabled" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.message}}"><br/>
-                <button type="button" class="btn btn-danger " disabled>Deny</button> <button type="button" class="btn btn-success" disabled>Accept</button>
+                <button ng-disabled="appointment.disabled" type="button" class="btn btn-danger ">Deny</button>
+                <button ng-disabled="appointment.disabled" type="button" class="btn btn-success" >Accept</button>
             </div>
         </div>
 
