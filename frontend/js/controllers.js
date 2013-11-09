@@ -162,7 +162,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
 scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
-  $http.get('json/appointments/appointments.json').success(function(data) {
+  $http.get('json/appointments/staffAppointments.json').success(function(data) {
     $scope.appointments = data;
   });
 });
@@ -184,9 +184,12 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
 // | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
-scheduleControllers.controller('ClientLandingController', ['$scope', '$rootScope', function($scope, $rootScope) {
-    
-}]);
+scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http) {
+  $http.get('json/appointments/clientAppointments.json').success(function(data) {
+    $scope.appointments = data;
+  });
+});
+
 
 //   /$$$$$$        /$$               /$$                
 //  /$$__  $$      | $$              |__/                

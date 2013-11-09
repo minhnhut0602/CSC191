@@ -1,65 +1,34 @@
-<html ng-app="scheduleControllers">
-    <head>
-        <script src="lib/angular/angular.js"></script>
-        <script src="js/controllers.js"></script>
-    </head>
-
-    <div class="top">
-        <h2 class="left">Upcoming</h2>
-        <div class=" right vertical-center-parent">
-            <div class="vertical-center-child">
-                <button type="button" class="btn btn-primary">Make an Appointment</button>
-            </div>
+<div class="top">
+    <h2 class="left">Upcoming</h2>
+    <div class=" right vertical-center-parent">
+        <div class="vertical-center-child">
+            <button type="button" class="btn btn-primary">Make an Appointment</button>
         </div>
     </div>
+</div>
 
+<div class="main" ng-controller="CalendarGenerator">
 
-    <div ng-controller="CalendarGenerator" ng-init="month = calendar()">
+    <div ng-controller="StaffLandingController">
+    <div class="left upcoming-appointments">
 
-        <div ng-controller="StaffLandingController">
-            <div class="left">
-                <div class="clearfix"><br/></div>
-                <div ng-repeat="appointment in appointments">
-                    <div class="alert alert-{{appointment.status}} " ng-click="month = calendar({{appointment.date}})" >Appointment with {{appointment.client}} at {{(appointment.time-1)%12+1}}{{(appointment.time>=12) && 'pm' || 'am'}}<br/>
-                        <input ng-disabled="{{appointment.disabled}}" class="form-control" id="disabledInput" type="text" placeholder="See you soon :)"><br/>
-                        <button type="button" class="btn btn-danger " disabled>Deny</button> <button type="button" class="btn btn-success" disabled>Accept</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    <!--         ******************************Serge: This is now done by generating json (above)******************************
-        <div class="left">
-            <div class="clearfix"><br/></div>
-            
-            <div class="alert alert-success " ng-click="month = calendar(2013, 2, 3)" >Appointment with Sandy Johnson at 3pm
-                <br/>
-                <input class="form-control" id="disabledInput" type="text" placeholder="See you soon :)" disabled><br/>
-                <button type="button" class="btn btn-danger " disabled>Deny</button> <button type="button" class="btn btn-success" disabled>Accept</button>
-            </div>
-            
-            <div class="alert alert-warning" ng-click="month = calendar(2013, 2, 18)">Appointment March 18th (Pending) 
-                <br/>
-                <input class="form-control" id="disabledInput" type="text" placeholder="Put your message here" ><br/>
-                <button type="button" class="btn btn-danger " >Deny</button> <button type="button" class="btn btn-success" >Accept</button>
-            </div>
-
-            <div class="alert alert-danger" ng-click="month = calendar(2013, 3, 21)">Sorry, April 21th at 5:21pm wont work 
-                <br/>
-                <input class="form-control" id="disabledInput" type="text" placeholder="Sorry, turns out I have a doctors appointmet. Lets reschedule" disabled><br/>
+        <div ng-repeat="appointment in appointments">
+            <div class="alert alert-{{appointment.status}} " ng-click="calendar(appointment.dateYear,appointment.dateMonth,appointment.dateDay)">Appointment with {{appointment.client}} at {{(appointment.time-1)%12+1}}{{(appointment.time>=12) && 'pm' || 'am'}}<br/>
+                <input ng-disabled="appointment.disabled" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.message}}"><br/>
                 <button type="button" class="btn btn-danger " disabled>Deny</button> <button type="button" class="btn btn-success" disabled>Accept</button>
             </div>
         </div>
-    -->
 
-        <div class="right calendar" ng-controller="CalendarGenerator">
-            <div class="month" >
-                <h2 class="month-name">{{month.name}}</h2>
-                
-                <div class="week" ng-repeat="week in month.weeks">
-                    <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
-                </div>     
-            </div>
+    </div>
+    </div>
+
+    <div class="right calendar">
+        <div class="month" >
+            <h2 class="month-name">{{month.name}}</h2>
+            <div class="week" ng-repeat="week in month.weeks">
+                <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
+            </div>     
         </div>
     </div>
-</html>
+
+</div>
