@@ -5,7 +5,6 @@ import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -17,10 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: scott
@@ -40,7 +38,7 @@ public class UserController extends GenericController
     /**
      * A method to retrieve all of the users that the current user has access to.
      * 
-     * @param headers requires headers "authType" and "authToken"
+     * @param request requires headers "authType" and "authToken"
      * @return a List<User> 
      * @throws GenericUserException see message for why exception was thrown
      */
@@ -123,9 +121,10 @@ public class UserController extends GenericController
 	    		//TODO password stuff
 	    		// required fields
 	    		String error = "";
-	    		if(!isValidGroup(user.getGroup()))
+
+	    		if(!isValidGroup(user.getType()))
 	    		{
-	    			error  += "Invalid group number. Group should be either stylist or admin.\n";
+	    			error  += "Invalid user type. Group should be either stylist or admin.\n";
 	    		}
 	    		if(user.getFirstName() == null || !isValidName(user.getFirstName()))
 	    		{
@@ -289,7 +288,7 @@ public class UserController extends GenericController
 		    				  break;
 	    		case ADMIN: curUser = userRepository.findById(userID);
 						
-							if(curUser.getGroup() != UserType.CLIENT)
+							if(curUser.getType() != UserType.CLIENT)
 							{
 								// currently, admin and stylist editable fields are the same
 								error += updateStylist(user, curUser);

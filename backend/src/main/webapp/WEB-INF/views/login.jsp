@@ -6,8 +6,8 @@
 </head>
 <body>
     <form:form method="post" action="login">
-        <form:input type="text" path="username"/>
-        <form:input type="password" path="password"/>
+        <form:input appointmentType="text" path="username"/>
+        <form:input appointmentType="password" path="password"/>
         <button type="submit">Submit</button>
     </form:form>
 </body>

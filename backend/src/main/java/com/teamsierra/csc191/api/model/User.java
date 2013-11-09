@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User extends GenericModel 
 {
     private String oauthId;
-    private UserType group;
+    private UserType type;
     private String firstName;
     private String lastName;
     private String email;
@@ -34,12 +34,12 @@ public class User extends GenericModel
         this.oauthId = oauthId;
     }
     
-    public UserType getGroup() {
-		return group;
+    public UserType getType() {
+		return type;
 	}
 
-	public void setGroup(UserType group) {
-		this.group = group;
+	public void setType(UserType type) {
+		this.type = type;
 	}
 
 	public String getFirstName() {
@@ -114,7 +114,7 @@ public class User extends GenericModel
     public String toString() {
         return "{" +
                 "id='" + this.getId() + '\'' +
-                ", group='" + group + '\'' +
+                ", type='" + type + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
