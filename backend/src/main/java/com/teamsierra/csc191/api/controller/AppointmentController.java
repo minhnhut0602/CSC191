@@ -1,12 +1,13 @@
 package com.teamsierra.csc191.api.controller;
 
-import com.teamsierra.csc191.api.model.Appointment;
-import com.teamsierra.csc191.api.model.AppointmentType;
-import com.teamsierra.csc191.api.model.GenericModel;
-import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.model.*;
 import com.teamsierra.csc191.api.repository.AppointmentRepository;
 import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
+import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
+import com.teamsierra.csc191.api.util.Availability;
+import com.teamsierra.csc191.api.util.DateRange;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * getAppointment(String, HttpServletRequest)
  * get a specific requestData specificed a appointmentID
  *
- * searchForAppointments(Appointment, HttpServletRequest)
+ * searchAppointments(Appointment, HttpServletRequest)
  * search appointments that match search fields
  *
  * addAppointment(Appointment, HttpServletRequest)
@@ -49,9 +50,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class AppointmentController extends GenericController
 {
     @Autowired
-    private AppointmentRepository appointmentRepository;
+    private AppointmentRepository appRepository;
     @Autowired
-    private AppointmentTypeRepository appointmentTypeRepository;
+    private AppointmentTypeRepository appTypeRepository;
+    @Autowired
+    private StylistAvailabilityRepository availRepository;
+    @Autowired
+    private AppointmentTypeController atController;
 
     /**
      * Get list of all appointments relevant to a caller
@@ -86,7 +91,7 @@ public class AppointmentController extends GenericController
             break;
         }
 
-        for(Appointment appointment: appointmentRepository.findByCriteria(findAppointment))
+        for(Appointment appointment: appRepository.findByCriteria(findAppointment))
             appointmentResources.add(ResourceHandler.createResource(appointment));
 
         if (appointmentResources.isEmpty())
@@ -132,7 +137,7 @@ public class AppointmentController extends GenericController
             break;
         }
 
-        appointments = appointmentRepository.findByCriteria(targetAppointment);
+        appointments = appRepository.findByCriteria(targetAppointment);
 
         if (appointments == null || appointments.isEmpty() || appointments.size() == 0)
             throw new Exception("Appointment with supplied id cannot be found");
@@ -142,12 +147,15 @@ public class AppointmentController extends GenericController
         return new ResponseEntity<>(appointmentResource, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/search/{criteria}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<Resource<Appointment>>> searchForAppointments(@RequestBody Appointment searchFilters,
-                                                                             HttpServletRequest request) throws Exception
+    public ResponseEntity<List<Resource<Appointment>>> searchAppointments(@PathVariable String criteria,
+                                                                          HttpServletRequest request) throws Exception
     {
         this.setRequestControllerState(request);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Appointment searchFilters = mapper.readValue(criteria, Appointment.class);
 
         List<Resource<Appointment>> appointmentResources = new ArrayList<>();
         List<Appointment> appointments;
@@ -170,7 +178,7 @@ public class AppointmentController extends GenericController
             break;
         }
 
-        appointments = appointmentRepository.findByCriteria(searchFilters);
+        appointments = appRepository.findByCriteria(searchFilters);
         if (appointments.isEmpty())
             throw new Exception("Search returned empty set");
 
@@ -218,9 +226,9 @@ public class AppointmentController extends GenericController
         }
 
         // Check for missing request parameters
-        if (requestData.getClientID().isEmpty())
+        if (requestData.getClientID() == null || requestData.getClientID().isEmpty())
             errors.append("clientID ");
-        if (requestData.getStylistID().isEmpty())
+        if (requestData.getStylistID() == null || requestData.getStylistID().isEmpty())
             errors.append("stylistID ");
         if (requestData.getStartTime() == null)
             errors.append("startTime ");
@@ -231,7 +239,7 @@ public class AppointmentController extends GenericController
 
         // Validate supplied appointment date/time parameters
         Date currentTimestamp = Calendar.getInstance().getTime();
-        if (requestData.getStartTime().before(requestData.getEndTime()))
+        if (requestData.getStartTime().after(requestData.getEndTime()))
         {
             Date temp = requestData.getStartTime();
             requestData.setStartTime(requestData.getEndTime());
@@ -256,6 +264,14 @@ public class AppointmentController extends GenericController
              * this does not require calling appointment repository.
              * if dates supplied outside of stylist range, throw an exception
              */
+            L.info("Validating availablity from " + requestData.getStartTime() + " to " + requestData.getEndTime());
+            DateRange requestRange = new DateRange(requestData.getStartTime(), requestData.getEndTime());
+            StylistAvailability stylistAvail = availRepository.findByDateRange(requestRange, requestData.getStylistID());
+            if (stylistAvail == null)
+                throw new Exception("Stylist is not available during the requested time");
+            Availability avail = stylistAvail.getAvailability();
+            if (avail == null || avail.isEmpty())
+                throw new Exception("Stylist is not available during the requested time");
         }
 
         // Validate client
@@ -264,11 +280,9 @@ public class AppointmentController extends GenericController
             throw new Exception("Invalid clientID supplied");
         else
         {
-            // TODO validate user data
-            /*
-            if (!client.isActive())
-                throw new Exception("Cannot schedule an requestData for de-activated clients");
-            */
+            if (!client.isActive() || client.getType().compareTo(GenericModel.UserType.CLIENT) != 0)
+                throw new Exception("Supplied client is invalid");
+
         }
 
         // Validate requested appointment dates
@@ -277,7 +291,7 @@ public class AppointmentController extends GenericController
         targetAppointment.setEndTime(requestData.getEndTime());
         targetAppointment.setStylistID(requestData.getStylistID());
         targetAppointment.setClientID(requestData.getClientID());
-        appointments = appointmentRepository.findByCriteria(targetAppointment);
+        appointments = appRepository.findByCriteria(targetAppointment);
         for (Appointment a: appointments)
         {
             switch (a.getAppointmentStatus())
@@ -298,11 +312,11 @@ public class AppointmentController extends GenericController
 
             apType.setStylists(stylists);
             apType.setId(requestData.getAppointmentTypeID());
-            List<AppointmentType> foundTypes = appointmentTypeRepository.findByCriteria(apType);
+            List<AppointmentType> foundTypes = appTypeRepository.findByCriteria(apType);
             if (foundTypes == null || foundTypes.isEmpty())
                 throw new Exception("Appointment type is invalid for supplied stylist");
 
-            requestData.setAppointmentType(foundTypes.get(0).getType());
+            requestData.setAppointmentType(foundTypes.get(0).getAppointmentType());
         }
 
         // Force appointment status to NEW if it wasn't supplied
@@ -310,7 +324,7 @@ public class AppointmentController extends GenericController
             requestData.setAppointmentStatus(GenericModel.AppointmentStatus.NEW);
 
         // Appointment data is valid, insert into database
-        GenericModel response = appointmentRepository.insert(requestData);
+        GenericModel response = appRepository.insert(requestData);
         Resource<GenericModel> resource = new Resource<>(response);
         resource.add(linkTo(AppointmentController.class).slash(response).withSelfRel());
 
@@ -326,7 +340,7 @@ public class AppointmentController extends GenericController
      * @throws Exception
      */
     @RequestMapping(value = "/{appointmentID}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource<GenericModel>> editAppointment(@RequestBody Appointment requestData,
+    public ResponseEntity<Resource<Appointment>> editAppointment(@RequestBody Appointment requestData,
                                                                   @PathVariable String appointmentID,
                                                                   HttpServletRequest request) throws Exception
     {
@@ -363,13 +377,9 @@ public class AppointmentController extends GenericController
         if (requestData.getStylistID() != null || requestData.getClientID() != null)
             throw new Exception("Assigned client or stylist cannot be changed.");
 
-        if (requestData.getAppointmentType() != null || !requestData.getAppointmentType().isEmpty())
-            throw new Exception("Different appointment types have different durations. Cancel current appointment and make a new one");
-
-
         // Attempt to find a single appointment with supplied id, constrained by caller authType
         targetAppointment.setId(appointmentID);
-        List<Appointment> appointments = appointmentRepository.findByCriteria(targetAppointment);
+        List<Appointment> appointments = appRepository.findByCriteria(targetAppointment);
         if (appointments == null || appointments.isEmpty())
             throw new Exception("Appointment with specified id was not found!");
 
@@ -402,8 +412,11 @@ public class AppointmentController extends GenericController
 
         // TODO add more fields to the model
 
-        appointmentRepository.save(targetAppointment);
+        appRepository.save(targetAppointment);
 
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        Resource<Appointment> resource = new Resource<>(targetAppointment);
+        resource.add(linkTo(AppointmentController.class).slash(targetAppointment).withSelfRel());
+
+        return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
 }

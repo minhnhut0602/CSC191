@@ -73,11 +73,11 @@ public class AppointmentTypeRepository
     //  |__/      |______/|__/  \__/|_______/
     public List<AppointmentType> findByCriteria(AppointmentType appointmentType)
     {
-        L.debug("Finding appointment types by filters:" + appointmentType);
+        List<AppointmentType> result;
         Query query = new Query();
 
         String id = appointmentType.getId();
-        String type = appointmentType.getType();
+        String type = appointmentType.getAppointmentType();
         String[] stylists = appointmentType.getStylists();
 
         if (id != null && !id.isEmpty())
@@ -89,7 +89,11 @@ public class AppointmentTypeRepository
         if (stylists != null && stylists.length > 0)
             query.addCriteria(where("stylists").all(stylists[0]));
 
-        return mongoTemplate.find(query, AppointmentType.class);
+        L.info("Finding appointment types by query:" + query.toString());
+
+        result = mongoTemplate.find(query, AppointmentType.class);
+
+        return result;
     }
 
     //    /$$$$$$   /$$$$$$  /$$    /$$ /$$$$$$$$
@@ -144,7 +148,7 @@ public class AppointmentTypeRepository
         Update update = new Update();
 
         String typeID = type.getId();
-        String typeName = type.getType();
+        String typeName = type.getAppointmentType();
         Double basePrice = type.getBasePrice();
         int duration = type.getDurationInMinutes();
 
