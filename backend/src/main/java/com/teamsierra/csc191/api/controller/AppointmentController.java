@@ -147,9 +147,9 @@ public class AppointmentController extends GenericController
         return new ResponseEntity<>(appointmentResource, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/search/{criteria}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/search", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<Resource<Appointment>>> searchAppointments(@PathVariable String criteria,
+    public ResponseEntity<List<Resource<Appointment>>> searchAppointments(@RequestParam String criteria,
                                                                           HttpServletRequest request) throws Exception
     {
         this.setRequestControllerState(request);
