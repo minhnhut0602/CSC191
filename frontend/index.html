@@ -61,11 +61,20 @@
                         </a>
                     </li>
                     <li>
-                        <i class="fa fa-times"></i>
+                         <a class="gn-icon" href="#/admin" ng-controller="userAuthController" ng-show="currentUserAuth[0].rank == 'admin'">
+                            <i class="fa fa-tasks"></i>
+                            <span>Admin</span>
+                        </a>
+                    </li>
+                    <li data-ng-show="!loggedIn">
                         <a class="gn-icon" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login()">
+                        <i class="fa fa-sign-in"></i>
                             <span>Login</span>
                         </a>
-                        <a class="gn-icon" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">
+                    </li>
+                    <li data-ng-show="loggedIn">
+                        <a class="gn-icon" data-ng-show="loggedIn" data-ng-disabled="facebookReady" data-ng-click="logout()">
+                        <i class="fa fa-sign-out"></i>
                             <span>Logout</span>
                         </a>
                     </li>
