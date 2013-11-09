@@ -32,36 +32,36 @@
 
 </head>
 <body ng-controller="AuthController">
-<ul id="gn-menu" class="gn-menu-main">
+<ul id="gn-menu" class="gn-menu-main" >
     <li class="gn-trigger">
         <a class="gn-icon gn-icon-menu"><i class="fa fa-reorder"></i></a>
         <nav class="gn-menu-wrapper">
             <div class="gn-scroller">
                 <ul class="gn-menu">
-                    <li class="gn-search-item">
+                    <li class="gn-search-item" ng-controller="userAuthController" ng-show="currentUserAuth.rank != 'admin'">
                         <a class="gn-icon"><i class="fa fa-search"></i></a>
                         <input placeholder="Search" type="search" class="gn-search">
                     </li>
-                    <li>
+                    <li ng-controller="userAuthController" ng-show="currentUserAuth.rank != 'admin'">
                         <a class="gn-icon" href="#/calendar/">
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-calendar"></i>
                             <span>Make an Appointment</span>
                         </a>
                     </li>
-                    <li>
+                    <li ng-controller="userAuthController" ng-show="currentUserAuth.rank != 'admin'">
                         <a class="gn-icon">
                             <i class="fa fa-clock-o"></i>
                             <span>View History</span>
                         </a>
                     </li>
-                    <li>
+                    <li ng-controller="userAuthController" ng-show="currentUserAuth.rank != 'admin'">
                         <a class="gn-icon" href="#/edit-profile">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit Profile</span>
                         </a>
                     </li>
-                    <li>
-                         <a class="gn-icon" href="#/admin" ng-controller="userAuthController" ng-show="currentUserAuth[0].rank == 'admin'">
+                    <li ng-controller="userAuthController" ng-show="currentUserAuth.rank == 'admin'">
+                         <a class="gn-icon" href="#/admin" >
                             <i class="fa fa-tasks"></i>
                             <span>Admin</span>
                         </a>
@@ -125,12 +125,12 @@
     // });
 </script>
 <script>
-    new gnMenu( document.getElementById( 'gn-menu' ) );
+    var mygnMenu = new gnMenu( document.getElementById( 'gn-menu' ) );
 </script>
 
 
 <!-- DIV FOR OUR VIEWS -->
-<div class="wrapper" id="content" ng-view></div>
+<div class="wrapper" id="content" ng-view ng-controller="indexController"></div>
 
 
 
