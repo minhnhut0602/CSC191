@@ -7,12 +7,17 @@
     </div>
 </div>
 
-<div class="main" ng-controller="CalendarGenerator" ng-init="calendar()">
-    <div class="left upcoming-appointments">
-        <div class="alert alert-success" ng-click="calendar(2013, 2, 3)" >See you Wednesday March 3rd at 8 am with Alexa </div>
-        <div class="alert alert-warning" ng-click="calendar(2013, 2, 18)">Appointment March 18th (Pending)</div>
-        <div class="alert alert-danger" ng-click="calendar(2013, 3, 21)">Sorry, April 21th at 5:21pm wont work </div>
+<div class="main" ng-controller="CalendarGenerator">
 
+    <div ng-controller="ClientLandingController">
+    <div class="left upcoming-appointments">
+
+        <div ng-repeat="appointment in appointments">
+            <div class="alert alert-{{appointment.status}} " ng-click="calendar(appointment.dateYear,appointment.dateMonth,appointment.dateDay)" >Appointment with {{appointment.client}} at {{(appointment.time-1)%12+1}}
+            </div>
+        </div>
+
+    </div>
     </div>
 
     <div class="right calendar">
@@ -23,4 +28,5 @@
             </div>
         </div>
     </div>
+
 </div>

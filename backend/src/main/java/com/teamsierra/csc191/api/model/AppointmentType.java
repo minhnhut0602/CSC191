@@ -12,19 +12,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "appointmentTypes")
 public class AppointmentType extends GenericModel
 {
-    private String type;
+    private String appointmentType;
     private int durationInMinutes;
     private double basePrice;
     private String[] stylists;
 
-    public String getType()
+    public String getAppointmentType()
     {
-        return type;
+        return appointmentType;
     }
 
-    public void setType(String type)
+    public void setAppointmentType(String appointmentType)
     {
-        this.type = type;
+        this.appointmentType = appointmentType;
     }
 
     public int getDurationInMinutes()

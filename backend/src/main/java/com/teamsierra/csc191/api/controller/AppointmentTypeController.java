@@ -123,12 +123,12 @@ public class AppointmentTypeController extends GenericController
             default:
                 throw new Exception("This API call is forbidden");
         }
-        type = requestData.getType();
+        type = requestData.getAppointmentType();
 
         if (type == null || type.isEmpty())
             throw new Exception("Valid appointment type name must be supplied");
 
-        findType.setType(type);
+        findType.setAppointmentType(type);
 
         if (!appointmentTypeRepository.findByCriteria(findType).isEmpty())
             throw new Exception("Appointment type already exists");

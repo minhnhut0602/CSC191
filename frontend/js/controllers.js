@@ -10,6 +10,8 @@ var scheduleControllers = angular.module('scheduleControllers', []);
 // |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
 //  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
 scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($scope) {
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     $scope.calendar = function(year, monthIndex, day) {
         if (year === undefined &&
             month === undefined &&
@@ -19,8 +21,6 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
             monthIndex = d.getMonth();
             day = d.getDate();
         }
-        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
@@ -67,6 +67,11 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
     };
     var d = new Date();
     $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
+    $scope.dayNow = d.getDate();
+    $scope.monthNow = {"num": d.getMonth(), "name":monthNames[d.getMonth()]};
+    $scope.yearNow = d.getFullYear();
+    $scope.monthNames = monthNames;
+
 });
 
 
@@ -162,7 +167,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
 scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
-  $http.get('json/appointments/appointments.json').success(function(data) {
+  $http.get('json/appointments/staffAppointments.json').success(function(data) {
     $scope.appointments = data;
   });
 });
@@ -184,9 +189,12 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
 // | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/ 
-scheduleControllers.controller('ClientLandingController', ['$scope', '$rootScope', function($scope, $rootScope) {
-    
-}]);
+scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http) {
+  $http.get('json/appointments/clientAppointments.json').success(function(data) {
+    $scope.appointments = data;
+  });
+});
+
 
 //   /$$$$$$        /$$               /$$                
 //  /$$__  $$      | $$              |__/                
@@ -248,3 +256,53 @@ scheduleControllers.controller('userAuthController', function userAuthController
     $scope.currentUserAuth = data;
   });
 });
+
+
+
+//  /$$$$$$ /$$   /$$ /$$$$$$$  /$$$$$$$$ /$$   /$$                                                    
+// |_  $$_/| $$$ | $$| $$__  $$| $$_____/| $$  / $$                                                    
+//   | $$  | $$$$| $$| $$  \ $$| $$      |  $$/ $$/                                                    
+//   | $$  | $$ $$ $$| $$  | $$| $$$$$    \  $$$$/                                                     
+//   | $$  | $$  $$$$| $$  | $$| $$__/     >$$  $$                                                     
+//   | $$  | $$\  $$$| $$  | $$| $$       /$$/\  $$                                                    
+//  /$$$$$$| $$ \  $$| $$$$$$$/| $$$$$$$$| $$  \ $$                                                    
+// |______/|__/  \__/|_______/ |________/|__/  |__/                                                                                                                                                     
+//   /$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$$ /$$$$$$$   /$$$$$$  /$$       /$$       /$$$$$$$$ /$$$$$$$ 
+//  /$$__  $$ /$$__  $$| $$$ | $$|__  $$__/| $$__  $$ /$$__  $$| $$      | $$      | $$_____/| $$__  $$
+// | $$  \__/| $$  \ $$| $$$$| $$   | $$   | $$  \ $$| $$  \ $$| $$      | $$      | $$      | $$  \ $$
+// | $$      | $$  | $$| $$ $$ $$   | $$   | $$$$$$$/| $$  | $$| $$      | $$      | $$$$$   | $$$$$$$/
+// | $$      | $$  | $$| $$  $$$$   | $$   | $$__  $$| $$  | $$| $$      | $$      | $$__/   | $$__  $$
+// | $$    $$| $$  | $$| $$\  $$$   | $$   | $$  \ $$| $$  | $$| $$      | $$      | $$      | $$  \ $$
+// |  $$$$$$/|  $$$$$$/| $$ \  $$   | $$   | $$  | $$|  $$$$$$/| $$$$$$$$| $$$$$$$$| $$$$$$$$| $$  | $$
+//  \______/  \______/ |__/  \__/   |__/   |__/  |__/ \______/ |________/|________/|________/|__/  |__/
+
+                                                                                                                                                                                            
+scheduleControllers.controller('indexController', function indexController($scope, $http) {
+    $scope.$on('$routeChangeStart', function(next, current) { 
+        mygnMenu._closeMenu();
+    });
+});
+
+                                                                                                
+//   /$$$$$$  /$$$$$$$$ /$$$$$$  /$$$$$$$$ /$$$$$$$$
+//  /$$__  $$|__  $$__//$$__  $$| $$_____/| $$_____/
+// | $$  \__/   | $$  | $$  \ $$| $$      | $$      
+// |  $$$$$$    | $$  | $$$$$$$$| $$$$$   | $$$$$   
+//  \____  $$   | $$  | $$__  $$| $$__/   | $$__/   
+//  /$$  \ $$   | $$  | $$  | $$| $$      | $$      
+// |  $$$$$$/   | $$  | $$  | $$| $$      | $$      
+//  \______/    |__/  |__/  |__/|__/      |__/      
+//  /$$       /$$$$$$  /$$$$$$  /$$$$$$$$           
+// | $$      |_  $$_/ /$$__  $$|__  $$__/           
+// | $$        | $$  | $$  \__/   | $$              
+// | $$        | $$  |  $$$$$$    | $$              
+// | $$        | $$   \____  $$   | $$              
+// | $$        | $$   /$$  \ $$   | $$              
+// | $$$$$$$$ /$$$$$$|  $$$$$$/   | $$              
+// |________/|______/ \______/    |__/              
+
+scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
+  $http.get('json/stylists.json').success(function(data) {
+    $scope.allStaff = data;
+  });
+});                                                 

@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +32,7 @@ public abstract class GenericController
     @Autowired
     protected UserRepository userRepository;
 
-    @ExceptionHandler(Exception.class)
+    //@ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<HashMap<String, String>> handleException(Exception e)
     {
@@ -68,6 +67,8 @@ public abstract class GenericController
         Object authToken = request.getAttribute("authToken");
         Object id = request.getAttribute("id");
         Object authType = request.getAttribute("authType");
+
+        L.debug("authToken: " + authToken + " id: " + id + " authType: " + authType);
 
         if (authToken == null || authToken.toString().isEmpty())
             throw new Exception("authToken is missing from the request");
