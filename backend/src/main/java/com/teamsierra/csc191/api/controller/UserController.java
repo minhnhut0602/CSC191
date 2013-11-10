@@ -1,10 +1,9 @@
 package com.teamsierra.csc191.api.controller;
 
-import com.teamsierra.csc191.api.exception.GenericUserException;
-import com.teamsierra.csc191.api.model.GenericModel.UserType;
-import com.teamsierra.csc191.api.model.User;
-import com.teamsierra.csc191.api.repository.UserRepository;
-import com.teamsierra.csc191.api.resources.ResourceHandler;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,12 +14,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import com.teamsierra.csc191.api.exception.GenericUserException;
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
+import com.teamsierra.csc191.api.model.StylistAvailability;
+import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
+import com.teamsierra.csc191.api.repository.UserRepository;
+import com.teamsierra.csc191.api.resources.ResourceHandler;
 
 /**
  * User: scott
@@ -35,7 +41,9 @@ public class UserController extends GenericController
     private static final Log L = LogFactory.getLog(UserController.class);
 
     @Autowired
-    private UserRepository userRepository; 
+    private UserRepository userRepository;
+    @Autowired
+    private StylistAvailabilityRepository sar;
 
     /**
      * A method to retrieve all of the users that the current user has access to.
@@ -162,6 +170,10 @@ public class UserController extends GenericController
 	    		if(error.equals(""))
 	    		{
 		    		userRepository.insert(user);
+		    		StylistAvailability sa = new StylistAvailability();
+		    		sa.setStylistID(user.getId());
+		    		sar.insert(sa);
+		    		//TODO add link to avail?
 		    		Resource<User> resource = ResourceHandler.createResource(user);
 		    		return new ResponseEntity<Resource<User>>(resource, HttpStatus.CREATED);
 	    		}

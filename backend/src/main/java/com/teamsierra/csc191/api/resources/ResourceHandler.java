@@ -5,7 +5,10 @@ import com.teamsierra.csc191.api.controller.AppointmentTypeController;
 import com.teamsierra.csc191.api.controller.UserController;
 import com.teamsierra.csc191.api.model.Appointment;
 import com.teamsierra.csc191.api.model.AppointmentType;
+import com.teamsierra.csc191.api.model.StylistAvailability;
 import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.util.Availability;
+
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceSupport;
 
@@ -67,5 +70,18 @@ public class ResourceHandler extends ResourceSupport
 
         return resource;
     }
+    
+    public static Resource<StylistAvailability> createResource(StylistAvailability sa)
+    {
+    	Resource<StylistAvailability> resource;
+        if (sa != null)
+            resource = new Resource<>(sa);
+        else
+            return null;
 
+        // generate links
+        resource.add(linkTo(UserController.class).slash(sa.getStylistID()).withRel("stylist"));
+
+        return resource;
+    }
 }

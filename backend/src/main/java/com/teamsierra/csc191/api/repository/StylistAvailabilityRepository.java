@@ -22,7 +22,7 @@ import com.teamsierra.csc191.api.util.DateRange;
 @Repository
 public class StylistAvailabilityRepository 
 {
-	private static final Log L = LogFactory.getLog(UserRepository.class);
+	private static final Log L = LogFactory.getLog(StylistAvailabilityRepository.class);
 
     private MongoTemplate mongoTemplate;
 
