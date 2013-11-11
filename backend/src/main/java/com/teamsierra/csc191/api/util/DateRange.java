@@ -2,7 +2,13 @@ package com.teamsierra.csc191.api.util;
 
 import java.util.Date;
 
-public class DateRange 
+/**
+ * A class representing a range of two {@link Date} instances.
+ * 
+ * @author Kyle
+ *
+ */
+public class DateRange implements Cloneable
 {
 	private Date startDate;
 	private Date endDate;
@@ -20,7 +26,12 @@ public class DateRange
 		this.startDate = startDate;
 		setEndDate(endDate);
 	}
-
+	
+	/**
+	 * Getter for the start date.
+	 * 
+	 * @return the start date of this DateRange
+	 */
 	public Date getStartDate() 
 	{
 		return startDate;
@@ -44,7 +55,12 @@ public class DateRange
 			throw new IllegalArgumentException("The start date must be before the end date.");
 		}
 	}
-
+	
+	/**
+	 * Getter for the end date.
+	 * 
+	 * @return the end date of this DateRange
+	 */
 	public Date getEndDate() 
 	{
 		return endDate;
@@ -116,10 +132,12 @@ public class DateRange
 	}
 	
 	/**
-	 * Returns true if this DateRange overlaps with the param DateRange.
+	 * Returns true if this DateRange overlaps with the param DateRange. This
+	 * includes if one of the date's end date is the same as the other date's
+	 * start date.
 	 * 
 	 * @param dateRange
-	 * @return
+	 * @return true if the DateRanges overlap in any manor
 	 */
 	public boolean isOverlapping(DateRange dateRange)
 	{
@@ -152,12 +170,23 @@ public class DateRange
 				"}";
 	}
 	
+	/**
+	 * Returns a new DateRange with the same start and end date
+	 * as the original.
+	 * 
+	 */
 	@Override
 	public DateRange clone()
 	{
 		return new DateRange(startDate, endDate);
 	}
 	
+	/**
+	 * Returns true iff the param Object is an instance of a DateRange
+	 * and both the start date and end date are the same for the two
+	 * DateRanges. 
+	 * 
+	 */
 	@Override
 	public boolean equals(Object o)
 	{

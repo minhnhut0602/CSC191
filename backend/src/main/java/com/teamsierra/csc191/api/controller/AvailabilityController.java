@@ -139,10 +139,39 @@ public class AvailabilityController extends GenericController
 		return new ResponseEntity<List<Resource<StylistAvailability>>>(returnList, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/{stylistID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Resource<StylistAvailability> getUserAvailability(@PathVariable String stylistID,
+															 HttpServletRequest request) throws Exception
+	{
+		this.setRequestControllerState(request);
+		
+		switch(authType)
+		{
+			case CLIENT: throw new Exception("Clients cannot modify stylist availability.");
+			case STYLIST: User user = userRepo.findByToken(authToken);
+						  if(!stylistID.equals(user.getId()))
+						  {
+							  throw new Exception("Stylists can only edit their own availability.");
+						  }
+						  break;
+			case ADMIN: 
+						break;
+			default:
+		}
+		
+		StylistAvailability sa = sar.findByStylistID(stylistID);
+		if(sa == null)
+		{
+			throw new Exception("Unable to find stylist availability in the repository.");
+		}
+		
+		return ResourceHandler.createResource(sa);
+	}
+	
 	@RequestMapping(value = "/{stylistID}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void updateAvailability(@PathVariable String stylistID,
-								   @RequestBody StylistAvailability stylistAvailability,
-								   HttpServletRequest request) throws Exception
+	public Resource<StylistAvailability> updateAvailability(@PathVariable String stylistID,
+								   							@RequestBody StylistAvailability stylistAvailability,
+								   							HttpServletRequest request) throws Exception
 	{
 		this.setRequestControllerState(request);
 		
@@ -169,6 +198,8 @@ public class AvailabilityController extends GenericController
 		sa.setAvailability(stylistAvailability.getAvailability());
 		
 		sar.save(sa);
+		
+		return ResourceHandler.createResource(sa);
 	}
 	
 	private List<Resource<StylistAvailability>> getAvailForCalendar(DateRange dr)

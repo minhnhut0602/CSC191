@@ -1,5 +1,10 @@
 package com.teamsierra.csc191.api.resources;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceSupport;
+
 import com.teamsierra.csc191.api.controller.AppointmentController;
 import com.teamsierra.csc191.api.controller.AppointmentTypeController;
 import com.teamsierra.csc191.api.controller.AvailabilityController;
@@ -9,12 +14,6 @@ import com.teamsierra.csc191.api.model.AppointmentType;
 import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
 import com.teamsierra.csc191.api.model.User;
-import com.teamsierra.csc191.api.util.Availability;
-
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @Author: Alex Chernyak
@@ -41,7 +40,14 @@ public class ResourceHandler extends ResourceSupport
 
         return resource;
     }
-
+    
+    /**
+     * Creates a resource for a {@link User} with a self rel and a link to their
+     * availability if they are a stylist or admin type user. 
+     * 
+     * @param user
+     * @return
+     */
     public static Resource<User> createResource(User user)
     {
         Resource<User> resource;
@@ -77,6 +83,13 @@ public class ResourceHandler extends ResourceSupport
         return resource;
     }
     
+    /**
+     * Generates a resource for a {@link StylistAvailability}. This resource contains
+     * a link the the styilist's user as well as a link to their availability.
+     * 
+     * @param sa
+     * @return
+     */
     public static Resource<StylistAvailability> createResource(StylistAvailability sa)
     {
     	Resource<StylistAvailability> resource;
@@ -87,6 +100,7 @@ public class ResourceHandler extends ResourceSupport
 
         // generate links
         resource.add(linkTo(UserController.class).slash(sa.getStylistID()).withRel("stylist"));
+        resource.add(linkTo(AvailabilityController.class).slash(sa.getStylistID()).withRel("availability"));
 
         return resource;
     }
