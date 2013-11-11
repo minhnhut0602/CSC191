@@ -27,6 +27,7 @@ import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
+import com.teamsierra.csc191.api.util.Availability;
 
 /**
  * User: scott
@@ -40,11 +41,16 @@ public class UserController extends GenericController
 {
     private static final Log L = LogFactory.getLog(UserController.class);
 
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private StylistAvailabilityRepository sar;
 
+    @Autowired
+    public UserController(UserRepository userRepo, StylistAvailabilityRepository stylistAvailRepo)
+    {
+    	userRepository = userRepo;
+    	sar = stylistAvailRepo;
+    }
+    
     /**
      * A method to retrieve all of the users that the current user has access to.
      * 
@@ -132,7 +138,7 @@ public class UserController extends GenericController
 	    		// required fields
 	    		String error = "";
 
-	    		if(!isValidGroup(user.getType()))
+	    		if(!isValidType(user.getType()))
 	    		{
 	    			error  += "Invalid user type. Group should be either stylist or admin.\n";
 	    		}
@@ -173,8 +179,9 @@ public class UserController extends GenericController
 		    		userRepository.insert(user);
 		    		StylistAvailability sa = new StylistAvailability();
 		    		sa.setStylistID(user.getId());
+		    		sa.setAvailability(new Availability());
 		    		sar.insert(sa);
-		    		//TODO add link to avail?
+		    		
 		    		Resource<User> resource = ResourceHandler.createResource(user);
 		    		return new ResponseEntity<Resource<User>>(resource, HttpStatus.CREATED);
 	    		}
@@ -400,9 +407,9 @@ public class UserController extends GenericController
 		return error;
     }
     
-    private boolean isValidGroup(UserType group)
+    private boolean isValidType(UserType type)
     {
-    	if(group == UserType.STYLIST || group == UserType.ADMIN)
+    	if(type == UserType.STYLIST || type == UserType.ADMIN)
     	{
     		return true;
     	}

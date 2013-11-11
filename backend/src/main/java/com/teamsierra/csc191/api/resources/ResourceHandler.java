@@ -2,9 +2,11 @@ package com.teamsierra.csc191.api.resources;
 
 import com.teamsierra.csc191.api.controller.AppointmentController;
 import com.teamsierra.csc191.api.controller.AppointmentTypeController;
+import com.teamsierra.csc191.api.controller.AvailabilityController;
 import com.teamsierra.csc191.api.controller.UserController;
 import com.teamsierra.csc191.api.model.Appointment;
 import com.teamsierra.csc191.api.model.AppointmentType;
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
 import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.util.Availability;
@@ -50,6 +52,10 @@ public class ResourceHandler extends ResourceSupport
 
         // generate links
         resource.add(linkTo(UserController.class).slash(user.getId()).withSelfRel());
+        if(user.getType() != UserType.CLIENT)
+        {
+        	resource.add(linkTo(AvailabilityController.class).slash(user.getId()).withRel("availability"));
+        }
 
         return resource;
     }
