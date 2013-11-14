@@ -55,13 +55,81 @@ public class AvailabilityController extends GenericController
 	/**
 	 * A method to get the current availability for all stylists within the given month
 	 * and year. The availability returned has the time of all approved appointments
-	 * removed.
+	 * removed. This is a subset of the stylist's full availability.
 	 * 
-	 * Usage: Http GET call to "/availability?year=Y&month=M". where M is the month
-	 * param and Y is the year param as integer values. These values wrap around if
-	 * they exceed their specific ranges. 
+	 * Usage: GET call to "/availability?year=Y&month=M".
+	 *  where M is the month param and Y is the year param as integer values.
+	 *  These values wrap around if they exceed their specific ranges. 
 	 * 
-	 * i.e. month = 12 would be equivalent to month = 1 and year++
+	 * 	i.e. month = 12 would be equivalent to month = 0 and year++
+	 * 
+	 * Input:
+     * 	-RequestParameters: month, year
+     * 
+     * Return: List<Resource<StylistAvailability>>. List may be empty, but
+     * 	should always return a list.
+     * 	
+     * 	format - Json format of the resource with a link to each individual user and
+     * 		the user's full set of availability.
+     * 
+     * 	the following is an example of what would be returned if there were two
+     * 	stylists in the system, and both with availability in the range. Some
+     * 	notes: 0L is a long value. there is only one stylistAvailabiltiy per
+     * 	stylist or admin (denoted by stylistID and stylistID1).
+     * { 
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "stylist",
+     * 				"href": ".../users/{stylistID}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{stylistID}"
+     * 			}
+     * 		]
+     * 		"id": "{stylistAvailabilityID}",
+     * 		"stylistID": "{stylistID}",
+     * 		"availability":	
+     * 		[
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			},
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			}
+     * 		]
+     * 	},
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "stylist",
+     * 				"href": ".../users/{stylistID1}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{stylistID1}"
+     * 			}
+     * 		]
+     * 		"id": "{stylistAvailabilityID1}",
+     * 		"stylistID": "{stylistID1}",
+     * 		"availability":	
+     * 		[
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			},
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			}
+     * 		]
+     *	}
+     * }
 	 * 
 	 * @param month integer in the range 0-11, values outside of this range wrap around.
 	 * @param year integer value for the year
@@ -100,11 +168,80 @@ public class AvailabilityController extends GenericController
 	 * The availability returned has the time of all approved appointments
 	 * removed.
 	 * 
-	 * Usage: Http GET call to "/availability?year=Y&month=M&day=D". where D is
-	 * the day param, M is the month param, and Y is the year param as integer
-	 * values. These values wrap around if they exceed their specific ranges.
+	 * Usage: GET call to "/availability?year=Y&month=M&day=D".
+	 * 	where D is the day param, M is the month param, and Y is the year param as
+	 *  integer values. These values wrap around if they exceed their specific
+	 *  ranges.
 	 * 
-	 * i.e. month = 12 would be equivalent to month = 1 and year++
+	 * i.e. month = 12 would be equivalent to month = 0 and year++
+	 * 
+	 * Input:
+     * 	-RequestParameters: day, month, year
+     * 
+     * Return: List<Resource<StylistAvailability>>. List may be empty, but 
+     * 	should always return a List.
+     * 	
+     * 	format - Json format of the resource with a link to each individual user and
+     * 		the user's full set of availability.
+     * 
+     * 	the following is an example of what would be returned if there were two
+     * 	stylists in the system, and both with availability in the range. Some
+     * 	notes: 0L is a long value. there is only one stylistAvailabiltiy per
+     * 	stylist or admin (denoted by stylistID and stylistID1).
+     * { 
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "stylist",
+     * 				"href": ".../users/{stylistID}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{stylistID}"
+     * 			}
+     * 		]
+     * 		"id": "{stylistAvailabilityID}",
+     * 		"stylistID": "{stylistID}",
+     * 		"availability":	
+     * 		[
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			},
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			}
+     * 		]
+     * 	},
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "stylist",
+     * 				"href": ".../users/{stylistID1}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{stylistID1}"
+     * 			}
+     * 		]
+     * 		"id": "{stylistAvailabilityID1}",
+     * 		"stylistID": "{stylistID1}",
+     * 		"availability":	
+     * 		[
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			},
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			}
+     * 		]
+     *	}
+     * }
 	 * 
 	 * @param day integer value for the day of the month
 	 * @param month integer in the range 0-11, values outside of this range wrap around.
@@ -139,8 +276,63 @@ public class AvailabilityController extends GenericController
 		return new ResponseEntity<List<Resource<StylistAvailability>>>(returnList, HttpStatus.OK);
 	}
 	
+	/**
+	 * Retrieves a specific stylist's full set of availability without any time
+	 * removed.
+	 * 
+	 * Usage: GET call to /availability/{userID}.
+     * 	Client - will throw an exception
+     * 	Stylist - will throw an exception if trying to access someone else's
+     * 		availability.
+     * 	Admin - no other case where an exception will be thrown.
+     * 
+     * Input:
+     * 	-PathVariable: userID
+     * 	-Headers: authType, authToken
+     * 
+     * Return: Resource<StylistAvailability>. will throw an exception if the
+     * 	specified availability cannot be found.
+     * 	
+     * 	format - Json format of the resource with a link to the user and
+     * 		the user's full set of availability.
+     * 
+     * 	the following is an example of what would be returned. Some
+     * 	notes: 0L is a long value. there is only one stylistAvailabiltiy per
+     * 	stylist or admin (denoted by stylistID and stylistID1).
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "stylist",
+     * 				"href": ".../users/{stylistID}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{stylistID}"
+     * 			}
+     * 		]
+     * 		"id": "{stylistAvailabilityID}",
+     * 		"stylistID": "{stylistID}",
+     * 		"availability":	
+     * 		[
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			},
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			}
+     * 		]
+     * 	}
+	 * 
+	 * @param stylistID
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/{stylistID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Resource<StylistAvailability> getUserAvailability(@PathVariable String stylistID,
+	public ResponseEntity<Resource<StylistAvailability>> getUserAvailability(@PathVariable String stylistID,
 															 HttpServletRequest request) throws Exception
 	{
 		this.setRequestControllerState(request);
@@ -165,15 +357,92 @@ public class AvailabilityController extends GenericController
 			throw new Exception("Unable to find stylist availability in the repository.");
 		}
 		
-		return ResourceHandler.createResource(sa);
+		return new ResponseEntity<Resource<StylistAvailability>>(ResourceHandler.createResource(sa), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/{stylistID}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Resource<StylistAvailability> updateAvailability(@PathVariable String stylistID,
+	/**
+	 * Updates a stylist's availability. Completely overwrites the existing
+	 * availability for the specified stylist.
+	 * 
+	 * Usage: PUT call to /availability/{stylistID}.
+     * 	Client - will throw an exception
+     * 	Stylist - will throw an exception if trying to access someone else's
+     * 		availability.
+     * 	Admin - no other case where an exception will be thrown.
+     * 
+     * Input:
+     * 	-PathVariable: stylistID
+     * 	-Headers: authType, authToken
+     * 	-RequestBody: a Json formatted StylistAvailability model which requires
+     * 	 	the availability field to not be null.
+     * 		example:
+     * 		{
+     * 			"availability":	
+     * 			[
+     * 				{
+     * 					"startDate": 0L,
+     * 					"endDate": 0L
+     * 				},
+     * 				{
+     * 					"startDate": 0L,
+     * 					"endDate": 0L
+     * 				}
+     * 			]
+     * 		}
+     * 
+     * Return: Resource<StylistAvailability>. will throw an exception if the
+     * 	specified availability cannot be found.
+     * 	
+     * 	format - Json format of the resource with a link to the user and
+     * 		the user's full set of availability.
+     * 
+     * 	the following is an example of what would be returned. Some
+     * 	notes: 0L is a long value. there is only one stylistAvailabiltiy per
+     * 	stylist or admin (denoted by stylistID and stylistID1).
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "stylist",
+     * 				"href": ".../users/{stylistID}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{stylistID}"
+     * 			}
+     * 		]
+     * 		"id": "{stylistAvailabilityID}",
+     * 		"stylistID": "{stylistID}",
+     * 		"availability":	
+     * 		[
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			},
+     * 			{
+     * 				"startDate": 0L,
+     * 				"endDate": 0L
+     * 			}
+     * 		]
+     * 	}
+	 * 
+	 * @param stylistID
+	 * @param stylistAvailability
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{stylistID}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Resource<StylistAvailability>> updateAvailability(@PathVariable String stylistID,
 								   							@RequestBody StylistAvailability stylistAvailability,
 								   							HttpServletRequest request) throws Exception
 	{
 		this.setRequestControllerState(request);
+		
+		if(stylistAvailability.getAvailability() == null)
+		{
+			throw new Exception("Availability cannot be null.");
+		}
 		
 		switch(authType)
 		{
@@ -199,7 +468,7 @@ public class AvailabilityController extends GenericController
 		
 		sar.save(sa);
 		
-		return ResourceHandler.createResource(sa);
+		return new ResponseEntity<Resource<StylistAvailability>>(ResourceHandler.createResource(sa), HttpStatus.ACCEPTED);
 	}
 	
 	private List<Resource<StylistAvailability>> getAvailForCalendar(DateRange dr)
