@@ -375,6 +375,8 @@ public class AvailabilityController extends GenericController
      * 	-Headers: authType, authToken
      * 	-RequestBody: a Json formatted StylistAvailability model which requires
      * 	 	the availability field to not be null.
+     * 
+     * *************DOES NOT WORK ATM*************************
      * 		example:
      * 		{
      * 			"availability":	
@@ -389,6 +391,7 @@ public class AvailabilityController extends GenericController
      * 				}
      * 			]
      * 		}
+     * ********************************************************
      * 
      * Return: Resource<StylistAvailability>. will throw an exception if the
      * 	specified availability cannot be found.

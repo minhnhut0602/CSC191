@@ -99,7 +99,7 @@ public class UserController extends GenericController
      * 		[
      * 			{
      * 				"rel": "self",
-     * 				"href": "/users/{userID}"
+     * 				"href": ".../users/{userID}"
      * 			}
      * 		]
      * 		"id": "{userID}",
@@ -140,7 +140,7 @@ public class UserController extends GenericController
 							 User user = userRepository.findByToken(authToken);
 							 if(user != null)
 							 {
-								users.add(userRepository.findByToken(authToken));
+								users.add(user);
 							 }
 			    			
 			    			 break;
@@ -234,7 +234,7 @@ public class UserController extends GenericController
      * 		[
      * 			{
      * 				"rel": "self",
-     * 				"href": "/users/{userID}"
+     * 				"href": ".../users/{userID}"
      * 			}
      * 		]
      * 		"id": "{userID}",
@@ -391,7 +391,7 @@ public class UserController extends GenericController
      * 		[
      * 			{
      * 				"rel": "self",
-     * 				"href": "/users/{userID}"
+     * 				"href": ".../users/{userID}"
      * 			}
      * 		]
      * 		"id": "{userID}",
@@ -483,11 +483,13 @@ public class UserController extends GenericController
      * 	-PathVariable: userID
      * 	-Headers: authType, authToken
      * 	-RequestBody: a Json formatted User model which only requires the fields that
-     * 		are being updated to be present.
+     * 		are being updated to be present. The Active field should always be
+     * 		included as booleans are assumed to be false if not specified.
      * 		example of changing first name and phone number:
      * 		{
      * 			"firstName": "name",
-     * 			"phone": "1234567890"
+     * 			"phone": "1234567890",
+     * 			"active": true
      * 		}
      * 
      * Return: Resource<User>. Will throw an exception if the specified
@@ -527,7 +529,7 @@ public class UserController extends GenericController
      * 		[
      * 			{
      * 				"rel": "self",
-     * 				"href": "/users/{userID}"
+     * 				"href": ".../users/{userID}"
      * 			}
      * 		]
      * 		"id": "{userID}",
@@ -742,16 +744,4 @@ public class UserController extends GenericController
     	L.error("Exception thrown: ", e);
     	return new ResponseEntity<String>(reason, e.getStatus());
     }
-    
-    /*@ExceptionHandler()
-    public ResponseEntity<String> notFound(Exception e) 
-    {
-    	StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        String reason = String.format("\"reason\": \"%s\" " + e.toString() + "\n", e.getMessage());
-        for(StackTraceElement te : ste)
-        {
-        	reason += te + "\n";
-        }
-        return new ResponseEntity<String>(reason, HttpStatus.NOT_FOUND);
-    }*/
 }
