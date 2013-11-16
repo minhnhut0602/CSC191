@@ -77,7 +77,7 @@ scheduleDirectives.directive('calendarPopover', function() {
         restrict: 'A',
         link: function(scope, elm, attr) {
             if (!elm.hasClass('inactive')) {
-                elm.popover({html: true, placement:'bottom', container:'.wrapper', content: function() {
+                elm.popover({html: true, placement:'left auto', container:'.wrapper', content: function() {
                     var year = $(this).attr('data-year');
                     var month = $(this).attr('data-month');
                     var day = $(this).attr('data-day');

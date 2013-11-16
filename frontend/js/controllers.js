@@ -21,7 +21,7 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
             monthIndex = d.getMonth();
             day = d.getDate();
         }
-
+        
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
         var month = {};
