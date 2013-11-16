@@ -23,6 +23,8 @@
 
 <!-- {{allStaff[$last].name}} -->
 </div>
+
+
 <div class="row">
 
   <ul class="pagination" >
@@ -87,9 +89,6 @@
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+11)%12],(monthNow.num+11)%12,1)">{{monthNames[((monthNow.num+11)%12)]}} </a>
     </li>
-
-
-
 
   </ul>
 </div>
