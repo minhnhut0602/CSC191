@@ -146,6 +146,9 @@ scheduleDirectives.directive('calendarPopover', function() {
 scheduleDirectives.directive('selectpicker', function() {
     return {
         restrict: 'A',
+        template:   '<select class="selectpicker" multiple data-live-search="true" data-width="40%" >'+
+                        '<option ng-repeat="staff in allStaff" >{{staff.name}}</option>'+
+                    '</select>',
         link: function(scope, elm, attr) {
             elm.selectpicker({container: 'body'});
         }
