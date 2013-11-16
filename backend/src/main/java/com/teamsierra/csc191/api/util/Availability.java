@@ -25,6 +25,21 @@ public class Availability implements Collection<DateRange>
 		availability = new ArrayList<DateRange>();
 	}
 	
+	public Availability(Collection<DateRange> availability)
+	{
+		this.availability = availability;
+	}
+	
+	public Collection<DateRange> getAvailability() 
+	{
+		return availability;
+	}
+
+	public void setAvailability(Collection<DateRange> availability) 
+	{
+		this.availability = availability;
+	}
+
 	/**
 	 * Convenience method which creates a {@link DateRange} from the two
 	 * params and then calls {@link #add(DateRange)}. 
