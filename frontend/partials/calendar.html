@@ -1,8 +1,27 @@
+<div init-calendar></div>
+
 <div class="top" ng-controller="stafflist">
     <select class="selectpicker" multiple data-live-search="true" data-width="40%" >
-        <option ng-repeat="staff in allStaff" >{{staff.name}} </option>
+        <option  selected ng-repeat="staff in allStaff" >{{staff.name}} </option>
+        <!-- <option selected>Something 1</option>
+        <option selected>Something 2</option>
+        <option selected>Something 3</option>
+        <option selected>Something 4</option> -->
 
     </select>
+
+<!--     <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-primary">
+            <input type="checkbox"> Option 1
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox"> Option 2
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox"> Option 3
+          </label>
+    </div> -->
+
 <!-- {{allStaff[$last].name}} -->
 </div>
 
@@ -23,4 +42,3 @@
     </div>
 </div>
 
-<div init-calendar></div>
