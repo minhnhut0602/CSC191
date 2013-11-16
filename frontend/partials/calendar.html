@@ -97,6 +97,15 @@
 <div class="clearfix"></div>
 <div class="month">
     <div class="month-name"><h1>{{month.name}} {{month.year}}</h1></div>
+    <div class="week-name">
+      <div class="day-name sunday">Sunday</div>
+      <div class="day-name monday">Monday</div>
+      <div class="day-name tuesday">Tuesday</div>
+      <div class="day-name wednesday">Wednesday</div>
+      <div class="day-name thursday">Thursday</div>
+      <div class="day-name friday">Friday</div>
+      <div class="day-name saturday">Saturday</div>
+    </div day>
     <div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">
         <div calendar-popover ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">
             <strong>{{day.number}}</strong>
