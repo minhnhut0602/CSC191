@@ -17,13 +17,15 @@
 
 <!-- {{allStaff[$last].name}} -->
 </div>
+
+
 <div class="row">
 
   <ul class="pagination" >
   <!-- Place each li in a row tag so that they would stack -->
 
     <li>
-      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+0)%12],(monthNow.num+0)%12,1)">{{monthNames[((monthNow.num+0)%12)]}} </a>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+0)%12],(monthNow.num+0)%12, dayNow)">{{monthNames[((monthNow.num+0)%12)]}} </a>
     </li>
 
 
@@ -81,9 +83,6 @@
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+11)%12],(monthNow.num+11)%12,1)">{{monthNames[((monthNow.num+11)%12)]}} </a>
     </li>
-
-
-
 
   </ul>
 </div>
