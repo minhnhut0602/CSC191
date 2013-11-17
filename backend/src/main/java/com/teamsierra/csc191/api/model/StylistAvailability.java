@@ -1,8 +1,10 @@
 package com.teamsierra.csc191.api.model;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.teamsierra.csc191.api.util.Availability;
+import com.teamsierra.csc191.api.util.AvailabilityDeserializer;
 
 @Document(collection = "stylistAvailabilities")
 public class StylistAvailability extends GenericModel
@@ -22,7 +24,8 @@ public class StylistAvailability extends GenericModel
 	{
 		return availability;
 	}
-
+	
+	@JsonDeserialize(using = AvailabilityDeserializer.class)
 	public void setAvailability(Availability availability)
 	{
 		this.availability = availability;

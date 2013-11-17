@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,6 +31,7 @@ import com.teamsierra.csc191.api.repository.AppointmentRepository;
 import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
+import com.teamsierra.csc191.api.util.Availability;
 import com.teamsierra.csc191.api.util.DateRange;
 
 @Controller
@@ -376,7 +378,6 @@ public class AvailabilityController extends GenericController
      * 	-RequestBody: a Json formatted StylistAvailability model which requires
      * 	 	the availability field to not be null.
      * 
-     * *************DOES NOT WORK ATM*************************
      * 		example:
      * 		{
      * 			"availability":	
@@ -391,7 +392,6 @@ public class AvailabilityController extends GenericController
      * 				}
      * 			]
      * 		}
-     * ********************************************************
      * 
      * Return: Resource<StylistAvailability>. will throw an exception if the
      * 	specified availability cannot be found.
@@ -437,14 +437,43 @@ public class AvailabilityController extends GenericController
 	 */
 	@RequestMapping(value = "/{stylistID}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Resource<StylistAvailability>> updateAvailability(@PathVariable String stylistID,
-								   							@RequestBody StylistAvailability stylistAvailability,
+								   							@RequestBody String availability,
 								   							HttpServletRequest request) throws Exception
 	{
 		this.setRequestControllerState(request);
 		
-		if(stylistAvailability.getAvailability() == null)
+		availability = availability.replaceAll("\\s", "");
+		Availability avail = null;
+		StringTokenizer tokenizer = new StringTokenizer(availability, "{}[]:,\"");
+		String token;
+		if(tokenizer.nextToken().equals("availability"))
 		{
-			throw new Exception("Availability cannot be null.");
+			avail = new Availability();
+			
+			while(tokenizer.hasMoreElements())
+			{
+				token = tokenizer.nextToken();
+				if(!token.equals("startDate"))
+				{
+					throw new Exception("Invalid syntax error: token = " + token +
+							", expected = startDate");
+				}
+				Date startDate = new Date(Long.parseLong(tokenizer.nextToken()));
+				
+				token = tokenizer.nextToken();
+				if(!token.equals("endDate"))
+				{
+					throw new Exception("Invalid syntax error: token = " + token +
+							", expected = endDate");
+				}
+				Date endDate = new Date(Long.parseLong(tokenizer.nextToken()));
+				
+				avail.addRange(startDate, endDate);
+			}
+		}
+		else
+		{
+			throw new Exception("Availability must be provided.");
 		}
 		
 		switch(authType)
@@ -467,7 +496,7 @@ public class AvailabilityController extends GenericController
 			throw new Exception("Unable to find stylist availability in the repository.");
 		}
 		
-		sa.setAvailability(stylistAvailability.getAvailability());
+		sa.setAvailability(avail);
 		
 		sar.save(sa);
 		
