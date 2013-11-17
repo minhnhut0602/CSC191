@@ -120,7 +120,6 @@ public class UserController extends GenericController
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Resource<User>>> getUsers(HttpServletRequest request) throws GenericUserException
     {
-    	L.info("GET called at path /.");
     	try
     	{
 			this.setRequestControllerState(request);
@@ -178,6 +177,15 @@ public class UserController extends GenericController
     /**
      * Adds a new user to the database after validating the fields. Only Admins
      * can create new users and these users must be either Stylists or Admins.
+     * 
+     * NOTE: "active" is assumed to be false if not included.
+     * 
+     * Required fields: type, firstName, lastName, email, password
+     * Optional fields: phone, avatarURL, authId, token, active
+     * Null fields: id (should be null, throws an exception if it is not)
+     * 
+     * Not checked Fields: authId, token (will be set if included, no 
+     * 					   validation done)
      * 
      * Usage: POST call to /users.
      * 	Client - will throw an exception
@@ -256,7 +264,6 @@ public class UserController extends GenericController
     public ResponseEntity<Resource<User>> addUser(HttpServletRequest request,
                                         		  @RequestBody User user) throws GenericUserException 
     {
-    	L.info("POST called at path /.");
     	try
     	{
 			this.setRequestControllerState(request);
@@ -293,6 +300,7 @@ public class UserController extends GenericController
 	    		{
 	    			error += "Invalid password.\n";
 	    		}
+	    		
 	    		//optional fields
 	    		if(user.getAvatarURL() != null)
 	    		{
@@ -308,6 +316,15 @@ public class UserController extends GenericController
 		    			error += "Invalid phone number. The phone number should consist of 10 digits.\n";
 		    		}
 	    		}
+	    		
+	    		//fields that should be null
+	    		if(user.getId() != null)
+	    		{
+	    			error += "User ID should be null when creating a new user. To update an"
+	    					+ "existing user use \".../users/{userID} PUT\"";
+	    		}
+	    		
+	    		// fields not checked: authId, token, active
 	    		
 	    		if(error.equals(""))
 	    		{
@@ -413,7 +430,6 @@ public class UserController extends GenericController
     public ResponseEntity<Resource<User>> getUser(@PathVariable String userID,
     											  HttpServletRequest request) throws GenericUserException
     {
-    	L.info("GET called at path /{userID}.");
     	try
     	{
 			this.setRequestControllerState(request);
@@ -474,6 +490,17 @@ public class UserController extends GenericController
      * fields that the specific user is allowed to edit, other fields will be
      * ignored (with no notification).
      * 
+     * Modifiable fields by user type:
+     * 	CLIENT: phone
+     * 	STYLIST: avatarURL, email, firstName, lastName, phone
+     *	ADMIN: avatarURL, email, firstName, lastName, phone
+     *
+     * including any additional fields will not throw an error, but will have
+     * no affect.
+     * 
+     * NOTE: The "active" field should always be included as booleans are assumed
+     * 	to be false if not included.
+     * 
      * Usage: PUT call to /users/{userID}.
      * 	Client - allowed edit their own user, will throw an exception otherwise
      * 	Stylist - allowed to edit their own user, will thrown and exception otherwise
@@ -483,8 +510,8 @@ public class UserController extends GenericController
      * 	-PathVariable: userID
      * 	-Headers: authType, authToken
      * 	-RequestBody: a Json formatted User model which only requires the fields that
-     * 		are being updated to be present. The Active field should always be
-     * 		included as booleans are assumed to be false if not specified.
+     * 		are being updated to be present.
+     * 
      * 		example of changing first name and phone number:
      * 		{
      * 			"firstName": "name",
@@ -553,7 +580,6 @@ public class UserController extends GenericController
     												 HttpServletRequest request,
     									   			 @RequestBody User user) throws GenericUserException
     {
-    	L.info("PUT called at path /{userID}.");
     	try
     	{
 			this.setRequestControllerState(request);
