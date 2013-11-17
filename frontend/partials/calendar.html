@@ -1,26 +1,109 @@
-<div class="top" ng-controller="stafflist">
-    <select class="selectpicker" multiple data-live-search="true" data-width="40%" >
-        <option ng-repeat="staff in allStaff" >{{staff.name}} </option>
+<!-- <div init-calendar></div> -->
 
-    </select>
+<div class="top" ng-controller="stafflist">
+    <select selectpicker></select>
+
+<!--     <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-primary">
+            <input type="checkbox"> Option 1
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox"> Option 2
+          </label>
+          <label class="btn btn-primary">
+            <input type="checkbox"> Option 3
+          </label>
+    </div> -->
+
 <!-- {{allStaff[$last].name}} -->
 </div>
 
-<ul class="pagination">
+
+<div class="row">
+
+  <ul class="pagination" >
+  <!-- Place each li in a row tag so that they would stack -->
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+0)%12],(monthNow.num+0)%12, dayNow)">{{monthNames[((monthNow.num+0)%12)]}} </a>
+    </li>
 
 
-  <li ng-repeat="name in monthNames"><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+$index)%12],(monthNow.num+$index)%12,1)">{{monthNames[((monthNow.num+$index)%12)]}} </a></li>
-</ul>
+   
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+1)%12],(monthNow.num+1)%12,1)">{{monthNames[((monthNow.num+1)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+2)%12],(monthNow.num+2)%12,1)">{{monthNames[((monthNow.num+2)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+3)%12],(monthNow.num+3)%12,1)">{{monthNames[((monthNow.num+3)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+4)%12],(monthNow.num+4)%12,1)">{{monthNames[((monthNow.num+4)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+5)%12],(monthNow.num+5)%12,1)">{{monthNames[((monthNow.num+5)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+6)%12],(monthNow.num+6)%12,1)">{{monthNames[((monthNow.num+6)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+7)%12],(monthNow.num+7)%12,1)">{{monthNames[((monthNow.num+7)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+8)%12],(monthNow.num+8)%12,1)">{{monthNames[((monthNow.num+8)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+9)%12],(monthNow.num+9)%12,1)">{{monthNames[((monthNow.num+9)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+10)%12],(monthNow.num+10)%12,1)">{{monthNames[((monthNow.num+10)%12)]}} </a>
+    </li>
+
+
+    <li>
+      <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+11)%12],(monthNow.num+11)%12,1)">{{monthNames[((monthNow.num+11)%12)]}} </a>
+    </li>
+
+  </ul>
+</div>
 
 <div class="clearfix"></div>
 <div class="month">
     <div class="month-name"><h1>{{month.name}} {{month.year}}</h1></div>
+    <div class="week-name">
+      <div class="day-name sunday">Sunday</div>
+      <div class="day-name monday">Monday</div>
+      <div class="day-name tuesday">Tuesday</div>
+      <div class="day-name wednesday">Wednesday</div>
+      <div class="day-name thursday">Thursday</div>
+      <div class="day-name friday">Friday</div>
+      <div class="day-name saturday">Saturday</div>
+    </div day>
     <div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">
-        <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">
+        <div calendar-popover ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">
             <strong>{{day.number}}</strong>
         </div>
         <div class="day-info" ng-hide="dayInfo"></div>
     </div>
 </div>
 
-<div init-calendar></div>
