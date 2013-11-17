@@ -376,7 +376,7 @@ public class AvailabilityController extends GenericController
      * 	-PathVariable: stylistID
      * 	-Headers: authType, authToken
      * 	-RequestBody: a Json formatted StylistAvailability model which requires
-     * 	 	the availability field to not be null.
+     * 	 	the availability field to not be null. 0L represents a long value.
      * 
      * 		example:
      * 		{
@@ -437,43 +437,14 @@ public class AvailabilityController extends GenericController
 	 */
 	@RequestMapping(value = "/{stylistID}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Resource<StylistAvailability>> updateAvailability(@PathVariable String stylistID,
-								   							@RequestBody String availability,
+								   							@RequestBody StylistAvailability stylistAvailability,
 								   							HttpServletRequest request) throws Exception
 	{
 		this.setRequestControllerState(request);
 		
-		availability = availability.replaceAll("\\s", "");
-		Availability avail = null;
-		StringTokenizer tokenizer = new StringTokenizer(availability, "{}[]:,\"");
-		String token;
-		if(tokenizer.nextToken().equals("availability"))
+		if(stylistAvailability.getAvailability() == null)
 		{
-			avail = new Availability();
-			
-			while(tokenizer.hasMoreElements())
-			{
-				token = tokenizer.nextToken();
-				if(!token.equals("startDate"))
-				{
-					throw new Exception("Invalid syntax error: token = " + token +
-							", expected = startDate");
-				}
-				Date startDate = new Date(Long.parseLong(tokenizer.nextToken()));
-				
-				token = tokenizer.nextToken();
-				if(!token.equals("endDate"))
-				{
-					throw new Exception("Invalid syntax error: token = " + token +
-							", expected = endDate");
-				}
-				Date endDate = new Date(Long.parseLong(tokenizer.nextToken()));
-				
-				avail.addRange(startDate, endDate);
-			}
-		}
-		else
-		{
-			throw new Exception("Availability must be provided.");
+			throw new Exception("Invalid request. The availability cannot be null.");
 		}
 		
 		switch(authType)
@@ -496,7 +467,7 @@ public class AvailabilityController extends GenericController
 			throw new Exception("Unable to find stylist availability in the repository.");
 		}
 		
-		sa.setAvailability(avail);
+		sa.setAvailability(stylistAvailability.getAvailability());
 		
 		sar.save(sa);
 		

@@ -14,6 +14,15 @@ public class DateRange implements Cloneable
 	private Date endDate;
 	
 	/**
+	 * Do not use. Intended to only be used for Jackson
+	 * deserialization.
+	 */
+	@Deprecated
+	public DateRange()
+	{
+	}
+	
+	/**
 	 * Creates a DateRange with the given params. can throw an 
 	 * {@link IllegalArgumentException} if the start date is after the
 	 * end date.
@@ -46,13 +55,21 @@ public class DateRange implements Cloneable
 	 */
 	public void setStartDate(Date startDate) 
 	{
-		if(startDate.compareTo(endDate) <= 0)
+		if(endDate != null)
 		{
-			this.startDate = startDate;
+			if(startDate.compareTo(endDate) <= 0)
+			{
+				this.startDate = startDate;
+			}
+			else
+			{
+				throw new IllegalArgumentException("The start date must be before the end date.");
+			}	
 		}
 		else
 		{
-			throw new IllegalArgumentException("The start date must be before the end date.");
+			this.startDate = startDate;
+			this.endDate = (Date) startDate.clone();
 		}
 	}
 	
@@ -75,13 +92,21 @@ public class DateRange implements Cloneable
 	 */
 	public void setEndDate(Date endDate)
 	{
-		if(endDate.compareTo(startDate) >= 0)
+		if(startDate != null)
 		{
-			this.endDate = endDate;
+			if(endDate.compareTo(startDate) >= 0)
+			{
+				this.endDate = endDate;
+			}
+			else
+			{
+				throw new IllegalArgumentException("The end date must be later than the start date.");
+			}
 		}
 		else
 		{
-			throw new IllegalArgumentException("The end date must be later than the start date.");
+			this.endDate = endDate;
+			startDate = (Date) endDate.clone();
 		}
 	}
 	
