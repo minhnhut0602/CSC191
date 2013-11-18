@@ -58,6 +58,8 @@ public class AuthInterceptor implements HandlerInterceptor{
                              Object handler) throws Exception{
 
         // TODO remove from production
+    	// WHEN REMOVED: go to UserControllerIntegrationTest.java and
+    	// 	comment out the specified test method or the tests will fail.
         if (!request.getHeader("debug").isEmpty())
         {
             request.setAttribute("authToken", request.getHeader("authToken"));
