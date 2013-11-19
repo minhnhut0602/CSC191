@@ -190,7 +190,17 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
 scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http) {
-  $http.get('json/appointments/clientAppointments.json').success(function(data) {
+    var config = {headers:  {
+        'authType': 'admin',
+        'authToken': '123456',
+        'debug': 'true',
+        'id': 'j1903j',
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+        }
+    };
+
+  $http.get('json/appointments/clientAppointments.json', config).success(function(data) {
     $scope.appointments = data;
   });
 });
@@ -220,7 +230,16 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
 //                     \______/
 
 scheduleControllers.controller('adminController', function adminController($scope, $http) {
-  $http.get('json/users.json').success(function(data) {
+    var config = {headers:  {
+        'authType': 'admin',
+        'authToken': '123456',
+        'debug': 'true',
+        'id': 'j1903j',
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+        }
+    };
+  $http.get('http://api.joubin.bornstellar.com:8080/salon-scheduler-api/users', config).success(function(data) {
     $scope.users = data;
   });
 });
