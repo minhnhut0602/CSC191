@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -15,12 +16,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.teamsierra.csc191.api.exception.GenericAvailabilityException;
+import com.teamsierra.csc191.api.exception.GenericException;
+import com.teamsierra.csc191.api.exception.GenericUserException;
 import com.teamsierra.csc191.api.model.Appointment;
 import com.teamsierra.csc191.api.model.GenericModel.AppointmentStatus;
 import com.teamsierra.csc191.api.model.StylistAvailability;
@@ -29,6 +34,7 @@ import com.teamsierra.csc191.api.repository.AppointmentRepository;
 import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
+import com.teamsierra.csc191.api.util.Availability;
 import com.teamsierra.csc191.api.util.DateRange;
 
 @Controller
@@ -332,28 +338,23 @@ public class AvailabilityController extends GenericController
 	 */
 	@RequestMapping(value = "/{stylistID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Resource<StylistAvailability>> getUserAvailability(@PathVariable String stylistID,
-															 HttpServletRequest request) throws Exception
+															 				 HttpServletRequest request) throws GenericAvailabilityException
 	{
-		this.setRequestControllerState(request);
-		
-		switch(authType)
-		{
-			case CLIENT: throw new Exception("Clients cannot modify stylist availability.");
-			case STYLIST: User user = userRepo.findByToken(authToken);
-						  if(!stylistID.equals(user.getId()))
-						  {
-							  throw new Exception("Stylists can only edit their own availability.");
-						  }
-						  break;
-			case ADMIN: 
-						break;
-			default:
-		}
+		try
+    	{
+    		this.setRequestControllerState(request);
+    	}
+    	catch(Exception e)
+    	{
+    		throw new GenericAvailabilityException(e.getMessage(),
+    				HttpStatus.BAD_REQUEST);
+    	}
 		
 		StylistAvailability sa = sar.findByStylistID(stylistID);
 		if(sa == null)
 		{
-			throw new Exception("Unable to find stylist availability in the repository.");
+			throw new GenericAvailabilityException("Unable to find stylist availability in the repository.",
+					HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity<Resource<StylistAvailability>>(ResourceHandler.createResource(sa), HttpStatus.OK);
@@ -437,20 +438,37 @@ public class AvailabilityController extends GenericController
 								   							@RequestBody StylistAvailability stylistAvailability,
 								   							HttpServletRequest request) throws Exception
 	{
-		this.setRequestControllerState(request);
+		try
+    	{
+    		this.setRequestControllerState(request);
+    	}
+    	catch(Exception e)
+    	{
+    		throw new GenericAvailabilityException(e.getMessage(),
+    				HttpStatus.BAD_REQUEST);
+    	}
 		
 		if(stylistAvailability.getAvailability() == null)
 		{
-			throw new Exception("Invalid request. The availability cannot be null.");
+			throw new GenericAvailabilityException("Invalid request. The availability cannot be null.",
+					HttpStatus.BAD_REQUEST);
 		}
 		
 		switch(authType)
 		{
-			case CLIENT: throw new Exception("Clients cannot modify stylist availability.");
+			case CLIENT: throw new GenericAvailabilityException("Clients cannot modify stylist availability.",
+					HttpStatus.BAD_REQUEST);
 			case STYLIST: User user = userRepo.findByToken(authToken);
+						  if(user == null)
+						  {
+							  throw new GenericAvailabilityException("Unable to find your user credentials in the database.",
+									 HttpStatus.FORBIDDEN);
+						  }
+						  
 						  if(!stylistID.equals(user.getId()))
 						  {
-							  throw new Exception("Stylists can only edit their own availability.");
+							  throw new GenericAvailabilityException("Stylists can only edit their own availability.",
+									  HttpStatus.FORBIDDEN);
 						  }
 						  break;
 			case ADMIN: 
@@ -461,10 +479,17 @@ public class AvailabilityController extends GenericController
 		StylistAvailability sa = sar.findByStylistID(stylistID);
 		if(sa == null)
 		{
-			throw new Exception("Unable to find stylist availability in the repository.");
+			throw new GenericAvailabilityException("Unable to find stylist availability in the repository.",
+					HttpStatus.NOT_FOUND);
 		}
+
+		/* the following is done to ensure a consistent state of
+		 * no two overlapping DateRanges in the availability.
+		 */
+		Availability avail = new Availability();
+		avail.addAll(stylistAvailability.getAvailability());
 		
-		sa.setAvailability(stylistAvailability.getAvailability());
+		sa.setAvailability(avail);
 		
 		sar.save(sa);
 		
@@ -502,4 +527,18 @@ public class AvailabilityController extends GenericController
 		
 		return returnList;
 	}
+	
+	@ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAllExceptions(Exception e) throws GenericAvailabilityException
+    {
+		if(!(e instanceof GenericAvailabilityException))
+		{
+			throw new GenericAvailabilityException(e.getMessage(),
+					HttpStatus.BAD_REQUEST);
+		}
+		else
+		{
+			throw (GenericAvailabilityException) e;
+		}
+    }
 }
