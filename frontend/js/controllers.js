@@ -239,7 +239,7 @@ scheduleControllers.controller('adminController', function adminController($scop
         'Cache-Control': 'no-cache'
         }
     };
-  $http.get('http://api.joubin.bornstellar.com:8080/salon-scheduler-api/users', config).success(function(data) {
+  $http.get('http://home.joubin.me:8080/salon-scheduler-api/users', config).success(function(data) {
     $scope.users = data;
   });
 });
