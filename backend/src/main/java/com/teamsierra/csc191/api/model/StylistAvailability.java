@@ -22,7 +22,7 @@ public class StylistAvailability extends GenericModel
 	{
 		return availability;
 	}
-
+	
 	public void setAvailability(Availability availability)
 	{
 		this.availability = availability;

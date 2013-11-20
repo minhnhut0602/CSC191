@@ -1,7 +1,9 @@
 var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'scheduleDirectives', 'facebook']);
 
-scheduleApp.config(['$routeProvider', 'FacebookProvider',
-    function($routeProvider, FacebookProvider) {
+scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
+    function($routeProvider, $httpProvider,FacebookProvider) {
+        $httpProvider.defaults.useXDomain = true;
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
         $routeProvider.
             when('/calendar', {
                 templateUrl: 'partials/calendar.html',
