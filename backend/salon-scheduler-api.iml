@@ -19,8 +19,10 @@
       <configuration>
         <fileset id="fileset" name="Spring Application Context" removed="false">
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/root-context.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/salon-scheduler-api/controllers.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/salon-scheduler-api/servlet-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/salon-scheduler-api/controllers-test.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/salon-scheduler-api/servlet-context-test.xml</file>
+          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/spring/salon-scheduler-api/controllers.xml</file>
         </fileset>
       </configuration>
     </facet>

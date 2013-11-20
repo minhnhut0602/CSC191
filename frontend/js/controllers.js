@@ -127,6 +127,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.loggedIn = true;
                 $scope.me();
                 console.log(response);
+                $rootScope.facebook = response;
             } else {
                 // $scope.login();
                 //bring them to the login page
@@ -189,12 +190,12 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
 // | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
-scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http) {
+scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
     var config = {headers:  {
         'authType': 'admin',
-        'authToken': '123456',
+        'authToken': $rootScope.facebook.accessToken,
         'debug': 'true',
-        'id': 'j1903j',
+        'id': $rootScope.facebook.userID,
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
         }
