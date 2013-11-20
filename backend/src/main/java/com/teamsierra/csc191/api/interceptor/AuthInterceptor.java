@@ -61,7 +61,7 @@ public class AuthInterceptor implements HandlerInterceptor{
     	// WHEN REMOVED: go to UserControllerIntegrationTest.java and
     	// comment out the specified test method or the tests will fail.
         if (p.getProperty("appmode", "prod").equalsIgnoreCase("dev") &&
-            !request.getHeader("debug").isEmpty())
+            request.getHeader("debug") != null)
         {
             request.setAttribute("authToken", request.getHeader("authToken"));
             request.setAttribute("id", request.getHeader("id"));
