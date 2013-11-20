@@ -39,11 +39,49 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * searchAppointments(Appointment, HttpServletRequest)
  * search appointments that match search fields
  *
+ * Sample returned object:
+ * {
+ *   "links": [
+ *     {
+ *       "rel": "self",
+ *       "href": "http://10.100.1.6:8080/salon/appointments/527ae382e4b00d9311cf63dd"
+ *     },
+ *     {
+ *       "rel": "stylist",
+ *       "href": "http://10.100.1.6:8080/salon/users/5273092cae29d92436b7f6f1"
+ *     },
+ *     {
+ *       "rel": "client",
+ *       "href": "http://10.100.1.6:8080/salon/users/52730965ae29d92436b7f6f2"
+ *     },
+ *     {
+ *       "rel": "appointmentType",
+ *       "href": "http://10.100.1.6:8080/salon/527add30e4b0afd24604fe2d"
+ *     }
+ *   ],
+ *   "id": "527ae382e4b00d9311cf63dd",
+ *   "clientID": "52730965ae29d92436b7f6f2",
+ *   "stylistID": "5273092cae29d92436b7f6f1",
+ *   "startTime": 1386460800000,
+ *   "endTime": 1386374400000,
+ *   "appointmentStatus": "APPROVED",
+ *   "appointmentType": "haircut"
+ * }
+ *
+ *
  * addAppointment(Appointment, HttpServletRequest)
  * add requestData to database
  *
  * editAppointment(Appointment, String, HttpServletRequest)
  * edit an exisit requestData
+ * Sample object:
+ * {
+ *   "appointmentTypeID":"527b55f0e4b01219435d812c",
+ *   "stylistID": "5273092cae29d92436b7f6f1",
+ *   "startTime": "2013-11-20T15:00:00.000-08:00",
+ *   "endTime": "2013-11-20T16:00:00.000-08:00",
+ *   “appointmentStatus”: ”CANCELED”
+ * }
  *
  */
 @Controller

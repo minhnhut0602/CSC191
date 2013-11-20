@@ -57,10 +57,11 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
-        // TODO remove from production
+        // TODO change appmode in system.properties before production
     	// WHEN REMOVED: go to UserControllerIntegrationTest.java and
-    	// 	comment out the specified test method or the tests will fail.
-        if (!request.getHeader("debug").isEmpty())
+    	// comment out the specified test method or the tests will fail.
+        if (p.getProperty("appmode", "prod").equalsIgnoreCase("dev") &&
+            !request.getHeader("debug").isEmpty())
         {
             request.setAttribute("authToken", request.getHeader("authToken"));
             request.setAttribute("id", request.getHeader("id"));
@@ -68,6 +69,7 @@ public class AuthInterceptor implements HandlerInterceptor{
             return true;
         }
 
+        // TODO remove??
         AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
         ID = request.getHeader(p.getProperty("headers.id"));
         AUTH_TYPE = Integer.parseInt(request.getHeader(p.getProperty("headers.authType")));
@@ -166,7 +168,7 @@ public class AuthInterceptor implements HandlerInterceptor{
                               "&client_secret={secret}"+
                               "&grant_type=client_credentials";
         Map<String, String> getAppAccessVars = new HashMap<>();
-        getAppAccessVars.put("id", "197300770451342");
+        getAppAccessVars.put("id", p.getProperty("facebookId"));
         getAppAccessVars.put("secret", p.getProperty("facebookSecret"));
 
         String appAccess = restTemplate.getForObject(appAccessUrl, String.class, getAppAccessVars);

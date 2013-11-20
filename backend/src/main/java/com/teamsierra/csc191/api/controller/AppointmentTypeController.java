@@ -29,16 +29,36 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * getAllTypes()
  * retrieve a list of all available appointment types and stylists assigned to these types
  *
- * getType(String)
- * get a specific appointment type specified by url
+ * getType(String id)
+ * get a specific appointment type specified by id in url
+ * Sample returned object:
+ * {
+ *   "links": [
+ *     {
+ *       "rel": "self",
+ *       "href": "http://10.100.1.6:8080/salon/appointmentTypes/527b558ee4b01219435d812b"
+ *     }
+ *   ],
+ *   "id": "527b558ee4b01219435d812b",
+ *   "appointmentType": "color",
+ *   "durationInMinutes": 0,
+ *   "basePrice": 0,
+ *   "stylists": []
+ * }
  *
- * addAppointmentType(addAppointmentType, HttpServletRequest)
+ * addAppointmentType(AppointmentType requestData, HttpServletRequest)
  * add a new appointment type
+ * Sample requestData:
+ * {
+ *   "appointmentType": "color",
+ *   "durationInMinutes": 0,
+ *   "basePrice": 0
+ * }
  *
- * addStylistToType(String, String, HttpServletRequest)
+ * addStylistToType(String typeid, String stylistid, HttpServletRequest)
  * add an existing stylist to an existing appointment type
  *
- * removeStylistFromType(String, String, HttpServletRequest)
+ * removeStylistFromType(String typeid, String stylistid, HttpServletRequest)
  * remove a stylist from the appointment type
  */
 
