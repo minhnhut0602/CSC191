@@ -5,7 +5,7 @@ scheduleDirectives.directive('calendarPopover', function() {
         restrict: 'A',
         link: function(scope, elm, attr) {
             if (!elm.hasClass('inactive')) {
-                elm.popover({html: true, placement:'left auto', container:'.wrapper', content: function() {
+                elm.popover({html: true, placement:'left auto', content: function() {
                     var year = $(this).attr('data-year');
                     var month = $(this).attr('data-month');
                     var day = $(this).attr('data-day');
@@ -60,13 +60,24 @@ scheduleDirectives.directive('calendarPopover', function() {
             elm.on('shown.bs.popover', function () {
                 $('.selectpicker-popover').selectpicker();
             });
-            // $('.day:not(.inactive)').click(function(e) {
-            //     $('.day:not(.inactive)').not($(this)).popover('hide');
-            //     e.stopPropagation();
-            // });
-            // $('body').click(function() {
-            //    $('.day:not(.inactive)').popover('hide');
-            // });
+            $('.day:not(.inactive)').click(function(e) {
+                $('.day:not(.inactive)').not($(this)).popover('hide');
+                console.log("day event click");
+                e.stopPropagation();
+            });
+            $('body').on('click', '.popover', function(e) {
+                // $('.day:not(.inactive)').not($(this)).popover('hide');
+                // e.stopPropagation();
+            });
+            $(document).on('click', '.selectpicker-popover', function(e) {
+                // $('.day:not(.inactive)').not($(this)).popover('hide');
+                console.log(".select-popover event click");
+                e.stopPropagation();
+            });
+            $('body').click(function() {
+               $('.day:not(.inactive)').popover('hide');
+               console.log("body click event");
+            });
         }
     }
 });
