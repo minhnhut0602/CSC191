@@ -38,7 +38,7 @@ public class AuthInterceptor implements HandlerInterceptor{
     private Properties p;
     private String AUTH_TOKEN;
     private String ID;
-    private int AUTH_TYPE;
+    private String AUTH_TYPE;
 
     public AuthInterceptor() {
         super();
@@ -72,7 +72,7 @@ public class AuthInterceptor implements HandlerInterceptor{
         // TODO remove??
         AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
         ID = request.getHeader(p.getProperty("headers.id"));
-        AUTH_TYPE = Integer.parseInt(request.getHeader(p.getProperty("headers.authType")));
+        AUTH_TYPE = request.getHeader(p.getProperty("headers.authType"));
         L.info(AUTH_TYPE);
 
         User user = userRepository.findByOAuthId(ID);
@@ -85,7 +85,7 @@ public class AuthInterceptor implements HandlerInterceptor{
                 returnValue = true;
             } else { //access token is bad
                 switch (AUTH_TYPE) {
-                    case 0:
+                    case "client":
                         //client
                         if (facebookChallenge(ID, AUTH_TOKEN, response)) {
                             //update user authToken
@@ -96,10 +96,10 @@ public class AuthInterceptor implements HandlerInterceptor{
                             returnValue = false;
                         }
                         break;
-                    case 1:
+                    case "stylist":
                         //stylist
                         break;
-                    case 2:
+                    case "admin":
                         //admin
                         break;
                 }
@@ -109,7 +109,7 @@ public class AuthInterceptor implements HandlerInterceptor{
         } else { //user does not exist
             L.info("user not found");
             switch (AUTH_TYPE) {
-                case 0:
+                case "client":
                     //client
                     if (facebookChallenge(ID, AUTH_TOKEN, response)) {
                         //add user to database
@@ -125,10 +125,10 @@ public class AuthInterceptor implements HandlerInterceptor{
                         returnValue = false;
                     }
                     break;
-                case 1:
+                case "stylist":
                     //stylist
                     break;
-                case 2:
+                case "admin":
                     //admin
                     break;
             }
@@ -140,13 +140,13 @@ public class AuthInterceptor implements HandlerInterceptor{
             //set the id and user type
             request.setAttribute("id", ID);
             switch (AUTH_TYPE) {
-                case 0:
+                case "client":
                     request.setAttribute("authType", GenericModel.UserType.CLIENT);
                     break;
-                case 1:
+                case "stylist":
                     request.setAttribute("authType", GenericModel.UserType.STYLIST);
                     break;
-                case 2:
+                case "admin":
                     request.setAttribute("authType", GenericModel.UserType.ADMIN);
                     break;
             }
