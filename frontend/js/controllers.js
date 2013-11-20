@@ -233,9 +233,9 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
 scheduleControllers.controller('adminController', function adminController($scope, $http) {
     var config = {headers:  {
         'authType': 'admin',
-        'authToken': '123456',
+        'authToken': $rootScope.facebook.accessToken,
         'debug': 'true',
-        'id': 'j1903j',
+        'id': $rootScope.facebook.userID,
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
         }
