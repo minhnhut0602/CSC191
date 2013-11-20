@@ -49,6 +49,11 @@ public class AppointmentTypeController extends GenericController
     @Autowired
     AppointmentTypeRepository appointmentTypeRepository;
 
+    @Autowired
+    public AppointmentTypeController(AppointmentTypeRepository atRepo)
+    {
+        this.appointmentTypeRepository = atRepo;
+    }
 
     /**
      * Get all available appointment types and assigned stylists

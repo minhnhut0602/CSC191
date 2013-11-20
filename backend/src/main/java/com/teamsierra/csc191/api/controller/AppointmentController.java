@@ -26,6 +26,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author Alex Chernyak
+ *
  * Controller managing appointment business logic
  *
  * Public methods:
@@ -55,14 +56,22 @@ public class AppointmentController extends GenericController
     private AppointmentTypeRepository appTypeRepository;
     @Autowired
     private StylistAvailabilityRepository availRepository;
+
+
     @Autowired
-    private AppointmentTypeController atController;
+    public AppointmentController(AppointmentRepository appRepository,
+                                 AppointmentTypeRepository appTypeRepository,
+                                 StylistAvailabilityRepository availRepository)
+    {
+        this.appRepository = appRepository;
+        this.appTypeRepository = appTypeRepository;
+        this.availRepository = availRepository;
+    }
 
     /**
      * Get list of all appointments relevant to a caller
      * @return list of appointments
      * @throws Exception
-     * TODO date filter??
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
