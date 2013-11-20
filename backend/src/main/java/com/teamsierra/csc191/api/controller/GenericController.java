@@ -1,18 +1,22 @@
 package com.teamsierra.csc191.api.controller;
 
-import com.teamsierra.csc191.api.exception.GenericUserException;
-import com.teamsierra.csc191.api.exception.UserAlreadyExistsException;
-import com.teamsierra.csc191.api.model.GenericModel;
-import com.teamsierra.csc191.api.repository.UserRepository;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import com.teamsierra.csc191.api.exception.GenericException;
+import com.teamsierra.csc191.api.exception.GenericUserException;
+import com.teamsierra.csc191.api.exception.UserAlreadyExistsException;
+import com.teamsierra.csc191.api.model.GenericModel;
+import com.teamsierra.csc191.api.repository.UserRepository;
 
 
 /**
@@ -54,6 +58,15 @@ public abstract class GenericController
         }
 
         return new ResponseEntity<>(error, status);
+    }
+    
+    @ExceptionHandler(GenericException.class)
+    public ResponseEntity<String> handleGenericException(GenericException e)
+    {
+    	String reason = String.format("\"reason\": \"%s\"", e.getMessage());
+    	e.getLog().error("Exception thrown: ", e);
+    	
+    	return new ResponseEntity<String>(reason, e.getStatus());
     }
 
 

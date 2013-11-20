@@ -2,10 +2,25 @@ package com.teamsierra.csc191.api.util;
 
 import java.util.Date;
 
-public class DateRange 
+/**
+ * A class representing a range of two {@link Date} instances.
+ * 
+ * @author Kyle
+ *
+ */
+public class DateRange implements Cloneable
 {
 	private Date startDate;
 	private Date endDate;
+	
+	/**
+	 * Do not use. Intended to only be used for Jackson
+	 * deserialization.
+	 */
+	@Deprecated
+	public DateRange()
+	{
+	}
 	
 	/**
 	 * Creates a DateRange with the given params. can throw an 
@@ -20,7 +35,12 @@ public class DateRange
 		this.startDate = startDate;
 		setEndDate(endDate);
 	}
-
+	
+	/**
+	 * Getter for the start date.
+	 * 
+	 * @return the start date of this DateRange
+	 */
 	public Date getStartDate() 
 	{
 		return startDate;
@@ -35,16 +55,29 @@ public class DateRange
 	 */
 	public void setStartDate(Date startDate) 
 	{
-		if(startDate.compareTo(endDate) <= 0)
+		if(endDate != null)
 		{
-			this.startDate = startDate;
+			if(startDate.compareTo(endDate) <= 0)
+			{
+				this.startDate = startDate;
+			}
+			else
+			{
+				throw new IllegalArgumentException("The start date must be before the end date.");
+			}	
 		}
 		else
 		{
-			throw new IllegalArgumentException("The start date must be before the end date.");
+			this.startDate = startDate;
+			this.endDate = (Date) startDate.clone();
 		}
 	}
-
+	
+	/**
+	 * Getter for the end date.
+	 * 
+	 * @return the end date of this DateRange
+	 */
 	public Date getEndDate() 
 	{
 		return endDate;
@@ -59,13 +92,21 @@ public class DateRange
 	 */
 	public void setEndDate(Date endDate)
 	{
-		if(endDate.compareTo(startDate) >= 0)
+		if(startDate != null)
 		{
-			this.endDate = endDate;
+			if(endDate.compareTo(startDate) >= 0)
+			{
+				this.endDate = endDate;
+			}
+			else
+			{
+				throw new IllegalArgumentException("The end date must be later than the start date.");
+			}
 		}
 		else
 		{
-			throw new IllegalArgumentException("The end date must be later than the start date.");
+			this.endDate = endDate;
+			startDate = (Date) endDate.clone();
 		}
 	}
 	
@@ -116,10 +157,12 @@ public class DateRange
 	}
 	
 	/**
-	 * Returns true if this DateRange overlaps with the param DateRange.
+	 * Returns true if this DateRange overlaps with the param DateRange. This
+	 * includes if one of the date's end date is the same as the other date's
+	 * start date.
 	 * 
 	 * @param dateRange
-	 * @return
+	 * @return true if the DateRanges overlap in any manor
 	 */
 	public boolean isOverlapping(DateRange dateRange)
 	{
@@ -152,12 +195,23 @@ public class DateRange
 				"}";
 	}
 	
+	/**
+	 * Returns a new DateRange with the same start and end date
+	 * as the original.
+	 * 
+	 */
 	@Override
 	public DateRange clone()
 	{
 		return new DateRange(startDate, endDate);
 	}
 	
+	/**
+	 * Returns true iff the param Object is an instance of a DateRange
+	 * and both the start date and end date are the same for the two
+	 * DateRanges. 
+	 * 
+	 */
 	@Override
 	public boolean equals(Object o)
 	{

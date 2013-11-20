@@ -178,7 +178,7 @@ public class StylistAvailabilityRepository
    {
 	   StylistAvailability sa = mongoTemplate.findOne(query(where("stylistID").is(stylistID)), StylistAvailability.class);
 	   
-	   if(sa == null)
+	   if(sa == null  || sa.getAvailability() == null)
 	   {
 		   return null;
 	   }

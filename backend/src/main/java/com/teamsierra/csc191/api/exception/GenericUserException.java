@@ -1,21 +1,17 @@
 package com.teamsierra.csc191.api.exception;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 
-public class GenericUserException extends Exception{
-	private HttpStatus status;
+import com.teamsierra.csc191.api.controller.UserController;
+
+public class GenericUserException extends GenericException
+{
+	private static final Log L = LogFactory.getLog(UserController.class);
 	
-	public GenericUserException(String message, HttpStatus status){
-		super(message);
-		
-		this.status = status;
-	}
-
-	public HttpStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(HttpStatus status) {
-		this.status = status;
+	public GenericUserException(String message, HttpStatus status)
+	{
+		super(message, status, L);
 	}
 }

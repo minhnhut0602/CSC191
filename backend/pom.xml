@@ -154,6 +154,13 @@
             <version>${json-path.version}</version>
             <scope>test</scope>
        	</dependency>
+       	
+       	<dependency>
+  			<groupId>com.github.fakemongo</groupId>
+  			<artifactId>fongo</artifactId>
+  			<version>1.3.2</version>
+  			<scope>test</scope>
+		</dependency>
 
         <!-- Mock {Fake}MongoDB for unit testing -->
         <dependency>

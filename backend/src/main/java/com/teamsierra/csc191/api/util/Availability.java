@@ -6,7 +6,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
+/**
+ * A class that is a collection of {@link DateRange}s with some
+ * convenience methods for this collection. 
+ * 
+ * This collection works a bit differently than a normal collection, 
+ * see method descriptions for more details.
+ * 
+ * @author Kyle
+ *
+ */
 public class Availability implements Collection<DateRange>
 {	
 	private Collection<DateRange> availability;
@@ -16,6 +25,21 @@ public class Availability implements Collection<DateRange>
 		availability = new ArrayList<DateRange>();
 	}
 	
+	public Availability(Collection<DateRange> availability)
+	{
+		this.availability = availability;
+	}
+	
+	public Collection<DateRange> getAvailability() 
+	{
+		return availability;
+	}
+
+	public void setAvailability(Collection<DateRange> availability) 
+	{
+		this.availability = availability;
+	}
+
 	/**
 	 * Convenience method which creates a {@link DateRange} from the two
 	 * params and then calls {@link #add(DateRange)}. 
@@ -163,7 +187,7 @@ public class Availability implements Collection<DateRange>
 	/**
 	 * Iterates through the collection and calls {@link #add(DateRange)}.
 	 * 
-	 * Should always return true due to the way this colleciton works.
+	 * Should always return true due to the way this collection works.
 	 */
 	@Override
 	public boolean addAll(Collection<? extends DateRange> c) 
