@@ -1,3 +1,9 @@
+function readCookie(name) {
+    name += '=';
+    for (var ca = document.cookie.split(/;\s*/), i = ca.length - 1; i >= 0; i--)
+        if (!ca[i].indexOf(name))
+            return ca[i].replace(name, '');
+}
 var scheduleControllers = angular.module('scheduleControllers', []);
 
 
@@ -123,9 +129,15 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         console.log('before');
         Facebook.getLoginStatus(function(response) {
             console.log(response);
+
             if(response.status == 'connected') {
                 $scope.loggedIn = true;
                 $scope.me();
+                document.cookie="myAccessToken="+response.authResponse["accessToken"];
+                document.cookie="myID="+response.authResponse["userID"];
+                alert("asd");
+                $scope.user = response;
+                $rootScope.user = $scope.user;
                 console.log(response);
                 $rootScope.facebook = response;
             } else {
@@ -134,6 +146,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 console.log('send to login');
                 $scope.$apply(function() {
                     $location.path('login');
+
                 });
             }
         });
@@ -142,10 +155,13 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     $scope.me = function() {
         Facebook.api('/me', function(response) {
             $scope.$apply(function() {
+
                 // Here you could re-check for user status (just in case)
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 console.log(response);
+                // this is all null scott
+                // TODO figure out why
             });
         });
     };
@@ -193,9 +209,9 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
 scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
     var config = {headers:  {
         'authType': 'admin',
-        'authToken': $rootScope.facebook.accessToken,
+        'authToken': readCookie("myAccessToken"),
         'debug': 'true',
-        'id': $rootScope.facebook.userID,
+        'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
         }
@@ -230,12 +246,12 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
 //                    |  $$$$$$/
 //                     \______/
 
-scheduleControllers.controller('adminController', function adminController($scope, $http) {
+scheduleControllers.controller('adminController', function adminController($scope, $http, $rootScope) {
     var config = {headers:  {
         'authType': 'admin',
-        'authToken': $rootScope.facebook.accessToken,
+        'authToken': readCookie("myAccessToken"),
         'debug': 'true',
-        'id': $rootScope.facebook.userID,
+        'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
         }

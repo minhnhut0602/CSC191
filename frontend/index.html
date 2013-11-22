@@ -60,7 +60,7 @@
                             <span>Edit Profile</span>
                         </a>
                     </li>
-                    <li ng-controller="userAuthController" ng-show="currentUserAuth.rank == 'admin'">
+                    <li ng-controller="userAuthController" ng-show="currentUserAuth.rank != 'admin'">
                          <a class="gn-icon" href="#/admin" >
                             <i class="fa fa-tasks"></i>
                             <span>Admin</span>
