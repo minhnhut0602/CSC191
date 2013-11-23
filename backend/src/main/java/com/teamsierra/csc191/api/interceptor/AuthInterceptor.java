@@ -90,8 +90,6 @@ public class AuthInterceptor implements HandlerInterceptor{
                         if (facebookChallenge(ID, AUTH_TOKEN, response)) {
                             //update user authToken
                             user.setToken(AUTH_TOKEN);
-                            user.setOauthId(ID);
-                            user.setActive(true);
                             userRepository.save(user);
                             request.setAttribute("id", user.getId());
                             returnValue = true;
@@ -121,8 +119,10 @@ public class AuthInterceptor implements HandlerInterceptor{
                         newUser.setOauthId(ID);
                         newUser.setType(GenericModel.UserType.CLIENT);
                         newUser.setToken(AUTH_TOKEN);
+                        newUser.setActive(true);
                         userRepository.insert(newUser);
                         L.info(newUser +" added");
+                        request.setAttribute("id", newUser.getId());
                         returnValue = true;
                     } else {
                         L.info("fb challenge failed, returning 401");
@@ -141,8 +141,6 @@ public class AuthInterceptor implements HandlerInterceptor{
         if (returnValue) {
             L.info("filling in generic controller");
 
-            //set the id and user type
-            request.setAttribute("id", ID);
             switch (AUTH_TYPE) {
                 case "client":
                     request.setAttribute("authType", GenericModel.UserType.CLIENT);
