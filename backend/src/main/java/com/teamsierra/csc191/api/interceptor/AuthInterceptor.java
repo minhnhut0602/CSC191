@@ -90,7 +90,10 @@ public class AuthInterceptor implements HandlerInterceptor{
                         if (facebookChallenge(ID, AUTH_TOKEN, response)) {
                             //update user authToken
                             user.setToken(AUTH_TOKEN);
+                            user.setOauthId(ID);
+                            user.setActive(true);
                             userRepository.save(user);
+                            request.setAttribute("id", user.getId());
                             returnValue = true;
                         } else {
                             returnValue = false;

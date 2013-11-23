@@ -27,7 +27,7 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
             monthIndex = d.getMonth();
             day = d.getDate();
         }
-        
+
         var date = new Date(year, monthIndex, 1);
         var current = new Date(year, monthIndex, day);
         var month = {};
@@ -111,7 +111,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         Facebook.login(function(response) {
             // Do something with response. Don't forget here you are on Facebook scope so use $scope.$apply
             $scope.getLoginStatus();
-            $location.path('client-landing');
+
         });
     };
     $scope.logout = function() {
@@ -138,15 +138,14 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 alert("asd");
                 $scope.user = response;
                 $rootScope.user = $scope.user;
-                console.log(response);
                 $rootScope.facebook = response;
+                $location.path('client-landing');
             } else {
                 // $scope.login();
                 //bring them to the login page
                 console.log('send to login');
                 $scope.$apply(function() {
                     $location.path('login');
-
                 });
             }
         });
