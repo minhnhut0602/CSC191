@@ -21,7 +21,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration({"file:/src/main/webapp/WEB-INF/spring/root-context.xml", "file:/src/main/webapp/WEB-INF/spring/salon-scheduler-api/servlet-context-test.xml"})
+@ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
+                       "file:src/main/webapp/WEB-INF/spring/salon-scheduler-api/servlet-context-test.xml"})
 public class UserControllerIntegrationTest 
 {
 	@Autowired
