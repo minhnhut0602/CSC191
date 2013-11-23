@@ -135,7 +135,6 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.me();
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
-                alert("asd");
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 $rootScope.facebook = response;
@@ -207,16 +206,15 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
 scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
     var config = {headers:  {
-        'authType': 'admin',
+        'authType': 'client',
         'authToken': readCookie("myAccessToken"),
-        'debug': 'true',
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
         }
     };
 
-  $http.get('json/appointments/clientAppointments.json', config).success(function(data) {
+  $http.get('http://home.joubin.me/api/salon-scheduler-api/appointments', config).success(function(data) {
     $scope.appointments = data;
   });
 });
