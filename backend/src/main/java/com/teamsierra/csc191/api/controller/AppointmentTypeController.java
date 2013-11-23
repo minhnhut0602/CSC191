@@ -1,5 +1,6 @@
 package com.teamsierra.csc191.api.controller;
 
+import com.teamsierra.csc191.api.exception.GenericException;
 import com.teamsierra.csc191.api.model.AppointmentType;
 import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
@@ -107,13 +108,13 @@ public class AppointmentTypeController extends GenericController
         List<AppointmentType> foundTypes;
 
         if (typeID == null || typeID.isEmpty())
-            throw new Exception("TypeID is not supplied!");
+            throw new GenericException("TypeID is not supplied", HttpStatus.BAD_REQUEST, L);
 
         findType.setId(typeID);
 
         foundTypes = appointmentTypeRepository.findByCriteria(findType);
         if (foundTypes == null || foundTypes.isEmpty())
-            throw new Exception("No appointment type were found");
+            throw new GenericException("Appointment type was not found", HttpStatus.NOT_FOUND, L);
 
         Resource<AppointmentType> resource = ResourceHandler.createResource(foundTypes.get(0));
 
@@ -146,17 +147,17 @@ public class AppointmentTypeController extends GenericController
             case CLIENT:
             case STYLIST:
             default:
-                throw new Exception("This API call is forbidden");
+                throw new GenericException("Permission denied for this API call", HttpStatus.UNAUTHORIZED, L);
         }
         type = requestData.getAppointmentType();
 
         if (type == null || type.isEmpty())
-            throw new Exception("Valid appointment type name must be supplied");
+            throw new GenericException("Valid appointment type name must be supplied", HttpStatus.BAD_REQUEST, L);
 
         findType.setAppointmentType(type);
 
         if (!appointmentTypeRepository.findByCriteria(findType).isEmpty())
-            throw new Exception("Appointment type already exists");
+            throw new GenericException("Appointment type already exists", HttpStatus.CONFLICT, L);
 
         requestData.setId(null);
         Resource<AppointmentType> resource = ResourceHandler.createResource(appointmentTypeRepository.insert(requestData));
@@ -192,34 +193,35 @@ public class AppointmentTypeController extends GenericController
             case CLIENT:
             case STYLIST:
             default:
-                throw new Exception("This API call is forbidden");
+                throw new GenericException("Permission denied for this API call", HttpStatus.UNAUTHORIZED, L);
         }
 
         // Validate request
         if (stylistID == null || stylistID.isEmpty())
-            throw new Exception("Must provide a stylistID in the request body");
+            throw new GenericException("Must provide a stylistID in the request body", HttpStatus.BAD_REQUEST, L);
         if (typeID == null || typeID.isEmpty())
-            throw new Exception("Must provide a typeId in url");
+            throw new GenericException("Must provide a typeId in url", HttpStatus.BAD_REQUEST, L);
 
         // Validate db values
         if (this.userRepository.findById(stylistID) == null)
-            throw new Exception("StylistID provided is invalid");
+            throw new GenericException("StylistID provided is invalid", HttpStatus.NOT_FOUND, L);
 
         types = appointmentTypeRepository.findByCriteria(findType);
         if (types == null || types.isEmpty())
-            throw new Exception("Supplied typeID does not exist");
+            throw new GenericException("Supplied typeID does not exist", HttpStatus.NOT_FOUND, L);
 
         for (String sid: types.get(0).getStylists())
         {
             if (stylistID.equalsIgnoreCase(sid))
-                throw new Exception("Appointment type is already assigned to the stylist");
+                throw new GenericException("Appointment type is already assigned to the stylist",
+                                           HttpStatus.CONFLICT, L);
         }
 
 
         GenericModel response = new AppointmentType();
         response.setId(appointmentTypeRepository.addStylistToType(typeID, stylistID));
         Resource<GenericModel> resource = new Resource<>(response);
-        resource.add(linkTo(AppointmentController.class).slash(response).withSelfRel());
+        resource.add(linkTo(AppointmentTypeController.class).slash(response).withSelfRel());
 
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
@@ -244,14 +246,14 @@ public class AppointmentTypeController extends GenericController
             case CLIENT:
             case STYLIST:
             default:
-                throw new Exception("This API call is forbidden");
+                throw new GenericException("This API call is forbidden", HttpStatus.FORBIDDEN, L);
         }
 
         // Validate request
         if (stylistID == null || stylistID.isEmpty())
-            throw new Exception("Must provide a stylistID in the request body");
+            throw new GenericException("Must provide a stylistID in the request body", HttpStatus.BAD_REQUEST, L);
         if (typeID == null || typeID.isEmpty())
-            throw new Exception("Must provide a typeId in url");
+            throw new GenericException("Must provide a typeId in url", HttpStatus.BAD_REQUEST, L);
 
         appointmentTypeRepository.deleteStylistFromType(typeID, stylistID);
 

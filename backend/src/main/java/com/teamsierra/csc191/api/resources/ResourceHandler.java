@@ -1,10 +1,5 @@
 package com.teamsierra.csc191.api.resources;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceSupport;
-
 import com.teamsierra.csc191.api.controller.AppointmentController;
 import com.teamsierra.csc191.api.controller.AppointmentTypeController;
 import com.teamsierra.csc191.api.controller.AvailabilityController;
@@ -14,6 +9,10 @@ import com.teamsierra.csc191.api.model.AppointmentType;
 import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
 import com.teamsierra.csc191.api.model.User;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceSupport;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @Author: Alex Chernyak
@@ -24,6 +23,11 @@ import com.teamsierra.csc191.api.model.User;
  */
 public class ResourceHandler extends ResourceSupport
 {
+    /**
+     * Create a resource for a {@link Appointment} with a selfrel and links to other related model
+     * @param appointment
+     * @return
+     */
     public static Resource<Appointment> createResource(Appointment appointment)
     {
         Resource<Appointment> resource;
@@ -33,10 +37,10 @@ public class ResourceHandler extends ResourceSupport
             return null;
 
         // generate links
-        resource.add(linkTo(AppointmentController.class).slash(appointment).withSelfRel());
+        resource.add(linkTo(AppointmentController.class).slash(appointment.getId()).withSelfRel());
         resource.add(linkTo(UserController.class).slash(appointment.getStylistID()).withRel("stylist"));
         resource.add(linkTo(UserController.class).slash(appointment.getClientID()).withRel("client"));
-        resource.add(linkTo(AppointmentType.class).slash(appointment.getAppointmentTypeID()).withRel("appointmentType"));
+        resource.add(linkTo(AppointmentTypeController.class).slash(appointment.getAppointmentTypeID()).withRel("appointmentType"));
 
         return resource;
     }
@@ -66,6 +70,12 @@ public class ResourceHandler extends ResourceSupport
         return resource;
     }
 
+    /**
+     * Generate a resource for a {@link AppointmentType}. This resource contains
+     * a link the stylist's user as well as a link to their availability.
+     * @param type
+     * @return
+     */
     public static Resource<AppointmentType> createResource(AppointmentType type)
     {
         Resource<AppointmentType> resource;
@@ -85,7 +95,7 @@ public class ResourceHandler extends ResourceSupport
     
     /**
      * Generates a resource for a {@link StylistAvailability}. This resource contains
-     * a link the the styilist's user as well as a link to their availability.
+     * a link the stylist's user as well as a link to their availability.
      * 
      * @param sa
      * @return

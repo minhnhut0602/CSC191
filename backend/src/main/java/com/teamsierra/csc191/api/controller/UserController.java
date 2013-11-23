@@ -1,27 +1,5 @@
 package com.teamsierra.csc191.api.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.TypeMismatchException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.teamsierra.csc191.api.exception.GenericAvailabilityException;
-import com.teamsierra.csc191.api.exception.GenericException;
 import com.teamsierra.csc191.api.exception.GenericUserException;
 import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
@@ -30,6 +8,22 @@ import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
 import com.teamsierra.csc191.api.util.Availability;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: scott
@@ -750,7 +744,7 @@ public class UserController extends GenericController
     	return true;
     }
     
-    @ExceptionHandler(Exception.class)
+    //@ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception e) throws GenericUserException
     {
 		if(!(e instanceof GenericUserException))
