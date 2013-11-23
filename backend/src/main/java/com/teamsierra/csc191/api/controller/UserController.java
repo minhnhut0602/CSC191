@@ -424,21 +424,24 @@ public class UserController extends GenericController
     	
 		switch(authType)
 		{
-    		case CLIENT: user = userRepository.findByToken(authToken);
-    					
-			    		 if(user == null)
-						 {
-							 throw new GenericUserException("Unable to find your user credentials in the database.",
-									 HttpStatus.FORBIDDEN);
-						 }
-			    		 
-		    			 if(!user.getId().equals(userID))
-		    			 {
-		    				 throw new GenericUserException("A client only has access to their own user from the repository. "
-		    						+ "Exception generated in call to getUser().",
-		    						HttpStatus.FORBIDDEN);
-		    			 }
-		    			 break;
+            case CLIENT: user = userRepository.findById(userID);
+                        if(user == null)
+                        {
+                            throw new GenericUserException("Unable to find the requested user in the database.",
+                                    HttpStatus.NOT_FOUND);
+                        }
+
+                        User curUser = userRepository.findByToken(authToken);
+
+                        if (curUser != null && user.getType() == UserType.CLIENT && !userID.equals(curUser.getId()))
+                        {
+                            user = null;
+                        }
+                        if(user != null && !user.isActive())
+                        {
+                            user = null;
+                        }
+                        break;
     		case STYLIST: user = userRepository.findById(userID);
 			    		  if(user == null)
 						  {

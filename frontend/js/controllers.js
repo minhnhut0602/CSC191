@@ -126,7 +126,6 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     };
 
     $scope.getLoginStatus = function() {
-        console.log('before');
         Facebook.getLoginStatus(function(response) {
             console.log(response);
 
@@ -135,6 +134,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.me();
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
+
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 $rootScope.facebook = response;
@@ -155,9 +155,12 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.$apply(function() {
 
                 // Here you could re-check for user status (just in case)
+                
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 console.log(response);
+                document.cookie = "facebookUsersName="+response.first_name;
+                document.cookie = "facebookUsersLastName="+response.last_name;
                 // this is all null scott
                 // TODO figure out why
             });
@@ -210,12 +213,36 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         'authToken': readCookie("myAccessToken"),
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache',
+        'debug': 'true'
         }
     };
 
-  $http.get('http://home.joubin.me/api/salon-scheduler-api/appointments', config).success(function(data) {
-    $scope.appointments = data;
+  $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+    // console.log(data);
+    $scope.appointments = [];
+    for (var something in data){
+        // console.log(data[something]);
+        var tempAppointment = {};
+        tempAppointment.startTime = data[something].startTime;
+        tempAppointment.appointmentStatus = data[something].appointmentStatus};
+        for (var link in data[something].links){
+            if (data[something].links[link].rel === "stylist") {
+                console.log(data[something].links[link].href);
+                $http.get(data[something].links[link].href, config).success(function(data2) {
+                    console.log("data2:"+data2);
+
+                    tempAppointment.stylistFirst = data2.firstName; // = something
+                    tempAppointment.stylistLast = data2.lastName; // = something
+
+                }).error(function(data2){
+                    alert("FAIL");
+                });
+            }
+            $scope.appointments.push(tempAppointment);
+        }
+        console.log($scope.appointments);
+
   });
 });
 
@@ -250,10 +277,11 @@ scheduleControllers.controller('adminController', function adminController($scop
         'debug': 'true',
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache',
+        'debug': 'asd'
         }
     };
-  $http.get('http://home.joubin.me/api/salon-scheduler-api/users', config).success(function(data) {
+  $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
     $scope.users = data;
   });
 });
