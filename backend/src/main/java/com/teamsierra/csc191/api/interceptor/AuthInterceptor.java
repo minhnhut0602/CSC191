@@ -116,6 +116,7 @@ public class AuthInterceptor implements HandlerInterceptor{
                         L.info("adding user to the db");
                         User newUser = new User();
                         newUser.setOauthId(ID);
+                        newUser.setType(GenericModel.UserType.CLIENT);
                         newUser.setToken(AUTH_TOKEN);
                         userRepository.insert(newUser);
                         L.info(newUser +" added");
