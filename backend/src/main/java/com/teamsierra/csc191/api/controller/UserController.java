@@ -29,6 +29,8 @@ import java.util.List;
  * User: scott
  * Date: 9/14/13
  * Time: 10:21 AM
+ *
+ * TODO add hairColor, hairLenght to editUser
  */
 
 @Controller

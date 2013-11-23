@@ -202,7 +202,7 @@ public class AppointmentController extends GenericController
      * @return
      * @throws Exception
      */
-    @RequestMapping(method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/search", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Resource<Appointment>>> searchAppointments(@RequestParam String criteria,
                                                                           HttpServletRequest request) throws Exception
