@@ -1,9 +1,9 @@
 package com.teamsierra.csc191.api.controller;
 
-import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.teamsierra.csc191.api.exception.GenericException;
+import com.teamsierra.csc191.api.exception.UserAlreadyExistsException;
+import com.teamsierra.csc191.api.model.GenericModel;
+import com.teamsierra.csc191.api.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.teamsierra.csc191.api.exception.GenericException;
-import com.teamsierra.csc191.api.exception.GenericUserException;
-import com.teamsierra.csc191.api.exception.UserAlreadyExistsException;
-import com.teamsierra.csc191.api.model.GenericModel;
-import com.teamsierra.csc191.api.repository.UserRepository;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 
 /**
@@ -36,16 +33,17 @@ public abstract class GenericController
     @Autowired
     protected UserRepository userRepository;
 
-    //@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<HashMap<String, String>> handleException(Exception e)
     {
+        // Return default status (500)
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HashMap<String, String> error = new HashMap<>();
 
-        if (e instanceof GenericUserException)
+        if (e instanceof GenericException)
         {
-            // do something
+            status = ((GenericException)e).getStatus();
         }
         else if (e instanceof UserAlreadyExistsException)
         {
@@ -54,12 +52,15 @@ public abstract class GenericController
         else
         {
             // Generic error
-            error.put("error", e.getMessage());
         }
+
+        // TODO add custom error handling
+        error.put("error", e.getMessage());
 
         return new ResponseEntity<>(error, status);
     }
-    
+
+    /*
     @ExceptionHandler(GenericException.class)
     public ResponseEntity<String> handleGenericException(GenericException e)
     {
@@ -68,6 +69,7 @@ public abstract class GenericController
     	
     	return new ResponseEntity<String>(reason, e.getStatus());
     }
+    */
 
 
     /**

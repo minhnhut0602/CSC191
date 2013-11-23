@@ -1,5 +1,6 @@
 package com.teamsierra.csc191.api.interceptor;
 
+import com.teamsierra.csc191.api.exception.GenericException;
 import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.UserRepository;
@@ -106,7 +107,6 @@ public class AuthInterceptor implements HandlerInterceptor{
                 }
 
             }
-
         } else { //user does not exist
             L.info("user not found");
             switch (AUTH_TYPE) {
@@ -121,7 +121,7 @@ public class AuthInterceptor implements HandlerInterceptor{
                         newUser.setToken(AUTH_TOKEN);
                         newUser.setActive(true);
                         userRepository.insert(newUser);
-                        L.info(newUser +" added");
+                        L.info(newUser + " added");
                         request.setAttribute("id", newUser.getId());
                         returnValue = true;
                     } else {
@@ -141,20 +141,14 @@ public class AuthInterceptor implements HandlerInterceptor{
         if (returnValue) {
             L.info("filling in generic controller");
 
-            switch (AUTH_TYPE) {
-                case "client":
-                    request.setAttribute("authType", GenericModel.UserType.CLIENT);
-                    break;
-                case "stylist":
-                    request.setAttribute("authType", GenericModel.UserType.STYLIST);
-                    break;
-                case "admin":
-                    request.setAttribute("authType", GenericModel.UserType.ADMIN);
-                    break;
-            }
+            request.setAttribute("authType", GenericModel.UserType.valueOf(AUTH_TYPE.toUpperCase()));
 
             //set the auth_token
             request.setAttribute("authToken", AUTH_TOKEN);
+        }
+        else
+        {
+            throw new GenericException("Authentication failure", HttpStatus.UNAUTHORIZED, L);
         }
 
         return returnValue;
@@ -221,7 +215,7 @@ public class AuthInterceptor implements HandlerInterceptor{
                                 Exception e) throws Exception {}
 
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(GenericException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public HashMap<String, String> handleException(Exception e)
