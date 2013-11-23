@@ -184,12 +184,48 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 // | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
-scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
-  $http.get('json/appointments/staffAppointments.json').success(function(data) {
-    $scope.appointments = data;
+// scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
+//   $http.get('json/appointments/staffAppointments.json').success(function(data) {
+//     $scope.appointments = data;
+//   });
+// });
+scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
+    var config = {headers:  {
+        'authType': 'client',
+        'authToken': readCookie("myAccessToken"),
+        'id': readCookie("myID"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        // 'debug': 'asd'
+        }
+    };
+
+  $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+    // console.log(data);
+    $scope.appointments = [];
+    for (var something in data){
+        // console.log(data[something]);
+        var tempAppointment = {};
+        var date = new Date(data[something].startTime);
+        tempAppointment.startTime = date;
+        tempAppointment.appointmentStatus = data[something].appointmentStatus};
+        for (var link in data[something].links){
+            if (data[something].links[link].rel === "stylist") {
+                console.log(data[something].links[link].href);
+                $http.get(data[something].links[link].href, config).success(function(data2) {
+                    console.log("data2:"+data2);
+                    tempAppointment.stylistFirst = data2.firstName; // = something
+                    tempAppointment.stylistLast = data2.lastName; // = something
+                }).error(function(data2){
+                    alert("FAIL");
+                });
+            }
+            $scope.appointments.push(tempAppointment);
+        }
+        console.log($scope.appointments);
+
   });
 });
-
 
 //   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
 //  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/
@@ -211,7 +247,6 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
     var config = {headers:  {
         'authType': 'client',
         'authToken': readCookie("myAccessToken"),
-        'debug': 'true',
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
@@ -225,7 +260,8 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
     for (var something in data){
         // console.log(data[something]);
         var tempAppointment = {};
-        tempAppointment.startTime = data[something].startTime;
+        var date = new Date(data[something].startTime);
+        tempAppointment.startTime = date;
         tempAppointment.appointmentStatus = data[something].appointmentStatus};
         for (var link in data[something].links){
             if (data[something].links[link].rel === "stylist") {
@@ -273,11 +309,9 @@ scheduleControllers.controller('adminController', function adminController($scop
     var config = {headers:  {
         'authType': 'admin',
         'authToken': readCookie("myAccessToken"),
-        'debug': 'true',
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        'debug': 'asd'
         }
     };
   $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {

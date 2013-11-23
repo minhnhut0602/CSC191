@@ -77,6 +77,7 @@ public class AuthInterceptor implements HandlerInterceptor{
         L.info(AUTH_TYPE);
 
         User user = userRepository.findByOAuthId(ID);
+        request.setAttribute("id", user.getId());
 
         boolean returnValue = false;
 
@@ -92,7 +93,8 @@ public class AuthInterceptor implements HandlerInterceptor{
                             //update user authToken
                             user.setToken(AUTH_TOKEN);
                             userRepository.save(user);
-                            request.setAttribute("id", user.getId());
+                            L.info("Fuck "+user);
+
                             returnValue = true;
                         } else {
                             returnValue = false;
