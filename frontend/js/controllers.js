@@ -211,10 +211,11 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
     var config = {headers:  {
         'authType': 'client',
         'authToken': readCookie("myAccessToken"),
+        'debug': 'true',
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        'debug': 'true'
+        // 'debug': 'asd'
         }
     };
 
@@ -231,10 +232,8 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
                 console.log(data[something].links[link].href);
                 $http.get(data[something].links[link].href, config).success(function(data2) {
                     console.log("data2:"+data2);
-
                     tempAppointment.stylistFirst = data2.firstName; // = something
                     tempAppointment.stylistLast = data2.lastName; // = something
-
                 }).error(function(data2){
                     alert("FAIL");
                 });
