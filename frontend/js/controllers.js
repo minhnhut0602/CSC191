@@ -3,8 +3,8 @@ function readCookie(name) {
     for (var ca = document.cookie.split(/;\s*/), i = ca.length - 1; i >= 0; i--)
         if (!ca[i].indexOf(name))
             return ca[i].replace(name, '');
-}
-var scheduleControllers = angular.module('scheduleControllers', []);
+    }
+    var scheduleControllers = angular.module('scheduleControllers', []);
 
 
 //   /$$$$$$   /$$$$$$  /$$       /$$$$$$$$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$$
@@ -23,19 +23,19 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
             month === undefined &&
             day === undefined) {
             var d = new Date();
-            year = d.getFullYear();
-            monthIndex = d.getMonth();
-            day = d.getDate();
-        }
+        year = d.getFullYear();
+        monthIndex = d.getMonth();
+        day = d.getDate();
+    }
 
-        var date = new Date(year, monthIndex, 1);
-        var current = new Date(year, monthIndex, day);
-        var month = {};
-        var weeks = [];
+    var date = new Date(year, monthIndex, 1);
+    var current = new Date(year, monthIndex, day);
+    var month = {};
+    var weeks = [];
 
-        month.name = monthNames[monthIndex];
-        month.year = date.getFullYear();
-        month.number = date.getMonth();
+    month.name = monthNames[monthIndex];
+    month.year = date.getFullYear();
+    month.number = date.getMonth();
 
         // loop for weeks
         for (var j=0 ; date.getMonth() === monthIndex ; j++) {
@@ -58,8 +58,8 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
                     date.getMonth() === current.getMonth() &&
                     date.getYear()  === current.getYear()) {
                     dayClass = "today";
-                }
-                weekdays.push({number: dayNumber, name: dayName, class:dayClass});
+            }
+            weekdays.push({number: dayNumber, name: dayName, class:dayClass});
 
                 // increment the date
                 date.setDate(date.getDate()+1);
@@ -190,7 +190,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 //     $scope.appointments = data;
 //   });
 // });
-scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
+scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
     var config = {headers:  {
         'authType': 'client',
         'authToken': readCookie("myAccessToken"),
@@ -198,79 +198,10 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
         // 'debug': 'asd'
-        }
-    };
+    }
+};
 
-  $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
-    // console.log(data);
-    $scope.appointments = [];
-    for (var something in data){
-        // console.log(data[something]);
-        var tempAppointment = {};
-        var date = new Date(data[something].startTime);
-        tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus};
-         console.log(something+data[something].appointmentStatus);
-        if (data[something].appointmentStatus === "APPROVED") {
-            tempAppointment.myColor = "success";
-        };
-        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
-            tempAppointment.myColor = "danger";
-        };
-        if (data[something].appointmentStatus === "NEW") {
-            tempAppointment.myColor = "warning";
-        };
-        if (data[something].appointmentStatus === "COMPLETED") {
-            tempAppointment.myColor = "info";
-
-        };
-        for (var link in data[something].links){
-            if (data[something].links[link].rel === "stylist") {
-                console.log(data[something].links[link].href);
-                $http.get(data[something].links[link].href, config).success(function(data2) {
-                    console.log("data2:"+data2);
-                    tempAppointment.stylistFirst = data2.firstName; // = something
-                    tempAppointment.stylistLast = data2.lastName; // = something
-                }).error(function(data2){
-
-                });
-            }
-            $scope.appointments.push(tempAppointment);
-        }
-        console.log($scope.appointments);
-
-  });
-});
-
-
-//   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
-//  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/
-// | $$  \__/| $$        | $$  | $$      | $$$$| $$   | $$
-// | $$      | $$        | $$  | $$$$$   | $$ $$ $$   | $$
-// | $$      | $$        | $$  | $$__/   | $$  $$$$   | $$
-// | $$    $$| $$        | $$  | $$      | $$\  $$$   | $$
-// |  $$$$$$/| $$$$$$$$ /$$$$$$| $$$$$$$$| $$ \  $$   | $$
-//  \______/ |________/|______/|________/|__/  \__/   |__/
-//  /$$        /$$$$$$  /$$   /$$ /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$
-// | $$       /$$__  $$| $$$ | $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$
-// | $$      | $$  \ $$| $$$$| $$| $$  \ $$  | $$  | $$$$| $$| $$  \__/
-// | $$      | $$$$$$$$| $$ $$ $$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$
-// | $$      | $$__  $$| $$  $$$$| $$  | $$  | $$  | $$  $$$$| $$|_  $$
-// | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
-// | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
-// |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
-scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
-    var config = {headers:  {
-        'authType': 'client',
-        'authToken': readCookie("myAccessToken"),
-        'id': readCookie("myID"),
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
-        // 'debug': 'asd'
-        }
-    };
-
-  $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
     // console.log(data);
     $scope.appointments = [];
     for (var something in data){
@@ -279,7 +210,7 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
         tempAppointment.appointmentStatus = data[something].appointmentStatus;
-         console.log("fuck"+data[something].appointmentStatus);
+        console.log("fuck"+data[something].appointmentStatus);
         if (data[something].appointmentStatus === "APPROVED") {
             tempAppointment.myColor = "success";
         };
@@ -307,8 +238,77 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         }
         $scope.appointments.push(tempAppointment);
         console.log($scope.appointments);
-}
-  });
+    }
+});
+});
+
+
+//   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
+//  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/
+// | $$  \__/| $$        | $$  | $$      | $$$$| $$   | $$
+// | $$      | $$        | $$  | $$$$$   | $$ $$ $$   | $$
+// | $$      | $$        | $$  | $$__/   | $$  $$$$   | $$
+// | $$    $$| $$        | $$  | $$      | $$\  $$$   | $$
+// |  $$$$$$/| $$$$$$$$ /$$$$$$| $$$$$$$$| $$ \  $$   | $$
+//  \______/ |________/|______/|________/|__/  \__/   |__/
+//  /$$        /$$$$$$  /$$   /$$ /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$
+// | $$       /$$__  $$| $$$ | $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$
+// | $$      | $$  \ $$| $$$$| $$| $$  \ $$  | $$  | $$$$| $$| $$  \__/
+// | $$      | $$$$$$$$| $$ $$ $$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$
+// | $$      | $$__  $$| $$  $$$$| $$  | $$  | $$  | $$  $$$$| $$|_  $$
+// | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
+// | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
+// |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
+scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
+    var config = {headers:  {
+        'authType': 'client',
+        'authToken': readCookie("myAccessToken"),
+        'id': readCookie("myID"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        // 'debug': 'asd'
+    }
+};
+
+$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+    // console.log(data);
+    $scope.appointments = [];
+    for (var something in data){
+        console.log(data[something]);
+        var tempAppointment = {};
+        var date = new Date(data[something].startTime);
+        tempAppointment.startTime = date;
+        tempAppointment.appointmentStatus = data[something].appointmentStatus;
+        console.log("fuck"+data[something].appointmentStatus);
+        if (data[something].appointmentStatus === "APPROVED") {
+            tempAppointment.myColor = "success";
+        };
+        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+            tempAppointment.myColor = "danger";
+        };
+        if (data[something].appointmentStatus === "NEW") {
+            tempAppointment.myColor = "warning";
+        };
+        if (data[something].appointmentStatus === "COMPLETED") {
+            tempAppointment.myColor = "info";
+
+        };
+        for (var link in data[something].links){
+            if (data[something].links[link].rel === "stylist") {
+                console.log(data[something].links[link].href);
+                $http.get(data[something].links[link].href, config).success(function(data2) {
+                    console.log("data2:"+data2);
+                    tempAppointment.stylistFirst = data2.firstName; // = something
+                    tempAppointment.stylistLast = data2.lastName; // = something
+                }).error(function(data2){
+
+                });
+            }
+        }
+        $scope.appointments.push(tempAppointment);
+        console.log($scope.appointments);
+    }
+});
 });
 
 
@@ -342,11 +342,11 @@ scheduleControllers.controller('adminController', function adminController($scop
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        }
-    };
-  $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
+    }
+};
+$http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
     $scope.users = data;
-  });
+});
 });
 
 //  /$$   /$$  /$$$$$$  /$$$$$$$$ /$$$$$$$
@@ -378,7 +378,7 @@ scheduleControllers.controller('adminController', function adminController($scop
 scheduleControllers.controller('userAuthController', function userAuthController($scope, $http) {
   $http.get('json/userAuthController.json').success(function(data) {
     $scope.currentUserAuth = data;
-  });
+});
 });
 
 
