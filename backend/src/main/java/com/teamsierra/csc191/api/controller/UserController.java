@@ -29,8 +29,6 @@ import java.util.List;
  * User: scott
  * Date: 9/14/13
  * Time: 10:21 AM
- *
- * TODO add hairColor, hairLenght to editUser
  */
 
 @Controller
@@ -172,11 +170,10 @@ public class UserController extends GenericController
      * NOTE: "active" is assumed to be false if not included.
      * 
      * Required fields: type, firstName, lastName, email, password
-     * Optional fields: phone, avatarURL, authId, token, active
-     * Null fields: id (should be null, throws an exception if it is not)
-     * 
-     * Not checked Fields: authId, token (will be set if included, no 
-     * 					   validation done)
+     * Optional fields: phone, avatarURL, authId, token, active, hairColor,
+     * 	hairLength
+     * Null fields: id, OauthId, token (should be null, throws an exception if
+     * 	it is not)
      * 
      * Usage: POST call to /users.
      * 	Client - will throw an exception
@@ -310,10 +307,17 @@ public class UserController extends GenericController
     		if(user.getId() != null)
     		{
     			error += "User ID should be null when creating a new user. To update an"
-    					+ "existing user use \".../users/{userID} PUT\"";
+    					+ "existing user use \".../users/{userID} PUT\".\n";
     		}
-    		
-    		// fields not checked: authId, token, active
+    		if(user.getOauthId() != null)
+    		{
+    			error += "OauthId should be null as this is not used for stylist"
+    					+ "or admin users.\n";
+    		}
+    		if(user.getToken() != null)
+    		{
+    			error += "Token should be null. This field is set by the interceptor.\n";
+    		}
     		
     		if(error.equals(""))
     		{
@@ -344,7 +348,8 @@ public class UserController extends GenericController
      * Retrieves a specific user from the database by their id.
      * 
      * Usage: GET call to /users/{userID}.
-     * 	Client - will throw an exception if trying to access a different user
+     * 	Client - will throw an exception if trying to access a different client
+     * 		user, however they are free to get active stylists or admins.
      * 	Stylist - will throw an exception if the user's active field is false 
      * 	Admin - no other case where an exception will be thrown.
      * 
@@ -430,16 +435,21 @@ public class UserController extends GenericController
                             throw new GenericUserException("Unable to find the requested user in the database.",
                                     HttpStatus.NOT_FOUND);
                         }
-
-                        User curUser = userRepository.findByToken(authToken);
-
-                        if (curUser != null && user.getType() == UserType.CLIENT && !userID.equals(curUser.getId()))
+                        
+                        if(!user.isActive())
                         {
                             user = null;
                         }
-                        if(user != null && !user.isActive())
+                        
+                        if(user != null && user.getType() == UserType.CLIENT)
                         {
-                            user = null;
+                        	User curUser = userRepository.findByToken(authToken);
+                        	
+                        	if(curUser == null || !userID.equals(curUser.getId()))
+                            {
+	                        	throw new GenericUserException("You do not have the credentials to get the"
+	                        			+ "user specified.", HttpStatus.UNAUTHORIZED);
+                            }
                         }
                         break;
     		case STYLIST: user = userRepository.findById(userID);
@@ -479,9 +489,11 @@ public class UserController extends GenericController
      * ignored (with no notification).
      * 
      * Modifiable fields by user type:
-     * 	CLIENT: phone
-     * 	STYLIST: avatarURL, email, firstName, lastName, phone
+     * 	CLIENT: phone, hairColor, hairLength
+     * 	STYLIST: avatarURL, email, firstName, lastName, phone,
+     * 		hairColor, hairLength
      *	ADMIN: avatarURL, email, firstName, lastName, phone
+     *		hairColor, hairLength
      *
      * including any additional fields will not throw an error, but will have
      * no affect.
@@ -647,6 +659,14 @@ public class UserController extends GenericController
     		{
     			error += "Invalid phone number. The phone number should consist of 10 digits.\n";
     		}
+		}
+		if(user.getHairColor() != null)
+		{
+			curUser.setHairColor(user.getHairColor());
+		}
+		if(user.getHairLenght() != null)
+		{
+			curUser.setHairLenght(user.getHairLenght());
 		}
 		
 		if(error.equals(""))
