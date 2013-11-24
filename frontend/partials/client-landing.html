@@ -13,7 +13,7 @@
     <div class="left upcoming-appointments">
 
         <div ng-repeat="appointment in appointments">
-            <div class="alert alert-info " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with {{appointment.stylistFirst}} at {{appointment.startTime.toLocaleTimeString() }}
+            <div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with {{appointment.stylistFirst}} at {{appointment.startTime.toLocaleTimeString() }}   {{appointment.myColor}}  
             </div>
         </div>
 

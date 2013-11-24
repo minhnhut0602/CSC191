@@ -209,6 +209,20 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
         tempAppointment.appointmentStatus = data[something].appointmentStatus};
+         console.log("fuck"+data[something].appointmentStatus);
+        if (data[something].appointmentStatus === "APPROVED") {
+            tempAppointment.myColor = "success";
+        };
+        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+            tempAppointment.myColor = "danger";
+        };
+        if (data[something].appointmentStatus === "NEW") {
+            tempAppointment.myColor = "warning";
+        };
+        if (data[something].appointmentStatus === "COMPLETED") {
+            tempAppointment.myColor = "info";
+
+        };
         for (var link in data[something].links){
             if (data[something].links[link].rel === "stylist") {
                 console.log(data[something].links[link].href);
@@ -217,7 +231,7 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
                     tempAppointment.stylistFirst = data2.firstName; // = something
                     tempAppointment.stylistLast = data2.lastName; // = something
                 }).error(function(data2){
-                    alert("FAIL");
+
                 });
             }
             $scope.appointments.push(tempAppointment);
@@ -226,6 +240,7 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
 
   });
 });
+
 
 //   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
 //  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/
@@ -263,6 +278,20 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
         tempAppointment.appointmentStatus = data[something].appointmentStatus};
+         console.log("fuck"+data[something].appointmentStatus);
+        if (data[something].appointmentStatus === "APPROVED") {
+            tempAppointment.myColor = "success";
+        };
+        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+            tempAppointment.myColor = "danger";
+        };
+        if (data[something].appointmentStatus === "NEW") {
+            tempAppointment.myColor = "warning";
+        };
+        if (data[something].appointmentStatus === "COMPLETED") {
+            tempAppointment.myColor = "info";
+
+        };
         for (var link in data[something].links){
             if (data[something].links[link].rel === "stylist") {
                 console.log(data[something].links[link].href);
@@ -271,7 +300,7 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
                     tempAppointment.stylistFirst = data2.firstName; // = something
                     tempAppointment.stylistLast = data2.lastName; // = something
                 }).error(function(data2){
-                    alert("FAIL");
+
                 });
             }
             $scope.appointments.push(tempAppointment);
