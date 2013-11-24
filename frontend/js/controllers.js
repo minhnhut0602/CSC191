@@ -192,7 +192,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 // });
 scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
     var config = {headers:  {
-        'authType': 'client',
+        'authType': 'staff',
         'authToken': readCookie("myAccessToken"),
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
@@ -274,12 +274,10 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
     // console.log(data);
     $scope.appointments = [];
     for (var something in data){
-        console.log(data[something]);
         var tempAppointment = {};
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
         tempAppointment.appointmentStatus = data[something].appointmentStatus;
-        console.log("fuck"+data[something].appointmentStatus);
         if (data[something].appointmentStatus === "APPROVED") {
             tempAppointment.myColor = "success";
         };
@@ -295,19 +293,21 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
         };
         for (var link in data[something].links){
             if (data[something].links[link].rel === "stylist") {
-                console.log(data[something].links[link].href);
                 $http.get(data[something].links[link].href, config).success(function(data2) {
-                    console.log("data2:"+data2);
+                    console.log(something+": "+data2.firstName);
                     tempAppointment.stylistFirst = data2.firstName; // = something
                     tempAppointment.stylistLast = data2.lastName; // = something
                 }).error(function(data2){
+                    alert("Error");
 
                 });
-            }
-        }
+                break;
+
+            };
+        };
         $scope.appointments.push(tempAppointment);
         console.log($scope.appointments);
-    }
+    };
 });
 });
 
@@ -346,6 +346,8 @@ scheduleControllers.controller('adminController', function adminController($scop
 };
 $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
     $scope.users = data;
+}).error(function(data2){
+    $score.user = "You have no access here";
 });
 });
 
@@ -426,4 +428,48 @@ scheduleControllers.controller('indexController', function indexController($scop
 // |________/|______/ \______/    |__/
 
 scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
+    //TODO 
+    /*
+    We can use this to supply the staff list for the calendar. Maybe this should go in the calendar controller.
+    But I thought it was already a big controller by itself. 
+    */
 });
+
+//  /$$      /$$ /$$                             
+// | $$$    /$$$|__/                             
+// | $$$$  /$$$$ /$$  /$$$$$$$  /$$$$$$$         
+// | $$ $$/$$ $$| $$ /$$_____/ /$$_____/         
+// | $$  $$$| $$| $$|  $$$$$$ | $$               
+// | $$\  $ | $$| $$ \____  $$| $$               
+// | $$ \/  | $$| $$ /$$$$$$$/|  $$$$$$$         
+// |__/     |__/|__/|_______/  \_______/         
+                                              
+                                              
+                                              
+//  /$$   /$$                                    
+// | $$  | $$                                    
+// | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$       
+// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$      
+// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/      
+// | $$  | $$ \____  $$| $$_____/| $$            
+// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$            
+//  \______/ |_______/  \_______/|__/            
+                                              
+                                              
+                                              
+//  /$$            /$$$$$$                       
+// |__/           /$$__  $$                      
+//  /$$ /$$$$$$$ | $$  \__//$$$$$$               
+// | $$| $$__  $$| $$$$   /$$__  $$              
+// | $$| $$  \ $$| $$_/  | $$  \ $$              
+// | $$| $$  | $$| $$    | $$  | $$              
+// | $$| $$  | $$| $$    |  $$$$$$/              
+// |__/|__/  |__/|__/     \______/               
+                                              
+//TODO 
+/*
+* make the controller add information such as a url to image into the cookie.
+* save auth type into a cookie
+* and other misc information that can be used to change the look of the UI.
+* IE: if admin display some buttons that arent normally there for regular users 
+*/

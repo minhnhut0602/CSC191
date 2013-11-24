@@ -31,7 +31,7 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/edit-user.html'
             }).
             otherwise({
-                redirectTo: '/loading'
+                redirectTo: '/loading',
             });
         FacebookProvider.init('197300770451342');
     }]);

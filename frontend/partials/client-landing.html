@@ -21,12 +21,16 @@
     </div>
 
     <div class="right calendar">
+                <button class="btn btn-default right" ng-click="calendar()">Today</button>
+                <div class="clearfix"></div>
         <div class="month" >
             <h2 class="month-name">{{month.name}}</h2>
             <div class="week" ng-repeat="week in month.weeks">
                 <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
             </div>
+
         </div>
+
     </div>
 
 </div>
