@@ -10,9 +10,9 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -70,7 +70,6 @@ public class AuthInterceptor implements HandlerInterceptor{
             return true;
         }
 
-        // TODO remove??
         AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
         ID = request.getHeader(p.getProperty("headers.id"));
         AUTH_TYPE = request.getHeader(p.getProperty("headers.authType"));
@@ -216,12 +215,18 @@ public class AuthInterceptor implements HandlerInterceptor{
 
 
     @ExceptionHandler(GenericException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public HashMap<String, String> handleException(Exception e)
+    public ResponseEntity<HashMap<String, String>> handleException(Exception e)
     {
         HashMap<String, String> error = new HashMap<>();
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
         error.put("authError", e.getMessage());
-        return error;
+        if (e instanceof GenericException)
+        {
+            status = ((GenericException)e).getStatus();
+        }
+
+        return new ResponseEntity<>(error, status);
     }
 }
