@@ -75,10 +75,47 @@ public class AuthInterceptor implements HandlerInterceptor{
         AUTH_TYPE = request.getHeader(p.getProperty("headers.authType"));
         L.info(AUTH_TYPE);
 
-        User user = userRepository.findByOAuthId(ID);
+        User user = null;
+        if (AUTH_TYPE.equals("client")) {
+            user = userRepository.findByOAuthId(ID);
+        } else {
+            user = userRepository.findByEmail(ID);
+        }
         request.setAttribute("id", user.getId());
 
         boolean returnValue = false;
+
+        if (user != null) { //user was found in the database
+
+            L.info("user was found in the database"+ user);
+
+            if (AUTH_TYPE.equals("client")) { //user claiming to be client
+                if (user.getType().equals(GenericModel.UserType.CLIENT)) {
+                    L.info("user is claiming to be a client and is a client, validating credentials");
+                    //TODO user is a client, go validate their credentials
+                } else {
+                    throw new GenericException("user tried to authenticate as client and is not a client", HttpStatus.UNAUTHORIZED, L);
+                }
+
+            } else if (AUTH_TYPE.equals("stylist")) { //user claiming to be stylist
+                if (user.getType().equals(GenericModel.UserType.STYLIST)) {
+                    L.info("user is claiming to be a stylist and is a stylist, validating credentials");
+                    //TODO user is a stylist, go validate their credentials
+                } else {
+                    throw new GenericException("user tried to authenticate as a stylist and is not a stylist", HttpStatus.UNAUTHORIZED, L);
+                }
+
+            } else if (AUTH_TYPE.equals("admin")) { //user claiming to be admin
+                if (user.getType().equals(GenericModel.UserType.ADMIN)) {
+                    L.info("user is claiming to be a admin and is a admin, validating credentials");
+                    //TODO user is an admin, go validate their credentials
+                } else {
+                    throw new GenericException("user tried to authenticate as an admin and is not an admin", HttpStatus.UNAUTHORIZED, L);
+                }
+            }
+        } else { //user was not found in the database
+            
+        }
 
         if (user != null) { //user exists
             L.info("user found");
@@ -146,16 +183,14 @@ public class AuthInterceptor implements HandlerInterceptor{
 
             //set the auth_token
             request.setAttribute("authToken", AUTH_TOKEN);
-        }
-        else
-        {
+        } else {
             throw new GenericException("Authentication failure", HttpStatus.UNAUTHORIZED, L);
         }
 
         return returnValue;
     }
 
-    private boolean facebookChallenge(String id, String token, HttpServletResponse response) {
+    private boolean facebookChallenge(String id, String token, HttpServletResponse response) throws Exception{
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -193,12 +228,7 @@ public class AuthInterceptor implements HandlerInterceptor{
             id.equals(data.get("user_id").asText())) {
             return true;
         } else {
-            try {
-                response.sendError(401);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
+            throw new GenericException("facebook credentials could not be validated with facebook", HttpStatus.UNAUTHORIZED, L);
         }
     }
 
