@@ -23,6 +23,28 @@ public class User extends GenericModel
     private String avatarURL;
     private String phone;
     private boolean active;
+    private String hairColor;
+    private String hairLenght;
+
+    public String getHairColor()
+    {
+        return hairColor;
+    }
+
+    public void setHairColor(String hairColor)
+    {
+        this.hairColor = hairColor;
+    }
+
+    public String getHairLenght()
+    {
+        return hairLenght;
+    }
+
+    public void setHairLenght(String hairLenght)
+    {
+        this.hairLenght = hairLenght;
+    }
     
     @JsonIgnore
     public String getOauthId() {
