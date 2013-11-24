@@ -161,6 +161,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 console.log(response);
                 document.cookie = "facebookUsersName="+response.first_name;
                 document.cookie = "facebookUsersLastName="+response.last_name;
+                document.cookie = "facebookActualUserName="+response.username;
                 // this is all null scott
                 // TODO figure out why
             });
@@ -209,7 +210,7 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
         tempAppointment.appointmentStatus = data[something].appointmentStatus};
-         console.log("fuck"+data[something].appointmentStatus);
+         console.log(something+data[something].appointmentStatus);
         if (data[something].appointmentStatus === "APPROVED") {
             tempAppointment.myColor = "success";
         };
@@ -273,11 +274,11 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
     // console.log(data);
     $scope.appointments = [];
     for (var something in data){
-        // console.log(data[something]);
+        console.log(data[something]);
         var tempAppointment = {};
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus};
+        tempAppointment.appointmentStatus = data[something].appointmentStatus;
          console.log("fuck"+data[something].appointmentStatus);
         if (data[something].appointmentStatus === "APPROVED") {
             tempAppointment.myColor = "success";
@@ -303,10 +304,10 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
 
                 });
             }
-            $scope.appointments.push(tempAppointment);
         }
+        $scope.appointments.push(tempAppointment);
         console.log($scope.appointments);
-
+}
   });
 });
 
