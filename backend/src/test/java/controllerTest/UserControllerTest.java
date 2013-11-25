@@ -374,38 +374,73 @@ public class UserControllerTest
 	 * 
 	 * @throws Exception
 	 */
-//	@Test
-//	public void clientGetUserTest() throws Exception
-//	{
-//		userClient.setId(id);
-//		when(userRepo.findByToken(token)).thenReturn(userClient);
-//
-//		mockMVC.perform(get("/users/" + id)
-//				.with(requestPostProcessorClient))
-//				.andExpect(status().isOk())
-//				// verify the client links
-//				.andExpect(jsonPath("$.links[?(@.rel==self)].href[0]")
-//						.value(USER_SELF_LINK));
-//	}
+	@Test
+	public void clientGetUserTest() throws Exception
+	{
+		userClient.setId(id);
+		userClient.setActive(true);
+		userClient.setType(UserType.CLIENT);
+		when(userRepo.findByToken(token)).thenReturn(userClient);
+		when(userRepo.findById(id)).thenReturn(userClient);
+
+		mockMVC.perform(get("/users/" + id)
+				.with(requestPostProcessorClient))
+				.andExpect(status().isOk())
+				// verify the client links
+				.andExpect(jsonPath("$.links[?(@.rel==self)].href[0]")
+						.value(USER_SELF_LINK));
+	}
 	
 	/**
-	 * Test for when a client does a GET user, for a different user.
+	 * Test for when a client does a GET user, for a different user
+	 * that is also a client.
 	 * 
 	 * testing for:
 	 * -findByToken() called in userRepo.
-	 * -status is forbidden.
+	 * -status is unauthorized.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void clientGetDifferentUserTest() throws Exception
+	public void clientGetDifferentClientUserTest() throws Exception
 	{
 		userClient.setId(id);
-		when(userRepo.findByToken(token)).thenReturn(userClient);
+		User tempUser = new User();
+		tempUser.setType(UserType.CLIENT);
+		tempUser.setId("differentID");
+		tempUser.setActive(true);
 		
-		mockMVC.perform(get("/users/differntID")
+		when(userRepo.findByToken(token)).thenReturn(userClient);
+		when(userRepo.findById("differentID")).thenReturn(tempUser);
+		
+		mockMVC.perform(get("/users/differentID")
 				.with(requestPostProcessorClient))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isUnauthorized());
+	}
+	
+	/**
+	 * Test for when a client does a GET user, for a different
+	 * user that is a stylist.
+	 * 
+	 * testing for:
+	 * -proper repo methods called.
+	 * -status is ok.
+	 */
+	@Test
+	public void clientGetStylistUserTest() throws Exception
+	{
+		userClient.setId(id);
+		User tempUser = new User();
+		tempUser.setType(UserType.STYLIST);
+		tempUser.setId("differentID");
+		tempUser.setActive(true);
+		
+		when(userRepo.findByToken(token)).thenReturn(userClient);
+		when(userRepo.findById("differentID")).thenReturn(tempUser);
+		
+		mockMVC.perform(get("/users/differentID")
+				.with(requestPostProcessorClient))
+				.andExpect(status().isOk());
 	}
 	
 	/**

@@ -3,8 +3,8 @@ function readCookie(name) {
     for (var ca = document.cookie.split(/;\s*/), i = ca.length - 1; i >= 0; i--)
         if (!ca[i].indexOf(name))
             return ca[i].replace(name, '');
-}
-var scheduleControllers = angular.module('scheduleControllers', []);
+    }
+    var scheduleControllers = angular.module('scheduleControllers', []);
 
 
 //   /$$$$$$   /$$$$$$  /$$       /$$$$$$$$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$$
@@ -23,19 +23,19 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
             month === undefined &&
             day === undefined) {
             var d = new Date();
-            year = d.getFullYear();
-            monthIndex = d.getMonth();
-            day = d.getDate();
-        }
+        year = d.getFullYear();
+        monthIndex = d.getMonth();
+        day = d.getDate();
+    }
 
-        var date = new Date(year, monthIndex, 1);
-        var current = new Date(year, monthIndex, day);
-        var month = {};
-        var weeks = [];
+    var date = new Date(year, monthIndex, 1);
+    var current = new Date(year, monthIndex, day);
+    var month = {};
+    var weeks = [];
 
-        month.name = monthNames[monthIndex];
-        month.year = date.getFullYear();
-        month.number = date.getMonth();
+    month.name = monthNames[monthIndex];
+    month.year = date.getFullYear();
+    month.number = date.getMonth();
 
         // loop for weeks
         for (var j=0 ; date.getMonth() === monthIndex ; j++) {
@@ -58,8 +58,8 @@ scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($
                     date.getMonth() === current.getMonth() &&
                     date.getYear()  === current.getYear()) {
                     dayClass = "today";
-                }
-                weekdays.push({number: dayNumber, name: dayName, class:dayClass});
+            }
+            weekdays.push({number: dayNumber, name: dayName, class:dayClass});
 
                 // increment the date
                 date.setDate(date.getDate()+1);
@@ -161,6 +161,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 console.log(response);
                 document.cookie = "facebookUsersName="+response.first_name;
                 document.cookie = "facebookUsersLastName="+response.last_name;
+                document.cookie = "facebookActualUserName="+response.username;
                 // this is all null scott
                 // TODO figure out why
             });
@@ -189,27 +190,27 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 //     $scope.appointments = data;
 //   });
 // });
-scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
+scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
     var config = {headers:  {
-        'authType': 'client',
+        'authType': 'staff',
         'authToken': readCookie("myAccessToken"),
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
         // 'debug': 'asd'
-        }
-    };
+    }
+};
 
-  $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
     // console.log(data);
     $scope.appointments = [];
     for (var something in data){
-        // console.log(data[something]);
+        console.log(data[something]);
         var tempAppointment = {};
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus};
-         console.log("fuck"+data[something].appointmentStatus);
+        tempAppointment.appointmentStatus = data[something].appointmentStatus;
+        console.log("fuck"+data[something].appointmentStatus);
         if (data[something].appointmentStatus === "APPROVED") {
             tempAppointment.myColor = "success";
         };
@@ -234,11 +235,11 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
 
                 });
             }
-            $scope.appointments.push(tempAppointment);
         }
+        $scope.appointments.push(tempAppointment);
         console.log($scope.appointments);
-
-  });
+    }
+});
 });
 
 
@@ -266,19 +267,17 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
         // 'debug': 'asd'
-        }
-    };
+    }
+};
 
-  $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
     // console.log(data);
     $scope.appointments = [];
     for (var something in data){
-        // console.log(data[something]);
         var tempAppointment = {};
         var date = new Date(data[something].startTime);
         tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus};
-         console.log("fuck"+data[something].appointmentStatus);
+        tempAppointment.appointmentStatus = data[something].appointmentStatus;
         if (data[something].appointmentStatus === "APPROVED") {
             tempAppointment.myColor = "success";
         };
@@ -294,20 +293,22 @@ scheduleControllers.controller('ClientLandingController', function ClientLanding
         };
         for (var link in data[something].links){
             if (data[something].links[link].rel === "stylist") {
-                console.log(data[something].links[link].href);
                 $http.get(data[something].links[link].href, config).success(function(data2) {
-                    console.log("data2:"+data2);
+                    console.log(something+": "+data2.firstName);
                     tempAppointment.stylistFirst = data2.firstName; // = something
                     tempAppointment.stylistLast = data2.lastName; // = something
                 }).error(function(data2){
+                    alert("Error");
 
                 });
-            }
-            $scope.appointments.push(tempAppointment);
-        }
-        console.log($scope.appointments);
+                break;
 
-  });
+            };
+        };
+        $scope.appointments.push(tempAppointment);
+        console.log($scope.appointments);
+    };
+});
 });
 
 
@@ -341,11 +342,13 @@ scheduleControllers.controller('adminController', function adminController($scop
         'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
-        }
-    };
-  $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
+    }
+};
+$http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
     $scope.users = data;
-  });
+}).error(function(data2){
+    $score.user = "You have no access here";
+});
 });
 
 //  /$$   /$$  /$$$$$$  /$$$$$$$$ /$$$$$$$
@@ -377,7 +380,7 @@ scheduleControllers.controller('adminController', function adminController($scop
 scheduleControllers.controller('userAuthController', function userAuthController($scope, $http) {
   $http.get('json/userAuthController.json').success(function(data) {
     $scope.currentUserAuth = data;
-  });
+});
 });
 
 
@@ -425,4 +428,48 @@ scheduleControllers.controller('indexController', function indexController($scop
 // |________/|______/ \______/    |__/
 
 scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
+    //TODO 
+    /*
+    We can use this to supply the staff list for the calendar. Maybe this should go in the calendar controller.
+    But I thought it was already a big controller by itself. 
+    */
 });
+
+//  /$$      /$$ /$$                             
+// | $$$    /$$$|__/                             
+// | $$$$  /$$$$ /$$  /$$$$$$$  /$$$$$$$         
+// | $$ $$/$$ $$| $$ /$$_____/ /$$_____/         
+// | $$  $$$| $$| $$|  $$$$$$ | $$               
+// | $$\  $ | $$| $$ \____  $$| $$               
+// | $$ \/  | $$| $$ /$$$$$$$/|  $$$$$$$         
+// |__/     |__/|__/|_______/  \_______/         
+                                              
+                                              
+                                              
+//  /$$   /$$                                    
+// | $$  | $$                                    
+// | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$       
+// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$      
+// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/      
+// | $$  | $$ \____  $$| $$_____/| $$            
+// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$            
+//  \______/ |_______/  \_______/|__/            
+                                              
+                                              
+                                              
+//  /$$            /$$$$$$                       
+// |__/           /$$__  $$                      
+//  /$$ /$$$$$$$ | $$  \__//$$$$$$               
+// | $$| $$__  $$| $$$$   /$$__  $$              
+// | $$| $$  \ $$| $$_/  | $$  \ $$              
+// | $$| $$  | $$| $$    | $$  | $$              
+// | $$| $$  | $$| $$    |  $$$$$$/              
+// |__/|__/  |__/|__/     \______/               
+                                              
+//TODO 
+/*
+* make the controller add information such as a url to image into the cookie.
+* save auth type into a cookie
+* and other misc information that can be used to change the look of the UI.
+* IE: if admin display some buttons that arent normally there for regular users 
+*/
