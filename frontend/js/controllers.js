@@ -192,9 +192,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 // });
 scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
     var config = {headers:  {
-        'authType': 'staff',
         'authToken': readCookie("myAccessToken"),
-        'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
         // 'debug': 'asd'
@@ -261,9 +259,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
 scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
     var config = {headers:  {
-        'authType': 'client',
         'authToken': readCookie("myAccessToken"),
-        'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
         // 'debug': 'asd'
@@ -337,9 +333,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
 
 scheduleControllers.controller('adminController', function adminController($scope, $http, $rootScope) {
     var config = {headers:  {
-        'authType': 'admin',
         'authToken': readCookie("myAccessToken"),
-        'id': readCookie("myID"),
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
     }
