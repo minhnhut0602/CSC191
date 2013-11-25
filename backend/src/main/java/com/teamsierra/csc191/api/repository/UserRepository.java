@@ -85,7 +85,7 @@ public class UserRepository {
     }
     public List<User> findAllByGroup(UserType type){
     	L.info("Finding all users by group: " + type);
-    	return mongoTemplate.find(query(where("type").is(type)), User.class);
+    	return mongoTemplate.find(query(where("type").is(type)).addCriteria(where("active").is(true)), User.class);
     }
 
 

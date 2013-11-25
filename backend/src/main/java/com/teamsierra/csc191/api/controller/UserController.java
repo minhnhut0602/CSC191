@@ -263,7 +263,6 @@ public class UserController extends GenericController
     	
     	if(authType == UserType.ADMIN)
     	{
-    		//TODO password stuff
     		// required fields
     		String error = "";
     		if(!isValidType(user.getType()))
@@ -320,7 +319,9 @@ public class UserController extends GenericController
     		}
     		
     		if(error.equals(""))
-    		{
+    		{ 
+    			user.setPassword(encryptPassword(user.getPassword()));
+    			
 	    		userRepository.insert(user);
 	    		StylistAvailability sa = new StylistAvailability();
 	    		sa.setStylistID(user.getId());
@@ -481,6 +482,48 @@ public class UserController extends GenericController
 					+ "Exception generated in call to getUser().",
 					HttpStatus.NOT_FOUND);
 		}
+    }
+    
+    @RequestMapping(value = "/me", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource<User>> getCurrentUser(HttpServletRequest request) throws GenericUserException
+    {
+    	User user = userRepository.findByToken(authToken);
+    	
+    	if(user != null)
+    	{
+    		return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(user), HttpStatus.OK);
+    	}
+    	else
+    	{
+    		throw new GenericUserException("Unable to find you in the database, not"
+    				+ "really sure how you managed to get this exception.", 
+    				HttpStatus.NOT_FOUND);
+    	}
+    }
+    
+    @RequestMapping(value = "/stylists", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Resource<User>>> getStylists(HttpServletRequest request) throws GenericUserException
+    {
+    	List<User> stylists = userRepository.findAllByGroup(UserType.STYLIST);
+    	stylists.addAll(userRepository.findAllByGroup(UserType.ADMIN));
+    	
+    	if(stylists != null && !stylists.isEmpty())
+    	{
+    		List<Resource<User>> stylistResources = new ArrayList<Resource<User>>();
+        	
+        	for(User u : stylists)
+        	{
+        		stylistResources.add(ResourceHandler.createResource(u));
+        	}
+    		
+    		return new ResponseEntity<List<Resource<User>>>(stylistResources,
+    				HttpStatus.OK);
+    	}
+    	else
+    	{
+    		throw new GenericUserException("No stylists found in the database.", 
+    				HttpStatus.NOT_FOUND);
+    	}
     }
     
     /**
@@ -728,7 +771,17 @@ public class UserController extends GenericController
 				error += "Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif.\n";
 			}
 		}
-		//TODO change password
+		if(user.getPassword() != null)
+		{
+			if(isValidPassword(user.getPassword()))
+			{
+				curUser.setPassword(encryptPassword(user.getPassword()));
+			}
+			else
+			{
+				error += "Invalid password.\n";
+			}
+		}
 		
 		return error;
     }
@@ -765,8 +818,17 @@ public class UserController extends GenericController
     
     private boolean isValidPassword(String password)
     {
-    	//TODO
-    	return true;
+    	if(password.length() > 0)
+    	{
+    		return true;
+    	}
+    	else return false;
+    }
+    
+    //TODO encrypt using scrypt lib
+    private String encryptPassword(String password)
+    {
+    	return password;
     }
     
     //@ExceptionHandler(Exception.class)
