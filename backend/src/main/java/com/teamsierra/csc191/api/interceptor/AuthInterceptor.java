@@ -81,7 +81,9 @@ public class AuthInterceptor implements HandlerInterceptor{
             return true;
         }
 
-        L.info("user requesting "+ request.getContextPath());
+        L.info("getContextPath() "+ request.getContextPath());
+        L.info("getPathInfo() "+ request.getPathInfo());
+        L.info("getRequestURI() "+ request.getRequestURI());
 
         String AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
 
