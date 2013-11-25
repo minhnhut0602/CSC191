@@ -67,6 +67,11 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
+        L.info("getRequestURI() "+ request.getRequestURI());
+        if (request.getRequestURI().matches(".*/authorize\\?.*")) {
+            return true;
+        }
+
         /*
          * TODO change appmode in system.properties before production
     	 * WHEN REMOVED: go to UserControllerIntegrationTest.java and
@@ -80,8 +85,6 @@ public class AuthInterceptor implements HandlerInterceptor{
             request.setAttribute("authType", request.getHeader("authType"));
             return true;
         }
-
-        L.info("user requesting "+ request.getContextPath());
 
         String AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
 
