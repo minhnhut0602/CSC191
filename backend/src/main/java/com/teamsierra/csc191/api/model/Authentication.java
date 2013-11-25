@@ -7,7 +7,7 @@ package com.teamsierra.csc191.api.model;
  * Time: 1:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Authentication extends GenericModel{
+public class Authentication {
 
     private String authToken;
 

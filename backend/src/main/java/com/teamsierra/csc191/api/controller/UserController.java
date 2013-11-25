@@ -1,5 +1,6 @@
 package com.teamsierra.csc191.api.controller;
 
+import com.lambdaworks.crypto.SCryptUtil;
 import com.teamsierra.csc191.api.exception.GenericUserException;
 import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
@@ -842,11 +843,13 @@ public class UserController extends GenericController
     	}
     	else return false;
     }
-    
-    //TODO encrypt using scrypt lib
+
     private String encryptPassword(String password)
     {
-    	return password;
+        int N = 16290;
+        int r = 8;
+        int p = 1;
+    	return SCryptUtil.scrypt(password, N, r, p);
     }
     
     //@ExceptionHandler(Exception.class)
