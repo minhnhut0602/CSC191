@@ -320,7 +320,7 @@ public class UserController extends GenericController
     		}
     		
     		if(error.equals(""))
-    		{ 
+    		{
     			user.setPassword(encryptPassword(user.getPassword()));
     			
 	    		userRepository.insert(user);
@@ -846,7 +846,14 @@ public class UserController extends GenericController
 
     private String encryptPassword(String password)
     {
-        int N = 16290;
+    	/*
+    	 * TODO
+    	 * SCOTT: I think N has to be a power of 2. it works
+    	 * 	fine this way, but i have nfi what N is supposed
+    	 * 	to represent so yeah...original value that you put
+    	 * 	is the one commented out.
+    	 */
+        int N = 16384; //16290;
         int r = 8;
         int p = 1;
     	return SCryptUtil.scrypt(password, N, r, p);
