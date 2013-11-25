@@ -13,6 +13,8 @@ public class GenericException extends Exception
 		super(message);
 		this.status = status;
 		this.log = l;
+        this.log.info(this.getMessage());
+        this.log.error(this.getStackTrace());
 	}
 
 	public HttpStatus getStatus() 

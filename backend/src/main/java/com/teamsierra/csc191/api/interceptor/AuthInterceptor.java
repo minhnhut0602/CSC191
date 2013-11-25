@@ -37,9 +37,6 @@ public class AuthInterceptor implements HandlerInterceptor{
     private UserRepository userRepository;
 
     private Properties p;
-    private String AUTH_TOKEN;
-    private String ID;
-    private String AUTH_TYPE;
 
     public AuthInterceptor() {
         super();
@@ -53,144 +50,134 @@ public class AuthInterceptor implements HandlerInterceptor{
         }
     }
 
+    /**
+     * Validate the id and auth token passed to the API as credentials when making calls. This method is bypassed
+     * if the request is attempting to get to the AuthenticationController class which is used at logon for staff
+     * to generate a new auth token to be passed to the REST API.
+     *
+     * @param request HTTP request object
+     * @param response HTTP response object
+     * @param handler I have no idea what this does.
+     * @return If true, continue through the api, else handle the response and block further execution.
+     * @throws Exception If credentials do not validate, throw an exception killing the execution and returning an
+     * error to the caller
+     */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
-        // TODO change appmode in system.properties before production
-    	// WHEN REMOVED: go to UserControllerIntegrationTest.java and
-    	// comment out the specified test method or the tests will fail.
+        /*
+         * TODO change appmode in system.properties before production
+    	 * WHEN REMOVED: go to UserControllerIntegrationTest.java and
+    	 * comment out the specified test method or the tests will fail.
+    	 */
         if (p.getProperty("appmode", "prod").equalsIgnoreCase("dev") &&
-            request.getHeader("debug") != null)
-        {
+            request.getHeader("debug") != null) {
+
             request.setAttribute("authToken", request.getHeader("authToken"));
             request.setAttribute("id", request.getHeader("id"));
             request.setAttribute("authType", request.getHeader("authType"));
             return true;
         }
 
-        AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
-        ID = request.getHeader(p.getProperty("headers.id"));
-        AUTH_TYPE = request.getHeader(p.getProperty("headers.authType"));
-        L.info(AUTH_TYPE);
+        L.info("user requesting "+ request.getContextPath());
 
+        String AUTH_TOKEN = request.getHeader(p.getProperty("headers.authToken"));
+
+        /*
+         * Find the user who matches the given auth token.
+         */
+        L.info("looking for user with auth token: "+ AUTH_TOKEN);
         User user = null;
-        if (AUTH_TYPE.equals("client")) {
-            user = userRepository.findByOAuthId(ID);
+        user = userRepository.findByToken(AUTH_TOKEN);
+
+        /*
+         * Check to see if the supplied auth token belongs to a user.
+         */
+        if (user != null) {
+            /*
+             * User was found for supplied auth token, credentials verified, fill attributes and continue execution.
+             */
+            L.info("user found: "+ user);
+            L.info("setting attributes and returning true");
+
+            request.setAttribute("id", user.getId());
+            request.setAttribute("authToken", user.getToken());
+            request.setAttribute("authType", user.getType());
+            return true;
+
         } else {
-            user = userRepository.findByEmail(ID);
-        }
-        request.setAttribute("id", user.getId());
+            /*
+             * No user found for supplied auth token.
+             */
+            L.info("no user found");
 
-        boolean returnValue = false;
+            /*
+             * Ask facebook if the auth token passed in is valid for a facebook session.
+             */
+            L.info("asking facebook if auth token is valid for a facebook session");
+            String ID = null;
+            if ((ID = facebookChallenge(AUTH_TOKEN)) != null) {
+                /*
+                 * Facebook session is valid, either auth token changed or user is new client.
+                 */
+                L.info("auth token is valid for facebook session");
 
-        if (user != null) { //user was found in the database
+                /*
+                 * Check for user in database that matches facebook ID.
+                 */
+                L.info("looking for user in database that matches facebook id: "+ ID);
+                user = userRepository.findByOAuthId(ID);
+                if (user != null) {
+                    /*
+                     * User was found for this facebook session. update their auth token and continue execution.
+                     */
+                    L.info("user was found "+ user);
 
-            L.info("user was found in the database"+ user);
+                    L.info("updating auth token in database");
+                    user.setToken(AUTH_TOKEN);
+                    userRepository.save(user);
 
-            if (AUTH_TYPE.equals("client")) { //user claiming to be client
-                if (user.getType().equals(GenericModel.UserType.CLIENT)) {
-                    L.info("user is claiming to be a client and is a client, validating credentials");
-                    //TODO user is a client, go validate their credentials
+                    L.info("setting attributes and returning true");
+                    request.setAttribute("id", user.getId());
+                    request.setAttribute("authToken", user.getToken());
+                    request.setAttribute("authType", user.getType());
+                    return true;
                 } else {
-                    throw new GenericException("user tried to authenticate as client and is not a client", HttpStatus.UNAUTHORIZED, L);
-                }
+                    /*
+                     * Facebook session is valid but no user found. Create new user and throw new user exception.
+                     */
+                    L.info("user not found in database");
 
-            } else if (AUTH_TYPE.equals("stylist")) { //user claiming to be stylist
-                if (user.getType().equals(GenericModel.UserType.STYLIST)) {
-                    L.info("user is claiming to be a stylist and is a stylist, validating credentials");
-                    //TODO user is a stylist, go validate their credentials
-                } else {
-                    throw new GenericException("user tried to authenticate as a stylist and is not a stylist", HttpStatus.UNAUTHORIZED, L);
-                }
+                    L.info("adding new user to the db");
+                    user = new User();
+                    user.setOauthId(ID);
+                    user.setType(GenericModel.UserType.CLIENT);
+                    user.setToken(AUTH_TOKEN);
+                    user.setActive(true);
 
-            } else if (AUTH_TYPE.equals("admin")) { //user claiming to be admin
-                if (user.getType().equals(GenericModel.UserType.ADMIN)) {
-                    L.info("user is claiming to be a admin and is a admin, validating credentials");
-                    //TODO user is an admin, go validate their credentials
-                } else {
-                    throw new GenericException("user tried to authenticate as an admin and is not an admin", HttpStatus.UNAUTHORIZED, L);
+                    userRepository.insert(user);
+
+                    L.info("new user added to database "+ user);
+
+                    L.info("setting attributes and returning true");
+                    request.setAttribute("id", user.getId());
+                    request.setAttribute("authToken", user.getToken());
+                    request.setAttribute("authType", user.getType());
+                    return true;
                 }
+            } else {
+                /*
+                 * No facebook session found, auth token is not valid, throw exception and halt execution.
+                 */
+                throw new GenericException("invalid auth token", HttpStatus.UNAUTHORIZED, L);
             }
-        } else { //user was not found in the database
-            
+
         }
-
-        if (user != null) { //user exists
-            L.info("user found");
-            if (user.getToken().equals(AUTH_TOKEN)) { //access token is good
-                returnValue = true;
-            } else { //access token is bad
-                switch (AUTH_TYPE) {
-                    case "client":
-                        //client
-                        if (facebookChallenge(ID, AUTH_TOKEN, response)) {
-                            //update user authToken
-                            user.setToken(AUTH_TOKEN);
-                            userRepository.save(user);
-                            L.info("Fuck "+user);
-
-                            returnValue = true;
-                        } else {
-                            returnValue = false;
-                        }
-                        break;
-                    case "stylist":
-                        //stylist
-                        break;
-                    case "admin":
-                        //admin
-                        break;
-                }
-
-            }
-        } else { //user does not exist
-            L.info("user not found");
-            switch (AUTH_TYPE) {
-                case "client":
-                    //client
-                    if (facebookChallenge(ID, AUTH_TOKEN, response)) {
-                        //add user to database
-                        L.info("adding user to the db");
-                        User newUser = new User();
-                        newUser.setOauthId(ID);
-                        newUser.setType(GenericModel.UserType.CLIENT);
-                        newUser.setToken(AUTH_TOKEN);
-                        newUser.setActive(true);
-                        userRepository.insert(newUser);
-                        L.info(newUser + " added");
-                        request.setAttribute("id", newUser.getId());
-                        returnValue = true;
-                    } else {
-                        L.info("fb challenge failed, returning 401");
-                        returnValue = false;
-                    }
-                    break;
-                case "stylist":
-                    //stylist
-                    break;
-                case "admin":
-                    //admin
-                    break;
-            }
-        }
-
-        if (returnValue) {
-            L.info("filling in generic controller");
-
-            request.setAttribute("authType", GenericModel.UserType.valueOf(AUTH_TYPE.toUpperCase()));
-
-            //set the auth_token
-            request.setAttribute("authToken", AUTH_TOKEN);
-        } else {
-            throw new GenericException("Authentication failure", HttpStatus.UNAUTHORIZED, L);
-        }
-
-        return returnValue;
     }
 
-    private boolean facebookChallenge(String id, String token, HttpServletResponse response) throws Exception{
+    private String facebookChallenge(String token) throws Exception{
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -224,11 +211,10 @@ public class AuthInterceptor implements HandlerInterceptor{
         }
 
         JsonNode data = root.get("data");
-        if (data.get("is_valid").asBoolean() &&
-            id.equals(data.get("user_id").asText())) {
-            return true;
+        if (data.get("is_valid").asBoolean()) {
+            return data.get("user_id").asText();
         } else {
-            throw new GenericException("facebook credentials could not be validated with facebook", HttpStatus.UNAUTHORIZED, L);
+            return null;
         }
     }
 
