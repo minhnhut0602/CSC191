@@ -487,6 +487,15 @@ public class UserController extends GenericController
     @RequestMapping(value = "/me", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<User>> getCurrentUser(HttpServletRequest request) throws GenericUserException
     {
+    	try
+    	{
+    		this.setRequestControllerState(request);
+    	}
+    	catch(Exception e)
+    	{
+    		throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+    	}
+    	
     	User user = userRepository.findByToken(authToken);
     	
     	if(user != null)
@@ -504,6 +513,15 @@ public class UserController extends GenericController
     @RequestMapping(value = "/stylists", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Resource<User>>> getStylists(HttpServletRequest request) throws GenericUserException
     {
+    	try
+    	{
+    		this.setRequestControllerState(request);
+    	}
+    	catch(Exception e)
+    	{
+    		throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+    	}
+    	
     	List<User> stylists = userRepository.findAllByGroup(UserType.STYLIST);
     	stylists.addAll(userRepository.findAllByGroup(UserType.ADMIN));
     	
