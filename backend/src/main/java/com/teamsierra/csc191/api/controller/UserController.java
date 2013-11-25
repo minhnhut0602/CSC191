@@ -485,6 +485,68 @@ public class UserController extends GenericController
 		}
     }
     
+    /**
+     * Retrieves the current user from the database by their token.
+     * 
+     * Usage: GET call to /users/me.
+     * 
+     * Input:
+     * 	-Headers: authToken
+     * 
+     * Return: Resource<User>. Will throw an exception if the specified
+     * 	user does not exist in the database.
+     * 	
+     * 	format - Json format of the resource with a link to the user and,
+     * 		in the case of a stylist or admin, a link to their availability as well.
+     * 		Fields may have a value of null if they are empty.
+     * 
+     * 	the following is an example of what would be returned:
+     * 	stylist/admin:
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "self",
+     * 				"href": ".../users/{userID}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{userID}"
+     * 			}
+     * 		]
+     * 		"id": "{userID}",
+     * 		"type": "ADMIN",
+     * 		"firstName": "Kyle",
+     * 		"lastName": "Matz",
+     * 		"email": "kmatz4b@gmail.com",
+     * 		"avatarURL": "somePic.gif",
+     * 		"phone": "9162223333",
+     * 		"active": true
+     * 	}
+     * 
+     * 	client:
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "self",
+     * 				"href": ".../users/{userID}"
+     * 			}
+     * 		]
+     * 		"id": "{userID}",
+     * 		"type": "CLIENT",
+     * 		"firstName": "John",
+     * 		"lastName": "Smith",
+     * 		"email": "iFailAtCreativity@yahoo.com",
+     * 		"avatarURL": "somePic.gif",
+     * 		"phone": "9164445555",
+     * 		"active": false
+     *	}
+     *
+     * @param request
+     * @return
+     * @throws GenericUserException
+     */
     @RequestMapping(value = "/me", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<User>> getCurrentUser(HttpServletRequest request) throws GenericUserException
     {
@@ -511,18 +573,71 @@ public class UserController extends GenericController
     	}
     }
     
+    /**
+     * Retrieves all of the active stylists (including admins) from the
+     * database.
+     * 
+     * Usage: GET call to /users/me.
+     * 
+     * Input:
+     * 	-none
+     * 
+     * Return: List<Resource<User>>. Will throw an exception if the specified
+     * 	user does not exist in the database.
+     * 	
+     * 	format - Json format of the resource with a link to the user and,
+     * 		in the case of a stylist or admin, a link to their availability as well.
+     * 		Fields may have a value of null if they are empty.
+     * 
+     * 	the following is an example of what would be returned:
+     * { 
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "self",
+     * 				"href": ".../users/{userID}"
+     * 			},
+     * 			{
+     * 				"rel": "availability"
+     * 				"href": ".../availability/{userID}"
+     * 			}
+     * 		]
+     * 		"id": "{userID}",
+     * 		"type": "ADMIN",
+     * 		"firstName": "Kyle",
+     * 		"lastName": "Matz",
+     * 		"email": "kmatz4b@gmail.com",
+     * 		"avatarURL": "somePic.gif",
+     * 		"phone": "9162223333",
+     * 		"active": true
+     * 	},
+     * 	{
+     * 		"links":
+     * 		[
+     * 			{
+     * 				"rel": "self",
+     * 				"href": ".../users/{userID}"
+     * 			}
+     * 		]
+     * 		"id": "{userID}",
+     * 		"type": "CLIENT",
+     * 		"firstName": "John",
+     * 		"lastName": "Smith",
+     * 		"email": "iFailAtCreativity@yahoo.com",
+     * 		"avatarURL": "somePic.gif",
+     * 		"phone": "9164445555",
+     * 		"active": false
+     *	}
+     * }
+     *
+     * @param request
+     * @return
+     * @throws GenericUserException
+     */
     @RequestMapping(value = "/stylists", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Resource<User>>> getStylists(HttpServletRequest request) throws GenericUserException
-    {
-    	try
-    	{
-    		this.setRequestControllerState(request);
-    	}
-    	catch(Exception e)
-    	{
-    		throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
-    	}
-    	
+    {    	
     	List<User> stylists = userRepository.findAllByGroup(UserType.STYLIST);
     	stylists.addAll(userRepository.findAllByGroup(UserType.ADMIN));
     	
@@ -743,6 +858,16 @@ public class UserController extends GenericController
 		}
     }
     
+    /**
+     * Method to update a stylist user. Only editable fields are checked and
+     * changed if valid. When a field fails validation an error message with
+     * the error is returned, if no errors the string will be empty ("").
+     * 
+     * @param user the user model with the updated fields
+     * @param curUser the user model currently in the db
+     * @return
+     * @throws GenericUserException
+     */
     private String updateStylist(User user, User curUser) throws GenericUserException
     {
     	String error = "";
@@ -805,6 +930,13 @@ public class UserController extends GenericController
 		return error;
     }
     
+    /**
+     * Validates the user type when an admin creates a user.
+     * Returns true if the field is valid, otherwise false.
+     * 
+     * @param type
+     * @return
+     */
     private boolean isValidType(UserType type)
     {
     	if(type == UserType.STYLIST || type == UserType.ADMIN)
@@ -815,45 +947,81 @@ public class UserController extends GenericController
     	return false;
     }
     
+    /**
+     * Validates the name fields (firstName, lastName) of a user.
+     * Returns true if the field is valid, otherwise false.
+     * 
+     * @param name
+     * @return
+     */
     private boolean isValidName(String name)
     {
     	return name.matches("^\\p{L}+$"); // one or more of any unicode character
     }
     
+    /**
+     * Validates the email field of a user.
+     * Returns true if the field is valid, otherwise false.
+     * 
+     * @param email
+     * @return
+     */
     private boolean isValidEmail(String email)
     {
     	return email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
     }
     
+    /**
+     * Validates the avatarURL field of a user.
+     * Returns true if the field is valid, otherwise false.
+     * 
+     * @param avatarURL
+     * @return
+     */
     private boolean isValidAvatarURL(String avatarURL)
     {
     	return avatarURL.matches("[^\\s]+(\\.(?i)(png|gif|jpg))$"); // one or more characters followed by .png, .gif, or .jpg
     }
     
+    /**
+     * Validates the phone field of a user.
+     * Returns true if the field is valid, otherwise false.
+     * 
+     * @param phoneNumber
+     * @return
+     */
     private boolean isValidPhoneNumber(String phoneNumber)
     {
     	return phoneNumber.matches("^\\d{10}$"); // 10 digits
     }
     
+    /**
+     * Validates the password field of a user.
+     * Returns true if the field is valid, otherwise false.
+     * 
+     * @param password
+     * @return
+     */
     private boolean isValidPassword(String password)
     {
     	if(password.length() > 0)
     	{
     		return true;
     	}
-    	else return false;
-    }
 
+    	return false;
+    }
+    
+    /**
+     * Takes the original password and returns the encrypted
+     * version of the password that is to be stored in the db.
+     * 
+     * @param password
+     * @return
+     */
     private String encryptPassword(String password)
     {
-    	/*
-    	 * TODO
-    	 * SCOTT: I think N has to be a power of 2. it works
-    	 * 	fine this way, but i have nfi what N is supposed
-    	 * 	to represent so yeah...original value that you put
-    	 * 	is the one commented out.
-    	 */
-        int N = 16384; //16290;
+        int N = 16384;
         int r = 8;
         int p = 1;
     	return SCryptUtil.scrypt(password, N, r, p);
