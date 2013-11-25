@@ -33,7 +33,7 @@ import java.security.SecureRandom;
  * Time: 4:49 PM
  */
 @Controller
-@RequestMapping("/authorization")
+@RequestMapping("/authorize")
 public class AuthenticationController {
     private static final Log L = LogFactory.getLog(AuthenticationController.class);
 
