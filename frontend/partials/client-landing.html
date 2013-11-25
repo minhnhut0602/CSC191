@@ -8,29 +8,20 @@
 </div>
 
 <div class="main" ng-controller="CalendarGenerator">
-
-    <div ng-controller="ClientLandingController">
-    <div class="left upcoming-appointments">
-
-        <div ng-repeat="appointment in appointments">
-            <div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with {{appointment.stylistFirst}} at {{appointment.startTime.toLocaleTimeString() }}   {{appointment.myColor}}  
-            </div>
+    <div>
+        <div class="left upcoming-appointments">
+            <div clienttakeoff></div>
         </div>
-
-    </div>
     </div>
 
     <div class="right calendar">
-                <button class="btn btn-default right" ng-click="calendar()">Today</button>
-                <div class="clearfix"></div>
+        <button class="btn btn-default right" ng-click="calendar()">Today</button>
+        <div class="clearfix"></div>
         <div class="month" >
             <h2 class="month-name">{{month.name}}</h2>
             <div class="week" ng-repeat="week in month.weeks">
                 <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
             </div>
-
         </div>
-
     </div>
-
 </div>

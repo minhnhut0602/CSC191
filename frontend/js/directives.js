@@ -1,3 +1,9 @@
+function readCookie(name) {
+    name += '=';
+    for (var ca = document.cookie.split(/;\s*/), i = ca.length - 1; i >= 0; i--)
+        if (!ca[i].indexOf(name))
+            return ca[i].replace(name, '');
+    }
 var scheduleDirectives = angular.module('scheduleDirectives', []);
 
 scheduleDirectives.directive('calendarPopover', function() {
@@ -101,4 +107,76 @@ scheduleDirectives.directive('selectpicker', function() {
             }), true;
         }
     }
+});
+scheduleDirectives.directive('clienttakeoff', function() {
+    return {
+        restrict: 'A',
+        template:   '<div ng-repeat="appointment in appointments">'+
+                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with <span cockeyes stylisturl="{{appointment.stylist}}"></span> at {{appointment.startTime.toLocaleTimeString() }}   {{appointment.myColor}}' +
+                        '</div>'+
+                    '</div>',
+        controller: function($scope, $http) {
+            var config = {headers:  {
+                    'authToken': readCookie("myAccessToken"),
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                    // 'debug': 'asd'
+                }
+            };
+            $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+                $scope.appointments = [];
+                
+                for (var something in data){
+                    var tempAppointment = {};
+                    var date = new Date(data[something].startTime);
+                    tempAppointment.startTime = date;
+                    tempAppointment.appointmentStatus = data[something].appointmentStatus;
+                    
+                    if (data[something].appointmentStatus === "APPROVED") {
+                        tempAppointment.myColor = "success";
+                    }
+                    if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+                        tempAppointment.myColor = "danger";
+                    }
+                    if (data[something].appointmentStatus === "NEW") {
+                        tempAppointment.myColor = "warning";
+                    }
+                    if (data[something].appointmentStatus === "COMPLETED") {
+                        tempAppointment.myColor = "info";
+                    }
+                    for (var link in data[something].links) {
+                        if (data[something].links[link].rel === "stylist") {
+                            console.log(data[something].links[link].href);
+                            tempAppointment.stylist = data[something].links[link].href;
+                        }
+                    }
+                    $scope.appointments.push(tempAppointment);
+                }
+                console.log($scope.appointments);
+            });
+        }
+    };
+});
+scheduleDirectives.directive('cockeyes', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            stylisturl: '@'
+        },
+        template: '{{stylist.firstname}}',
+        controller: function($scope, $http) {
+            var config = {headers:  {
+                    'authToken': readCookie("myAccessToken"),
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                    // 'debug': 'asd'
+                }
+            };
+            console.log("cockeyes: url " + $scope.stylisturl);
+            $http.get($scope.stylisturl, config).success(function(data){
+                $scope.stlyist = data;
+                
+            });
+        }
+    };
 });
