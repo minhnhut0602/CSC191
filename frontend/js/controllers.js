@@ -155,7 +155,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.$apply(function() {
 
                 // Here you could re-check for user status (just in case)
-                
+
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 console.log(response);
@@ -260,55 +260,58 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
 scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
-    var config = {headers:  {
-        'authType': 'client',
-        'authToken': readCookie("myAccessToken"),
-        'id': readCookie("myID"),
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
-        // 'debug': 'asd'
-    }
-};
-
-$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
-    // console.log(data);
-    $scope.appointments = [];
-    for (var something in data){
-        var tempAppointment = {};
-        var date = new Date(data[something].startTime);
-        tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus;
-        if (data[something].appointmentStatus === "APPROVED") {
-            tempAppointment.myColor = "success";
-        };
-        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
-            tempAppointment.myColor = "danger";
-        };
-        if (data[something].appointmentStatus === "NEW") {
-            tempAppointment.myColor = "warning";
-        };
-        if (data[something].appointmentStatus === "COMPLETED") {
-            tempAppointment.myColor = "info";
-
-        };
-        for (var link in data[something].links){
-            if (data[something].links[link].rel === "stylist") {
-                $http.get(data[something].links[link].href, config).success(function(data2) {
-                    console.log(something+": "+data2.firstName);
-                    tempAppointment.stylistFirst = data2.firstName; // = something
-                    tempAppointment.stylistLast = data2.lastName; // = something
-                }).error(function(data2){
-                    alert("Error");
-
-                });
-                break;
-
-            };
-        };
-        $scope.appointments.push(tempAppointment);
-        console.log($scope.appointments);
+    var config = {
+        headers:  {
+            'authType': 'client',
+            'authToken': readCookie("myAccessToken"),
+            'id': readCookie("myID"),
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+            // 'debug': 'asd'
+        }
     };
-});
+
+    $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+        // console.log(data);
+        $scope.appointments = [];
+        var i = 0;
+        var tempAppointment = [];
+        for (var something in data){
+            for (var link in data[something].links){
+                if (data[something].links[link].rel === "stylist") {
+                    tempAppointment.push({});
+                    $http.get(data[something].links[link].href, config).success(function(data2) {
+
+                        var date = new Date(data[something].startTime);
+                        tempAppointment[i].startTime = date;
+                        tempAppointment[i].appointmentStatus = data[something].appointmentStatus;
+                        if (data[something].appointmentStatus === "APPROVED") {
+                            tempAppointment[i].myColor = "success";
+                        };
+                        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+                            tempAppointment[i].myColor = "danger";
+                        };
+                        if (data[something].appointmentStatus === "NEW") {
+                            tempAppointment[i].myColor = "warning";
+                        };
+                        if (data[something].appointmentStatus === "COMPLETED") {
+                            tempAppointment[i].myColor = "info";
+                        };
+
+                        console.log(something+": "+data2.firstName);
+                        tempAppointment[i].stylistFirst = data2.firstName; // = something
+                        tempAppointment[i].stylistLast = data2.lastName; // = something
+
+                        $scope.appointments.push(tempAppointment[i]);
+                    }).error(function(data2){
+                        alert("Error");
+                    });
+                    break;
+                }
+            }
+            i++;
+        }
+    });
 });
 
 
@@ -428,48 +431,48 @@ scheduleControllers.controller('indexController', function indexController($scop
 // |________/|______/ \______/    |__/
 
 scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
-    //TODO 
+    //TODO
     /*
     We can use this to supply the staff list for the calendar. Maybe this should go in the calendar controller.
-    But I thought it was already a big controller by itself. 
+    But I thought it was already a big controller by itself.
     */
 });
 
-//  /$$      /$$ /$$                             
-// | $$$    /$$$|__/                             
-// | $$$$  /$$$$ /$$  /$$$$$$$  /$$$$$$$         
-// | $$ $$/$$ $$| $$ /$$_____/ /$$_____/         
-// | $$  $$$| $$| $$|  $$$$$$ | $$               
-// | $$\  $ | $$| $$ \____  $$| $$               
-// | $$ \/  | $$| $$ /$$$$$$$/|  $$$$$$$         
-// |__/     |__/|__/|_______/  \_______/         
-                                              
-                                              
-                                              
-//  /$$   /$$                                    
-// | $$  | $$                                    
-// | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$       
-// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$      
-// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/      
-// | $$  | $$ \____  $$| $$_____/| $$            
-// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$            
-//  \______/ |_______/  \_______/|__/            
-                                              
-                                              
-                                              
-//  /$$            /$$$$$$                       
-// |__/           /$$__  $$                      
-//  /$$ /$$$$$$$ | $$  \__//$$$$$$               
-// | $$| $$__  $$| $$$$   /$$__  $$              
-// | $$| $$  \ $$| $$_/  | $$  \ $$              
-// | $$| $$  | $$| $$    | $$  | $$              
-// | $$| $$  | $$| $$    |  $$$$$$/              
-// |__/|__/  |__/|__/     \______/               
-                                              
-//TODO 
+//  /$$      /$$ /$$
+// | $$$    /$$$|__/
+// | $$$$  /$$$$ /$$  /$$$$$$$  /$$$$$$$
+// | $$ $$/$$ $$| $$ /$$_____/ /$$_____/
+// | $$  $$$| $$| $$|  $$$$$$ | $$
+// | $$\  $ | $$| $$ \____  $$| $$
+// | $$ \/  | $$| $$ /$$$$$$$/|  $$$$$$$
+// |__/     |__/|__/|_______/  \_______/
+
+
+
+//  /$$   /$$
+// | $$  | $$
+// | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$
+// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$
+// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/
+// | $$  | $$ \____  $$| $$_____/| $$
+// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$
+//  \______/ |_______/  \_______/|__/
+
+
+
+//  /$$            /$$$$$$
+// |__/           /$$__  $$
+//  /$$ /$$$$$$$ | $$  \__//$$$$$$
+// | $$| $$__  $$| $$$$   /$$__  $$
+// | $$| $$  \ $$| $$_/  | $$  \ $$
+// | $$| $$  | $$| $$    | $$  | $$
+// | $$| $$  | $$| $$    |  $$$$$$/
+// |__/|__/  |__/|__/     \______/
+
+//TODO
 /*
 * make the controller add information such as a url to image into the cookie.
 * save auth type into a cookie
 * and other misc information that can be used to change the look of the UI.
-* IE: if admin display some buttons that arent normally there for regular users 
+* IE: if admin display some buttons that arent normally there for regular users
 */
