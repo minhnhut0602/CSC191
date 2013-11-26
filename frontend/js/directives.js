@@ -125,13 +125,13 @@ scheduleDirectives.directive('clienttakeoff', function() {
             };
             $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
                 $scope.appointments = [];
-                
+
                 for (var something in data){
                     var tempAppointment = {};
                     var date = new Date(data[something].startTime);
                     tempAppointment.startTime = date;
                     tempAppointment.appointmentStatus = data[something].appointmentStatus;
-                    
+
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
                     }
@@ -157,6 +157,8 @@ scheduleDirectives.directive('clienttakeoff', function() {
         }
     };
 });
+
+
 scheduleDirectives.directive('cockeyes', function() {
     return {
         restrict: 'A',
@@ -172,10 +174,10 @@ scheduleDirectives.directive('cockeyes', function() {
                     // 'debug': 'asd'
                 }
             };
-            console.log("cockeyes: url " + $scope.stylisturl);
+            console.log($scope);
+            console.log($scope.stylisturl);
             $http.get($scope.stylisturl, config).success(function(data){
                 $scope.stlyist = data;
-                
             });
         }
     };
