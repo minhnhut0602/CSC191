@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -101,5 +102,17 @@ public class UserRepository {
     public void save(User user) {
         L.info("Saving the following user object: " + user);
         mongoTemplate.save(user);
+    }
+    
+    //  /$$$$$$$  /$$$$$$$$ /$$       /$$$$$$$$ /$$$$$$$$ /$$$$$$$$
+    //  | $$__  $$| $$_____/| $$      | $$_____/|__  $$__/| $$_____/
+    //  | $$  \ $$| $$      | $$      | $$         | $$   | $$      
+    //  | $$  | $$| $$$$$   | $$      | $$$$$      | $$   | $$$$$   
+    //  | $$  | $$| $$__/   | $$      | $$__/      | $$   | $$__/   
+    //  | $$  | $$| $$      | $$      | $$         | $$   | $$      
+    //  | $$$$$$$/| $$$$$$$$| $$$$$$$$| $$$$$$$$   | $$   | $$$$$$$$
+    //  |_______/ |________/|________/|________/   |__/   |________/
+    public void deleteAll(){
+    	mongoTemplate.remove(new Query(), User.class);
     }
 }

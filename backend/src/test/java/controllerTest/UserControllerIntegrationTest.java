@@ -5,7 +5,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -14,8 +13,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
+import com.teamsierra.csc191.api.repository.UserRepository;
+
+import static com.jayway.jsonassert.JsonAssert.collectionWithSize;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -26,25 +32,25 @@ public class UserControllerIntegrationTest
 {
 	@Autowired
 	private volatile WebApplicationContext webApplicationContext;
+	@Autowired
+	private UserRepository userRepo;
+	
 	private volatile MockMvc mockMVC;
 	
 	private static RequestPostProcessor requestPostProcessorAdmin,
-										requestPostProcessorStylist,
-										requestPostProcessorClient;
-	private static String token = "testToken";
-	private static String id = "testID";
+										requestPostProcessorStylist;
+	private static String tokenAdmin = "tokenAdmin",
+						  tokenStylist = "tokenStylist",
+						  tokenClient = "tokenClient";
 	
 	@BeforeClass
 	public static void beforeClass()
-	{				
-		requestPostProcessorClient = new RequestPostProcessor()
+	{
+		requestPostProcessorAdmin = new RequestPostProcessor()
 		{
 			public MockHttpServletRequest postProcessRequest(MockHttpServletRequest mockRequest)
 			{
-				mockRequest.addHeader("authType", "CLIENT");
-				mockRequest.addHeader("authToken", token);
-				mockRequest.addHeader("id", id);
-				mockRequest.addHeader("debug", "true");
+				mockRequest.addHeader("authToken", tokenAdmin);
 				
 				return mockRequest;
 			}
@@ -54,23 +60,7 @@ public class UserControllerIntegrationTest
 		{
 			public MockHttpServletRequest postProcessRequest(MockHttpServletRequest mockRequest)
 			{
-				mockRequest.addHeader("authType", "STYLIST");
-				mockRequest.addHeader("authToken", token);
-				mockRequest.addHeader("id", id);
-				mockRequest.addHeader("debug", "true");
-				
-				return mockRequest;
-			}
-		};
-		
-		requestPostProcessorAdmin = new RequestPostProcessor()
-		{
-			public MockHttpServletRequest postProcessRequest(MockHttpServletRequest mockRequest)
-			{
-				mockRequest.addHeader("authType", "ADMIN");
-				mockRequest.addHeader("authToken", token);
-				mockRequest.addHeader("id", id);
-				mockRequest.addHeader("debug", "true");
+				mockRequest.addHeader("authToken", tokenStylist);
 				
 				return mockRequest;
 			}
@@ -81,35 +71,91 @@ public class UserControllerIntegrationTest
 	public void before()
 	{
 		mockMVC = webAppContextSetup(this.webApplicationContext).build();
+		userRepo.deleteAll();
 	}
 	
 	/**
-	 * IF DEBUG IS REMOVED FROM INTERCEPTOR COMMENT OUT THIS TEST.
-	 * IT WILL FAIL DUE TO MADE UP CREDENTIALS.
 	 * 
-	 * Don't delete without talking to Kyle.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void testFongo() throws Exception
+	public void testAdmin() throws Exception
 	{
-		// create user
-		mockMVC.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).content(
-						"{"
-						+ " \"type\": \"ADMIN\","
-						+ " \"firstName\": \"Kyle\","
-						+ " \"lastName\": \"Matz\","
-						+ " \"email\": \"kmatz4b@gmail.com\","
-						+ " \"password\": \"password\""
-						+ "}")
-				.with(requestPostProcessorAdmin))
-				.andExpect(status().isCreated());
+		// create users
+		User user = new User();
+		user.setActive(true);
+		user.setToken(tokenAdmin);
+		user.setType(UserType.ADMIN);
+		userRepo.insert(user);
+		String adminID = user.getId();
+		
+		user = new User();
+		user.setActive(true);
+		user.setToken(tokenStylist);
+		user.setType(UserType.STYLIST);
+		userRepo.insert(user);
+		
+		user = new User();
+		user.setActive(false);
+		user.setToken(tokenClient);
+		user.setType(UserType.CLIENT);
+		userRepo.insert(user);
+		String clientID = user.getId();
+		
+		assertTrue(adminID != clientID);
 
 		// get all users
 		mockMVC.perform(get("/users")
 				.with(requestPostProcessorAdmin))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$")
+						.value(collectionWithSize(equalTo(3))));
+		// get client
+		mockMVC.perform(get("/users/" + clientID)
+				.with(requestPostProcessorAdmin))
 				.andExpect(status().isOk());
+		
+		mockMVC.perform(get("/users/me")
+				.with(requestPostProcessorAdmin))
+				.andExpect(status().isOk());
+		
+		mockMVC.perform(get("/users/stylists")
+				.with(requestPostProcessorAdmin))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$")
+						.value(collectionWithSize(equalTo(2))));
+	}
+	
+	@Test
+	public void testStylist() throws Exception
+	{
+		User user = new User();
+		user.setActive(true);
+		user.setToken(tokenStylist);
+		user.setType(UserType.STYLIST);
+		userRepo.insert(user);
+		
+		user = new User();
+		user.setActive(false);
+		user.setToken(tokenClient);
+		user.setType(UserType.CLIENT);
+		userRepo.insert(user);
+		String clientID = user.getId();
+		
+		// get client
+		mockMVC.perform(get("/users/" + clientID)
+				.with(requestPostProcessorStylist))
+				.andExpect(status().isNotFound());
+		
+		mockMVC.perform(get("/users/me")
+				.with(requestPostProcessorStylist))
+				.andExpect(status().isOk());
+		
+		mockMVC.perform(get("/users/stylists")
+				.with(requestPostProcessorStylist))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$")
+						.value(collectionWithSize(equalTo(1))));
 	}
 }
