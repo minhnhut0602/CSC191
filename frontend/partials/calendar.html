@@ -1,7 +1,7 @@
 <!-- <div init-calendar></div> -->
 
 <div class="top" ng-controller="stafflist">
-    <select selectpicker></select>
+    <stylistselect/>
 
 <!--     <div class="btn-group" data-toggle="buttons">
           <label class="btn btn-primary">
@@ -23,67 +23,42 @@
 
   <ul class="pagination" >
   <!-- Place each li in a row tag so that they would stack -->
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+0)%12],(monthNow.num+0)%12, dayNow)">{{monthNames[((monthNow.num+0)%12)]}} </a>
     </li>
-
-
-   
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+1)%12],(monthNow.num+1)%12,1)">{{monthNames[((monthNow.num+1)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+2)%12],(monthNow.num+2)%12,1)">{{monthNames[((monthNow.num+2)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+3)%12],(monthNow.num+3)%12,1)">{{monthNames[((monthNow.num+3)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+4)%12],(monthNow.num+4)%12,1)">{{monthNames[((monthNow.num+4)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+5)%12],(monthNow.num+5)%12,1)">{{monthNames[((monthNow.num+5)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+6)%12],(monthNow.num+6)%12,1)">{{monthNames[((monthNow.num+6)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+7)%12],(monthNow.num+7)%12,1)">{{monthNames[((monthNow.num+7)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+8)%12],(monthNow.num+8)%12,1)">{{monthNames[((monthNow.num+8)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+9)%12],(monthNow.num+9)%12,1)">{{monthNames[((monthNow.num+9)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+10)%12],(monthNow.num+10)%12,1)">{{monthNames[((monthNow.num+10)%12)]}} </a>
     </li>
-
-
     <li>
       <a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+11)%12],(monthNow.num+11)%12,1)">{{monthNames[((monthNow.num+11)%12)]}} </a>
     </li>
-
   </ul>
 </div>
 
