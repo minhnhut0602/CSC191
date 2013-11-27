@@ -24,7 +24,7 @@ public class User extends GenericModel
     private String phone;
     private boolean active;
     private String hairColor;
-    private String hairLenght;
+    private String hairLength;
 
     public String getHairColor()
     {
@@ -35,18 +35,18 @@ public class User extends GenericModel
     {
         this.hairColor = hairColor;
     }
-
-    public String getHairLenght()
-    {
-        return hairLenght;
-    }
-
-    public void setHairLenght(String hairLenght)
-    {
-        this.hairLenght = hairLenght;
-    }
     
-    @JsonIgnore
+    public String getHairLength() 
+    {
+		return hairLength;
+	}
+
+	public void setHairLength(String hairLength) 
+	{
+		this.hairLength = hairLength;
+	}
+
+	@JsonIgnore
     public String getOauthId() {
         return oauthId;
     }

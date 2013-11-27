@@ -573,6 +573,56 @@ public class UserController extends GenericController
     	}
     }
     
+    @RequestMapping(value = "/me", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource<User>> updateCurrentUser(HttpServletRequest request,
+    														@RequestBody User user) throws GenericUserException
+    {
+    	try
+    	{
+    		this.setRequestControllerState(request);
+    	}
+    	catch(Exception e)
+    	{
+    		throw new GenericUserException(e.getMessage(), HttpStatus.BAD_REQUEST);
+    	}
+    	
+    	String error = "";
+    	
+    	User curUser = userRepository.findByToken(authToken);
+    	
+    	if(user != null)
+    	{
+    		switch(curUser.getType())
+    		{
+    			case CLIENT: error += updateUser(user, curUser);
+    						 break;
+    			case STYLIST: error += updateStylist(user, curUser);
+    						  break;
+    			case ADMIN: // updateAdmin only allows for the additional option to activate
+    						// or deactivate a user, don't want that here.
+    						error += updateStylist(user, curUser);
+    						break;
+    		}
+    		
+    		if(error.equals(""))
+    		{
+        		userRepository.save(curUser);
+            	return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(curUser), HttpStatus.ACCEPTED);
+    		}
+    		else
+    		{
+    			throw new GenericUserException(error + "Exception generated in call to updateUser().",
+    					HttpStatus.BAD_REQUEST);
+    		}
+    	}
+    	else
+    	{
+    		throw new GenericUserException("Unable to find you in the database, not"
+    				+ "really sure how you managed to get this exception.", 
+    				HttpStatus.NOT_FOUND);
+    	}
+    }
+    
     /**
      * Retrieves all of the active stylists (including admins) from the
      * database.
@@ -785,8 +835,8 @@ public class UserController extends GenericController
 		    						+ "Exception generated in call to updateUser().",
 		    						HttpStatus.BAD_REQUEST);	 
 		    			 }
-	    				 // update client specific editable fields
-	    				 // currently none
+	    				 
+	    				 error += updateUser(user, curUser);
 	    				 break;
     		case STYLIST: curUser = userRepository.findByToken(authToken);
     		
@@ -802,7 +852,7 @@ public class UserController extends GenericController
 		    						+ "Exception generated in call to updateUser().",
 		    						HttpStatus.BAD_REQUEST);
 		    			  }
-	    				  // update stylist specific editable fields
+	    				  
 	    				  error += updateStylist(user, curUser);
 	    				  break;
     		case ADMIN: curUser = userRepository.findById(userID);
@@ -812,44 +862,19 @@ public class UserController extends GenericController
 							throw new GenericUserException("Unable to find requested user in the database.",
 									 HttpStatus.NOT_FOUND);
 						}
-						if(curUser.getType() != UserType.CLIENT)
-						{
-							// currently, admin and stylist editable fields are the same
-							error += updateStylist(user, curUser);
-						}
-						
-						curUser.setActive(user.isActive());
+
+						error += updateAdmin(user, curUser);
 	    				break;
 			default: throw new GenericUserException("Unknown authType header. "
 							+ "Exception generated in call to updateUser().",
 							HttpStatus.BAD_REQUEST);
 		}
 		
-		// editable fields for all users
-		if(user.getPhone() != null)
-		{
-    		if(isValidPhoneNumber(user.getPhone()))
-    		{
-    			curUser.setPhone(user.getPhone());
-    		}
-    		else
-    		{
-    			error += "Invalid phone number. The phone number should consist of 10 digits.\n";
-    		}
-		}
-		if(user.getHairColor() != null)
-		{
-			curUser.setHairColor(user.getHairColor());
-		}
-		if(user.getHairLenght() != null)
-		{
-			curUser.setHairLenght(user.getHairLenght());
-		}
-		
 		if(error.equals(""))
 		{
     		userRepository.save(curUser);
-        	return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(user), HttpStatus.ACCEPTED);
+        	return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(curUser),
+        			HttpStatus.ACCEPTED);
 		}
 		else
 		{
@@ -868,7 +893,7 @@ public class UserController extends GenericController
      * @return
      * @throws GenericUserException
      */
-    private String updateStylist(User user, User curUser) throws GenericUserException
+    private String updateUser(User user, User curUser)
     {
     	String error = "";
     	if(user.getFirstName() != null)
@@ -893,17 +918,6 @@ public class UserController extends GenericController
 				error += "Invalid last name. Names should consist of only unicode letters.\n";
 			}
 		}
-		if(user.getEmail() != null)
-		{
-			if(isValidEmail(user.getEmail()))
-			{
-				curUser.setEmail(user.getEmail());
-			}
-			else
-			{
-				error += "Invalid email.\n";
-			}
-		}
 		if(user.getAvatarURL() != null)
 		{
 			if(isValidAvatarURL(user.getAvatarURL()))
@@ -915,7 +929,44 @@ public class UserController extends GenericController
 				error += "Invalid avatarURL. The avatarURL should be an image URL ending in .png, .jpg, or .gif.\n";
 			}
 		}
-		if(user.getPassword() != null)
+		if(user.getPhone() != null)
+		{
+    		if(isValidPhoneNumber(user.getPhone()))
+    		{
+    			curUser.setPhone(user.getPhone());
+    		}
+    		else
+    		{
+    			error += "Invalid phone number. The phone number should consist of 10 digits.\n";
+    		}
+		}
+		if(user.getEmail() != null)
+		{
+			if(isValidEmail(user.getEmail()))
+			{
+				curUser.setEmail(user.getEmail());
+			}
+			else
+			{
+				error += "Invalid email.\n";
+			}
+		}
+		if(user.getHairColor() != null)
+		{
+			curUser.setHairColor(user.getHairColor());
+		}
+		if(user.getHairLength() != null)
+		{
+			curUser.setHairLength(user.getHairLength());
+		}
+		
+		return error;
+    }
+    
+    private String updateStylist(User user, User curUser)
+    {
+    	String error = "";
+    	if(user.getPassword() != null)
 		{
 			if(isValidPassword(user.getPassword()))
 			{
@@ -926,8 +977,26 @@ public class UserController extends GenericController
 				error += "Invalid password.\n";
 			}
 		}
-		
-		return error;
+    	error += updateUser(user, curUser);
+    	return error;
+    }
+    
+    private String updateAdmin(User user, User curUser)
+    {
+    	String error = "";
+    	curUser.setActive(user.isActive());
+    	
+    	UserType type = curUser.getType();
+    	if(type == UserType.ADMIN || type == UserType.STYLIST)
+    	{
+    		error += updateStylist(user, curUser);
+    	}
+    	else
+    	{
+    		error += updateUser(user, curUser);
+    	}
+    	
+    	return error;
     }
     
     /**
