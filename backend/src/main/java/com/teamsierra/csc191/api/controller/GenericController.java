@@ -41,6 +41,8 @@ public abstract class GenericController
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HashMap<String, String> error = new HashMap<>();
 
+        error.put("error", e.getMessage());
+
         if (e instanceof GenericException)
         {
             status = ((GenericException)e).getStatus();
@@ -54,22 +56,8 @@ public abstract class GenericController
             // Generic error
         }
 
-        // TODO add custom error handling
-        error.put("error", e.getMessage());
-
         return new ResponseEntity<>(error, status);
     }
-
-    /*
-    @ExceptionHandler(GenericException.class)
-    public ResponseEntity<String> handleGenericException(GenericException e)
-    {
-    	String reason = String.format("\"reason\": \"%s\"", e.getMessage());
-    	e.getLog().error("Exception thrown: ", e);
-    	
-    	return new ResponseEntity<String>(reason, e.getStatus());
-    }
-    */
 
 
     /**

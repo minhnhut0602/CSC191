@@ -1,5 +1,6 @@
 package com.teamsierra.csc191.api.interceptor;
 
+import com.teamsierra.csc191.api.controller.AuthenticationController;
 import com.teamsierra.csc191.api.exception.GenericException;
 import com.teamsierra.csc191.api.model.GenericModel;
 import com.teamsierra.csc191.api.model.User;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -67,8 +69,15 @@ public class AuthInterceptor implements HandlerInterceptor{
                              HttpServletResponse response,
                              Object handler) throws Exception{
 
-        L.info("getRequestURI() "+ request.getRequestURI());
-        if (request.getRequestURI().matches(".*/authorize\\?.*")) {
+
+        //L.info("getRequestURI() "+ request.getRequestURI());
+        //if (request.getRequestURI().matches(".*/authorize\\?.*")) {
+        //    return true;
+        //}
+
+        if (((HandlerMethod)handler).getBeanType().equals(AuthenticationController.class))
+        {
+            L.info("AuthenticationController method was called, bypass interceptor");
             return true;
         }
 
@@ -235,7 +244,7 @@ public class AuthInterceptor implements HandlerInterceptor{
                                 Exception e) throws Exception {}
 
 
-    @ExceptionHandler(GenericException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<HashMap<String, String>> handleException(Exception e)
     {
