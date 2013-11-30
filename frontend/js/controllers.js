@@ -165,7 +165,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 // 'debug': 'asd'
             }
         };
-        $http.get('http://home.joubin.me/salon-scheduler-api/users/me', config).success(function(data) {
+        $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
             $scope.tmpUserInfo = data;
         });
     }
@@ -222,7 +222,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 $rootScope.facebook = response;
-               
+
                 $location.path('client-landing');
             } else {
                 // $scope.login();
@@ -528,11 +528,7 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 * make the controller add information such as a url to image into the cookie.
 * save auth type into a cookie
 * and other misc information that can be used to change the look of the UI.
-<<<<<<< HEAD
 * IE: if admin display some buttons that arent normally there for regular users
-*/
-=======
-* IE: if admin display some buttons that arent normally there for regular users 
 */
 
 
@@ -547,7 +543,7 @@ scheduleControllers.controller('editprofile', function editprofile($scope, $http
         'Cache-Control': 'no-cache',
     }
 };
-    $scope.getUserInfo = function(){  
+    $scope.getUserInfo = function(){
     alert("beforePUT ahahahahahahahahaha");
       data = {};
       var getFirstName = $scope.user.name.split(" ");
@@ -561,20 +557,19 @@ scheduleControllers.controller('editprofile', function editprofile($scope, $http
       console.log($scope.user.hairLength);
       console.log(getFirstName);
       var facebookUser = readCookie('facebookActualUserName');
-      data = {"firstName": getFirstName[0], 
-      "lastName": getFirstName[1], 
-      "phone": userPhone, 
-      "hairColor": userHairColor, 
-      "hairLength": userHairLength, 
-      "active": true, 
-      "email": userEmail, 
+      data = {"firstName": getFirstName[0],
+      "lastName": getFirstName[1],
+      "phone": userPhone,
+      "hairColor": userHairColor,
+      "hairLength": userHairLength,
+      "active": true,
+      "email": userEmail,
       'avatarURL': 'graph.facebook.com/'+facebookUser+'/picture'};
       console.log(data);
-      $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){    
+      $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");
             }).error(function(data) {
                     console.log("failing");
             });
     }
 });
->>>>>>> 3d448b6d4db229198554ae3087ffa666c33ea45a
