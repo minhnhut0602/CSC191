@@ -157,8 +157,18 @@ var scheduleControllers = angular.module('scheduleControllers', []);
 // | $$     | $$  | $$| $$    $$| $$      | $$  \ $$| $$  | $$| $$  | $$| $$\  $$
 // | $$     | $$  | $$|  $$$$$$/| $$$$$$$$| $$$$$$$/|  $$$$$$/|  $$$$$$/| $$ \  $$
 // |__/     |__/  |__/ \______/ |________/|_______/  \______/  \______/ |__/  \__/
-scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$location', 'Facebook', function($scope, $rootScope, $location, Facebook) {
-
+scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$location', 'Facebook', '$http', function($scope, $rootScope, $location, Facebook, $http) {
+    $scope.getInfo = function(){
+        var config = {headers:  {
+                'authToken': readCookie("myAccessToken"),
+                'Content-Type': 'application/json',
+                // 'debug': 'asd'
+            }
+        };
+        $http.get('http://home.joubin.me/salon-scheduler-api/users/me', config).success(function(data) {
+            $scope.tmpUserInfo = data;
+        });
+    }
     $scope.user = {};
     // Defining user logged status
     $scope.loggedIn = false;
@@ -202,10 +212,17 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.me();
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
-
+                $scope.getInfo();
+                $scope.$watch('tmpUserInfo', function(newValue, oldValue, scope) {
+                    console.log($scope.tmpUserInfo);
+                     if ($scope.tmpUserInfo.firstName == null) {
+                        $location.path('edit-profile');
+                    }
+                 }, true);
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 $rootScope.facebook = response;
+               
                 $location.path('client-landing');
             } else {
                 // $scope.login();
@@ -262,7 +279,6 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
         // 'debug': 'asd'
     }
 };
@@ -512,5 +528,53 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 * make the controller add information such as a url to image into the cookie.
 * save auth type into a cookie
 * and other misc information that can be used to change the look of the UI.
+<<<<<<< HEAD
 * IE: if admin display some buttons that arent normally there for regular users
 */
+=======
+* IE: if admin display some buttons that arent normally there for regular users 
+*/
+
+
+
+// EDIT edit-profile
+
+scheduleControllers.controller('editprofile', function editprofile($scope, $http) {
+    console.log("Edit Controller");
+    var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+    $scope.getUserInfo = function(){  
+    alert("beforePUT ahahahahahahahahaha");
+      data = {};
+      var getFirstName = $scope.user.name.split(" ");
+      var userPhone = $scope.user.phone;
+      var userHairColor = $scope.user.hairColor;
+      var userHairLength = $scope.user.hairLength;
+      var userEmail = $scope.user.email;
+      console.log($scope.user.email);
+      console.log($scope.user.phone);
+      console.log($scope.user.hairColor);
+      console.log($scope.user.hairLength);
+      console.log(getFirstName);
+      var facebookUser = readCookie('facebookActualUserName');
+      data = {"firstName": getFirstName[0], 
+      "lastName": getFirstName[1], 
+      "phone": userPhone, 
+      "hairColor": userHairColor, 
+      "hairLength": userHairLength, 
+      "active": true, 
+      "email": userEmail, 
+      'avatarURL': 'graph.facebook.com/'+facebookUser+'/picture'};
+      console.log(data);
+      $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){    
+                    console.log("winning");
+            }).error(function(data) {
+                    console.log("failing");
+            });
+    }
+});
+>>>>>>> 3d448b6d4db229198554ae3087ffa666c33ea45a
