@@ -85,8 +85,11 @@ public class UserControllerTest
 		};
 		
 		userClient = new User();
+		userClient.setType(UserType.CLIENT);
 		userStylist = new User();
+		userStylist.setType(UserType.STYLIST);
 		userAdmin = new User();
+		userAdmin.setType(UserType.ADMIN);
 		
 		userList = new ArrayList<User>();
 		userList.add(userClient);

@@ -62,7 +62,8 @@ public class ResourceHandler extends ResourceSupport
 
         // generate links
         resource.add(linkTo(UserController.class).slash(user.getId()).withSelfRel());
-        if(user.getType() != UserType.CLIENT)
+        UserType type = user.getType();
+        if(type == UserType.ADMIN || type == UserType.STYLIST)
         {
         	resource.add(linkTo(AvailabilityController.class).slash(user.getId()).withRel("availability"));
         }
