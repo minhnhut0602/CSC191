@@ -1,4 +1,4 @@
-var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'calendarControllers', 'scheduleDirectives', 'facebook', 'ui.bootstrap', 'calendarDirectives']);
+var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'calendarModule', 'scheduleDirectives', 'facebook', 'ui.bootstrap']);
 
 scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
     function($routeProvider, $httpProvider,FacebookProvider) {

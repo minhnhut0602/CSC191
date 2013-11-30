@@ -1,8 +1,7 @@
-var calendarControllers = angular.module('calendarControllers', []);
-var calendarDirectives  = angular.module('calendarDirectives',  []);
+var calendarModule = angular.module('calendarModule', []);
 
 
-calendarDirectives.direcive('calendar', function($http) {
+calendarModule.directive('calendar', function($http) {
 	return {
 		restrict: 'E',
 		template: 	'<div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">'+
@@ -54,7 +53,7 @@ calendarDirectives.direcive('calendar', function($http) {
 // 		$modalInstance.dismiss('cancel');
 // 	};
 // })
-calendarControllers.controller('CalendarGenerator', function CalendarGenerator($scope, $modal) {
+calendarModule.controller('CalendarGenerator', function CalendarGenerator($scope, $modal) {
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     $scope.calendar = function(year, monthIndex, day) {
@@ -161,7 +160,7 @@ calendarControllers.controller('CalendarGenerator', function CalendarGenerator($
         });
     };
 });
-calendarControllers.controller('CalendarModalInstance', ['$scope', '$modalInstance', 'day'], function($scope, $modalInstance, day){
+function CalendarModalInstance($scope, $modalInstance, day) {
     $scope.day = day;
 
     $scope.ok = function() {
@@ -170,4 +169,4 @@ calendarControllers.controller('CalendarModalInstance', ['$scope', '$modalInstan
     $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
     };
-})
+}
