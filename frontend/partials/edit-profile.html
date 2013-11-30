@@ -17,21 +17,26 @@
     <div class="container">
 
         <form class="form-signin edit-user">
+            <ng-form>
             <h2 class="form-signin-heading">Edit Information</h2>
 
             <span class="label label-primary">Name</span>
-            <input type="text" class="form-control" placeholder="{{user.name}}" autofocus="" readonly>
+            <input type="text" class="form-control" placeholder="{{user.name}}" autofocus="" readonly ng-model="user.name">
 
             <span class="label label-primary">Phone</span>
-            <input type="text" class="form-control" placeholder="(916) 555-1234">
-
+            <input type="text" class="form-control" placeholder="(916) 555-1234" ng-model="user.phone">
+            
+            <span class="label label-primary">Email</span>
+            <input type="text" class="form-control" placeholder="something@example.com" ng-model="user.email">
+            
             <span class="label label-primary">Hair Color</span>
-            <input type="text" class="form-control" placeholder="Dirty Blond">
+            <input type="text" class="form-control" placeholder="Dirty Blond" ng-model="user.hairColor">
 
             <span class="label label-primary">Hair Length</span>
-            <input type="text" class="form-control" placeholder="Longish">
+            <input type="text" class="form-control" placeholder="Longish" ng-model="user.hairLength">
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="getUserInfo()">Save</button>
+            </ng-form>
         </form>
     </div>
 </div>
