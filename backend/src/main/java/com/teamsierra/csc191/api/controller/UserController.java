@@ -547,7 +547,7 @@ public class UserController extends GenericController
      * @return
      * @throws GenericUserException
      */
-    @RequestMapping(value = "/me", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/me/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<User>> getCurrentUser(HttpServletRequest request) throws GenericUserException
     {
         try
@@ -573,7 +573,7 @@ public class UserController extends GenericController
         }
     }
 
-    @RequestMapping(value = "/me", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/me/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<User>> updateCurrentUser(HttpServletRequest request,
                                                             @RequestBody User user) throws GenericUserException
     {

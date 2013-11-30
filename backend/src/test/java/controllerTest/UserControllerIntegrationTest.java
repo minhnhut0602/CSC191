@@ -116,7 +116,7 @@ public class UserControllerIntegrationTest
 				.with(requestPostProcessorAdmin))
 				.andExpect(status().isOk());
 		
-		mockMVC.perform(get("/users/me")
+		mockMVC.perform(get("/users/me/")
 				.with(requestPostProcessorAdmin))
 				.andExpect(status().isOk());
 		
@@ -148,7 +148,7 @@ public class UserControllerIntegrationTest
 				.with(requestPostProcessorStylist))
 				.andExpect(status().isNotFound());
 		
-		mockMVC.perform(get("/users/me")
+		mockMVC.perform(get("/users/me/")
 				.with(requestPostProcessorStylist))
 				.andExpect(status().isOk());
 		
