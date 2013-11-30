@@ -16,7 +16,7 @@ function getFucked(inTheAss){
             });
         }
     }
-    
+
 }
 
 var scheduleControllers = angular.module('scheduleControllers', []);
@@ -30,70 +30,123 @@ var scheduleControllers = angular.module('scheduleControllers', []);
 // | $$    $$| $$  | $$| $$      | $$      | $$\  $$$| $$  | $$| $$  | $$| $$  \ $$
 // |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
 //  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
-scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($scope) {
-    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-    $scope.calendar = function(year, monthIndex, day) {
-        if (year === undefined &&
-            month === undefined &&
-            day === undefined) {
-            var d = new Date();
-        year = d.getFullYear();
-        monthIndex = d.getMonth();
-        day = d.getDate();
-    }
+// scheduleControllers.controller('CalendarGenerator', function CalendarGenerator($scope, $modal) {
+//     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+//     var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+//     $scope.calendar = function(year, monthIndex, day) {
+//         if (year === undefined &&
+//             month === undefined &&
+//             day === undefined) {
+//             var d = new Date();
+//         year = d.getFullYear();
+//         monthIndex = d.getMonth();
+//         day = d.getDate();
+//     }
 
-    var date = new Date(year, monthIndex, 1);
-    var current = new Date(year, monthIndex, day);
-    var month = {};
-    var weeks = [];
+//     var date = new Date(year, monthIndex, 1);
+//     var current = new Date(year, monthIndex, day);
+//     var month = {};
+//     var weeks = [];
 
-    month.name = monthNames[monthIndex];
-    month.year = date.getFullYear();
-    month.number = date.getMonth();
+//     month.name = monthNames[monthIndex];
+//     month.year = date.getFullYear();
+//     month.number = date.getMonth();
 
-        // loop for weeks
-        for (var j=0 ; date.getMonth() === monthIndex ; j++) {
-            //loop for days
-            var weekdays = [];
-            for (var k=0 ; date.getMonth() === monthIndex ; k++){
-                // console.log(scope.date);
+//         // loop for weeks
+//         for (var j=0 ; date.getMonth() === monthIndex ; j++) {
+//             //loop for days
+//             var weekdays = [];
+//             for (var k=0 ; date.getMonth() === monthIndex ; k++){
+//                 // console.log(scope.date);
 
-                if (date.getDay() === 0 && k !== 0) {
-                    break;
-                }
-                // loop until you see the day go to 0 then jump out OR the month changes
-                var dayNumber = date.getDate();
-                var dayName   = dayNames[date.getDay()];
-                var dayClass  = "";
-                if (date.getTime() < current.getTime()) {
-                    dayClass = "inactive";
-                }
-                if (date.getDate()  === current.getDate() &&
-                    date.getMonth() === current.getMonth() &&
-                    date.getYear()  === current.getYear()) {
-                    dayClass = "today";
-            }
-            weekdays.push({number: dayNumber, name: dayName, class:dayClass});
+//                 if (date.getDay() === 0 && k !== 0) {
+//                     break;
+//                 }
+//                 // loop until you see the day go to 0 then jump out OR the month changes
+//                 var dayNumber = date.getDate();
+//                 var dayName   = dayNames[date.getDay()];
+//                 var dayClass  = "";
+//                 if (date.getTime() < current.getTime()) {
+//                     dayClass = "inactive";
+//                 }
+//                 if (date.getDate()  === current.getDate() &&
+//                     date.getMonth() === current.getMonth() &&
+//                     date.getYear()  === current.getYear()) {
+//                     dayClass = "today";
+//             }
+//             weekdays.push({number: dayNumber, name: dayName, class:dayClass});
 
-                // increment the date
-                date.setDate(date.getDate()+1);
-            }
-            weeks.push(weekdays);
-        }
-        // month.weeks = weeks;
-        // console.log(month);
-        month.weeks = weeks;
-        $scope.month = month;
-    };
-    var d = new Date();
-    $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
-    $scope.dayNow = d.getDate();
-    $scope.monthNow = {"num": d.getMonth(), "name":monthNames[d.getMonth()]};
-    $scope.yearNow = d.getFullYear();
-    $scope.monthNames = monthNames;
+//                 // increment the date
+//                 date.setDate(date.getDate()+1);
+//             }
+//             weeks.push(weekdays);
+//         }
+//         // month.weeks = weeks;
+//         // console.log(month);
+//         month.weeks = weeks;
+//         $scope.month = month;
+//     };
+//     var d = new Date();
+//     $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
+//     $scope.dayNow = d.getDate();
+//     $scope.monthNow = {"num": d.getMonth(), "name":monthNames[d.getMonth()]};
+//     $scope.yearNow = d.getFullYear();
+//     $scope.monthNames = monthNames;
 
-});
+//     var tempday = {};
+//     tempday.year = 2013;
+//     tempday.month = 11;
+//     tempday.day = 1;
+//     tempday.name = "Tuesday";
+//     tempday.stylists = ["staff 1", "staff 2", "staff 3"];
+//     $scope.day = tempday;
+
+//     $scope.open = function(tempDay) {
+//         var modalInstance = $modal.open({
+//             template:   '<div class="modal">'+
+//                             '<div class="modal-dialog">'+
+//                                 '<div class="modal-content">'+
+//                                     '<div class="modal-header">'+
+//                                         '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+//                                         '<h4 class="modal-title">Modal title</h4>'+
+//                                     '</div>'+
+//                                     '<div class="modal-body">'+
+//                                         '<ul>'+
+//                                             '<li ng-repeat="stylist in day.stylists">'+
+//                                                 '<a>{{stylist}}</a>'+
+//                                             '</li>'+
+//                                         '</ul>'+
+//                                     '</div>'+
+//                                     '<div class="modal-footer">'+
+//                                         '<button class="btn btn-primary" ng-click="ok()">OK</button>'+
+//                                         '<button class="btn btn-warning" ng-click="cancel()">Cancel</button>'+
+//                                     '</div>'+
+//                                 '</div><!-- /.modal-content -->'+
+//                             '</div><!-- /.modal-dialog -->'+
+//                         '</div><!-- /.modal -->',
+//             controller: CalendarModalInstance,
+//             resolve: {
+//                 day: function() {
+//                     return tempDay;
+//                 }
+//             }
+//         });
+//         modalInstance.result.then(function(appointment) {
+//             $scope.newAppointment = appointment;
+//             console.log($scope.newAppointment);
+//         });
+//     };
+// });
+// scheduleControllers.controller('CalendarModalInstance', ['$scope', '$modalInstance', 'day'], function($scope, $modalInstance, day){
+//     $scope.day = day;
+
+//     $scope.ok = function() {
+//         $modalInstance.close($scope.day);
+//     };
+//     $scope.cancel = function() {
+//         $modalInstance.dismiss('cancel');
+//     };
+// })
 
 
 //  /$$$$$$$$ /$$$$$$   /$$$$$$  /$$$$$$$$ /$$$$$$$   /$$$$$$   /$$$$$$  /$$   /$$
@@ -170,7 +223,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.$apply(function() {
 
                 // Here you could re-check for user status (just in case)
-                
+
                 $scope.user = response;
                 $rootScope.user = $scope.user;
                 console.log(response);
@@ -416,48 +469,48 @@ scheduleControllers.controller('indexController', function indexController($scop
 // |________/|______/ \______/    |__/
 
 scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
-    //TODO 
+    //TODO
     /*
     We can use this to supply the staff list for the calendar. Maybe this should go in the calendar controller.
-    But I thought it was already a big controller by itself. 
+    But I thought it was already a big controller by itself.
     */
 });
 
-//  /$$      /$$ /$$                             
-// | $$$    /$$$|__/                             
-// | $$$$  /$$$$ /$$  /$$$$$$$  /$$$$$$$         
-// | $$ $$/$$ $$| $$ /$$_____/ /$$_____/         
-// | $$  $$$| $$| $$|  $$$$$$ | $$               
-// | $$\  $ | $$| $$ \____  $$| $$               
-// | $$ \/  | $$| $$ /$$$$$$$/|  $$$$$$$         
-// |__/     |__/|__/|_______/  \_______/         
+//  /$$      /$$ /$$
+// | $$$    /$$$|__/
+// | $$$$  /$$$$ /$$  /$$$$$$$  /$$$$$$$
+// | $$ $$/$$ $$| $$ /$$_____/ /$$_____/
+// | $$  $$$| $$| $$|  $$$$$$ | $$
+// | $$\  $ | $$| $$ \____  $$| $$
+// | $$ \/  | $$| $$ /$$$$$$$/|  $$$$$$$
+// |__/     |__/|__/|_______/  \_______/
 
 
 
-//  /$$   /$$                                    
-// | $$  | $$                                    
-// | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$       
-// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$      
-// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/      
-// | $$  | $$ \____  $$| $$_____/| $$            
-// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$            
-//  \______/ |_______/  \_______/|__/            
+//  /$$   /$$
+// | $$  | $$
+// | $$  | $$  /$$$$$$$  /$$$$$$   /$$$$$$
+// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$
+// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/
+// | $$  | $$ \____  $$| $$_____/| $$
+// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$
+//  \______/ |_______/  \_______/|__/
 
 
 
-//  /$$            /$$$$$$                       
-// |__/           /$$__  $$                      
-//  /$$ /$$$$$$$ | $$  \__//$$$$$$               
-// | $$| $$__  $$| $$$$   /$$__  $$              
-// | $$| $$  \ $$| $$_/  | $$  \ $$              
-// | $$| $$  | $$| $$    | $$  | $$              
-// | $$| $$  | $$| $$    |  $$$$$$/              
-// |__/|__/  |__/|__/     \______/               
+//  /$$            /$$$$$$
+// |__/           /$$__  $$
+//  /$$ /$$$$$$$ | $$  \__//$$$$$$
+// | $$| $$__  $$| $$$$   /$$__  $$
+// | $$| $$  \ $$| $$_/  | $$  \ $$
+// | $$| $$  | $$| $$    | $$  | $$
+// | $$| $$  | $$| $$    |  $$$$$$/
+// |__/|__/  |__/|__/     \______/
 
-//TODO 
+//TODO
 /*
 * make the controller add information such as a url to image into the cookie.
 * save auth type into a cookie
 * and other misc information that can be used to change the look of the UI.
-* IE: if admin display some buttons that arent normally there for regular users 
+* IE: if admin display some buttons that arent normally there for regular users
 */

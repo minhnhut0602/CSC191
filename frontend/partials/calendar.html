@@ -75,7 +75,7 @@
       <div class="day-name saturday">Saturday</div>
     </div day>
     <div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">
-        <div calendar-popover ng-repeat="day in week" class="day {{day.name}} {{day.class}}" data-toggle="popover" title="" data-year="{{month.year}}" data-month="{{month.number}}" data-day="{{day.number}}" data-original-title="Create Appointment">
+        <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" ng-click="open(day)">
             <strong>{{day.number}}</strong>
         </div>
         <div class="day-info" ng-hide="dayInfo"></div>
