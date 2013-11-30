@@ -686,7 +686,7 @@ public class UserController extends GenericController
      * @throws GenericUserException
      */
     @RequestMapping(value = "/stylists", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Resource<User>>> getStylists(HttpServletRequest request) throws GenericUserException
+    public ResponseEntity<List<Resource<User>>> getStylists() throws GenericUserException
     {
         List<User> stylists = userRepository.findAllByGroup(UserType.STYLIST);
         stylists.addAll(userRepository.findAllByGroup(UserType.ADMIN));
@@ -706,6 +706,30 @@ public class UserController extends GenericController
         else
         {
             throw new GenericUserException("No stylists found in the database.",
+                    HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @RequestMapping(value = "/clients", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Resource<User>>> getClients() throws GenericUserException
+    {
+        List<User> clients = userRepository.findAllByGroup(UserType.CLIENT);
+
+        if(clients != null && !clients.isEmpty())
+        {
+            List<Resource<User>> clientResources = new ArrayList<Resource<User>>();
+
+            for(User u : clients)
+            {
+                clientResources.add(ResourceHandler.createResource(u));
+            }
+
+            return new ResponseEntity<List<Resource<User>>>(clientResources,
+                    HttpStatus.OK);
+        }
+        else
+        {
+            throw new GenericUserException("No clients found in the database.",
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -1049,7 +1073,11 @@ public class UserController extends GenericController
      */
     private boolean isValidAvatarURL(String avatarURL)
     {
-        return avatarURL.matches("[^\\s]+(\\.(?i)(png|gif|jpg))$"); // one or more characters followed by .png, .gif, or .jpg
+    	if(avatarURL.length() > 0)
+    	{
+    		return true;
+    	}
+        return false;//avatarURL.matches("[^\\s]+(\\.(?i)(png|gif|jpg))$"); // one or more characters followed by .png, .gif, or .jpg
     }
 
     /**
