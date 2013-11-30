@@ -16,7 +16,8 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/staff-landing.html'
             }).
             when('/edit-profile', {
-                templateUrl: 'partials/edit-profile.html'
+                templateUrl: 'partials/edit-profile.html',
+                controller: 'editprofile'
             }).
             when('/login', {
                 templateUrl: 'partials/login.html'

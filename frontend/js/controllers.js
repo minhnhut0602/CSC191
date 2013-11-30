@@ -482,8 +482,41 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 
 // EDIT edit-profile
 
-scheduleControllers.controller('edit-profile', function userAuthController($scope, $http) {
-  $http.put('http://home.joubin.me/salon-scheduler-api/users').success(function(data) {
-    $scope.currentUserAuth = data;
-});
+scheduleControllers.controller('editprofile', function editprofile($scope, $http) {
+    console.log("Edit Controller");
+    var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+    $scope.getUserInfo = function(){  
+    alert("beforePUT ahahahahahahahahaha");
+      data = {};
+      var getFirstName = $scope.user.name.split(" ");
+      var userPhone = $scope.user.phone;
+      var userHairColor = $scope.user.hairColor;
+      var userHairLength = $scope.user.hairLength;
+      var userEmail = $scope.user.email;
+      console.log($scope.user.email);
+      console.log($scope.user.phone);
+      console.log($scope.user.hairColor);
+      console.log($scope.user.hairLength);
+      console.log(getFirstName);
+      var facebookUser = readCookie('facebookActualUserName');
+      data = {"firstName": getFirstName[0], 
+      "lastName": getFirstName[1], 
+      "phone": userPhone, 
+      "hairColor": userHairColor, 
+      "hairLength": userHairLength, 
+      "active": true, 
+      "email": userEmail, 
+      'avatarURL': 'graph.facebook.com/'+facebookUser+'/picture'};
+      console.log(data);
+      $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){    
+                    console.log("winning");
+            }).error(function(data) {
+                    console.log("failing");
+            });
+    }
 });
