@@ -572,7 +572,7 @@ public class UserController extends GenericController
     				HttpStatus.NOT_FOUND);
     	}
     }
-    
+    //TODO post me
     /**
      * Retrieves all of the active stylists (including admins) from the
      * database.
@@ -849,7 +849,7 @@ public class UserController extends GenericController
 		if(error.equals(""))
 		{
     		userRepository.save(curUser);
-        	return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(user), HttpStatus.ACCEPTED);
+        	return new ResponseEntity<Resource<User>>(ResourceHandler.createResource(curUser), HttpStatus.ACCEPTED);
 		}
 		else
 		{
