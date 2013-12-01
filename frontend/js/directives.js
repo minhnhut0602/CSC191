@@ -330,10 +330,13 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
     return {
         restrict: 'A',
         template: '<div ng-repeat="appointment in appointments">'+
-            '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
-                '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}"><br/>'+
-                '<button ng-disabled="appointment.active" type="button" class="btn btn-danger ">Deny</button>'+
-                '<button ng-disabled="appointment.active" type="button" class="btn btn-success" >Accept</button>'+
+            '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}} {{appointment.ID}}<br/>'+
+                '<ng-form ng-controller="acceptAppointmentsController">'+
+                '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
+                '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
+                '<button ng-disabled="appointment.active" type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button>'+
+                '<button ng-disabled="appointment.active" type="button" class="btn btn-success" ng-click="acceptAppointment()">Accept</button>'+
+                '</ng-form>'+
             '</div>'+
         '</div>',
         link: function(scope, elm, attr) {
@@ -355,6 +358,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                     tempAppointment.appointmentStatus = data[something].appointmentStatus;
                     tempAppointment.active = true;
                     tempAppointment.comment = data[something].comment;
+                    tempAppointment.ID = data[something].id;
 
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
