@@ -35,13 +35,10 @@ public abstract class GenericController
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseEntity<HashMap<String, String>> handleException(Exception e)
+    public ResponseEntity<String> handleException(Exception e)
     {
         // Return default status (500)
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        HashMap<String, String> error = new HashMap<>();
-
-        error.put("error", e.getMessage());
 
         if (e instanceof GenericException)
         {
@@ -56,7 +53,7 @@ public abstract class GenericController
             // Generic error
         }
 
-        return new ResponseEntity<>(error, status);
+        return new ResponseEntity<>(e.getMessage(), status);
     }
 
 

@@ -477,7 +477,18 @@ public class AppointmentController extends GenericController
 
                 if (matches.size() > 0)
                 {
-                    throw new GenericException("There's already an APPROVED appointment in the same time range. ",
+                    throw new GenericException("There's already an APPROVED appointment in the same time range for the stylist. ",
+                                               HttpStatus.CONFLICT, L);
+                }
+                
+                //TODO I think this will keep clients from double booking
+                validateApprovedStatus.setStylistID(null);
+                validateApprovedStatus.setClientID(targetAppointment.getClientID());
+                matches = appRepository.findByCriteria(validateApprovedStatus);
+                
+                if (matches.size() > 0)
+                {
+                    throw new GenericException("There's already an APPROVED appointment in the same time range for the client. ",
                                                HttpStatus.CONFLICT, L);
                 }
             }

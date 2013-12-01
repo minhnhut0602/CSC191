@@ -30,6 +30,12 @@ public class AuthenticationController extends GenericController {
                                                     throws Exception {
 
         User user = userRepository.findByEmail(username);
+        // keep inactive users from logging in
+     	if(!user.isActive())
+     	{
+     		throw new GenericException("This user has been deactivated by an admin.",
+     				HttpStatus.UNAUTHORIZED, L);
+     	}
         if (SCryptUtil.check(password, user.getPassword())) {
             SecureRandom random = new SecureRandom();
             String token = new BigInteger(512, random).toString(64);
