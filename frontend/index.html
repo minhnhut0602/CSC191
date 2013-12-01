@@ -30,7 +30,14 @@
     <script src="js/calendar.js"></script>
     <script src="js/angular-facebook.js"></script>
     <script src="js/vendor/ui-bootstrap-tpls-0.7.0.min.js"></script>
-
+    <script type="text/javascript">
+    function readCookie(name) {
+    name += '=';
+    for (var ca = document.cookie.split(/;\s*/), i = ca.length - 1; i >= 0; i--)
+        if (!ca[i].indexOf(name))
+            return ca[i].replace(name, '');
+    }
+    </script>
 </head>
 <body ng-controller="AuthController">
 <ul id="gn-menu" class="gn-menu-main" >
@@ -68,12 +75,12 @@
                             <span>Admin</span>
                         </a>
                     </li>
-                    <li data-ng-show="!loggedIn">
+                   <!--  <li data-ng-show="!loggedIn">
                         <a class="gn-icon" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login()">
                         <i class="fa fa-sign-in"></i>
                             <span>Login</span>
                         </a>
-                    </li>
+                    </li> -->
                     <li data-ng-show="loggedIn">
                         <a class="gn-icon" data-ng-show="loggedIn" data-ng-disabled="facebookReady" data-ng-click="logout()">
                         <i class="fa fa-sign-out"></i>

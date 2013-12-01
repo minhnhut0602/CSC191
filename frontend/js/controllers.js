@@ -132,6 +132,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     $scope.user = {};
     // Defining user logged status
     $scope.loggedIn = false;
+    // document.cookie = "loggedIn=false"
 
 
     // Here, usually you should watch for when Facebook is ready and loaded
@@ -150,6 +151,8 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         if (readCookie('userType') === "staff") {
             $location.path('staff-landing');
             $scope.loggedIn = true;
+            document.cookie = "loggedIn=true"
+
             // $scope.me();
             location.reload();
             return;
@@ -165,12 +168,14 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.$apply(function() {
                 $scope.user   = {};
                 $scope.loggedIn = false;
+                document.cookie = "loggedIn=false"
+
                 
             });
         });
-    deleteAllCookies();
-    $location.path('login');
-    location.reload();
+    // deleteAllCookies();
+    // $location.path('login');
+    // location.reload();
 
     };
 
@@ -181,6 +186,8 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 
             if(response.status == 'connected') {
                 $scope.loggedIn = true;
+                document.cookie = "loggedIn=true"
+
                 $scope.me();
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
@@ -199,6 +206,9 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             } else {
                 // $scope.login();
                 //bring them to the login page
+                if(readCookie('loggedIn')){
+                    return;
+                }
                 console.log('send to login');
                 $scope.$apply(function() {
                     $location.path('login');
@@ -247,7 +257,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 //     $scope.appointments = data;
 //   });
 // });
-scheduleControllers.controller('StaffLandingController', function StaffLandingController($scope, $http) {
+scheduleControllers.controller('acceptAppointmentsController', function acceptAppointmentsController($scope, $http, $location) {
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
         'Content-Type': 'application/json',
@@ -255,34 +265,44 @@ scheduleControllers.controller('StaffLandingController', function StaffLandingCo
     }
 };
 
-$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
-    // console.log(data);
-    $scope.appointments = [];
-    for (var something in data){
-        console.log(data[something]);
-        var tempAppointment = {};
-        var date = new Date(data[something].startTime);
-        tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus;
-        console.log("fuck"+data[something].appointmentStatus);
-        if (data[something].appointmentStatus === "APPROVED") {
-            tempAppointment.myColor = "success";
-        };
-        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
-            tempAppointment.myColor = "danger";
-        };
-        if (data[something].appointmentStatus === "NEW") {
-            tempAppointment.myColor = "warning";
-        };
-        if (data[something].appointmentStatus === "COMPLETED") {
-            tempAppointment.myColor = "info";
+    $scope.acceptAppointment = function(){  
+        data = {};
+        var comment = $scope.appointment.comment;
+        var id = $scope.appointment.ID;
+        console.log("accept: "+comment+" - "+ id);
+        data = {"appointmentStatus": "APPROVED", 
+        "comment": comment};
+        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){    
+                console.log("winning");
+                $location.path('staff-landing');
+                location.reload();
+        }).error(function(data) {
+                alert("There is a conflict");
+                console.log("failing");
+        });
 
-        };
-
-        $scope.appointments.push(tempAppointment);
-        console.log($scope.appointments);
     }
-});
+
+    $scope.denyAppointment = function(){  
+        data = {};
+        var comment = $scope.appointment.comment;
+        var id = $scope.appointment.ID;
+        console.log("accept: "+comment+" - "+ id);
+        data = {"appointmentStatus": "REJECTED", 
+        "comment": comment};
+        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){    
+                console.log("winning");
+                $location.path('staff-landing');
+                location.reload();
+        }).error(function(data) {
+                alert("There is a conflict");
+                console.log("failing");
+        });
+
+    }
+
+
+
 });
 
 
@@ -599,6 +619,8 @@ scheduleControllers.controller('loginController', function loginController($loca
                     console.log("winning");
                     console.log($scope);
                     $rootScope.loggedIn = true;
+                    document.cookie = "loggedIn=true"
+
                     $location.path('staff-landing');
             }).error(function(data) {
                     document.cookie="myAccessToken="+"NULL";
