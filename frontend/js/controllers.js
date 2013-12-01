@@ -19,6 +19,18 @@ function getFucked(inTheAss){
     
 }
 
+
+function deleteAllCookies() {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
+
 var scheduleControllers = angular.module('scheduleControllers', []);
 
 
@@ -112,13 +124,15 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 // 'debug': 'asd'
             }
         };
-        $http.get('http://home.joubin.me/salon-scheduler-api/users/me', config).success(function(data) {
+        $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
             $scope.tmpUserInfo = data;
+            $rootScope.user.name = data.firstName+" "+data.lastName;
         });
     }
     $scope.user = {};
     // Defining user logged status
     $scope.loggedIn = false;
+
 
     // Here, usually you should watch for when Facebook is ready and loaded
     $scope.$watch(function() {
@@ -133,6 +147,13 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     // From now and on you can use the Facebook service just as Facebook api says
     // Take into account that you will need $scope.$apply when being inside Facebook functions scope and not angular
     $scope.login = function() {
+        if (readCookie('userType') === "staff") {
+            $location.path('staff-landing');
+            $scope.loggedIn = true;
+            // $scope.me();
+            location.reload();
+            return;
+        }
         Facebook.login(function(response) {
             // Do something with response. Don't forget here you are on Facebook scope so use $scope.$apply
             $scope.getLoginStatus();
@@ -144,17 +165,17 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.$apply(function() {
                 $scope.user   = {};
                 $scope.loggedIn = false;
-                $location.path('login');
-
+                
             });
         });
+    deleteAllCookies();
+    $location.path('login');
+    location.reload();
+
     };
 
     $scope.getLoginStatus = function() {
-        if (readCookie('userType') === "staff") {
-            $location.path('staff-landing');
-            return;
-        }
+
         Facebook.getLoginStatus(function(response) {
             console.log(response);
 
@@ -345,7 +366,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
 //                    |  $$$$$$/
 //                     \______/
 
-scheduleControllers.controller('adminController', function adminController($scope, $http, $rootScope) {
+scheduleControllers.controller('adminController', function adminController($location, $scope, $http) {
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
         'Content-Type': 'application/json',
@@ -386,8 +407,16 @@ $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(fun
 
 
 scheduleControllers.controller('userAuthController', function userAuthController($scope, $http) {
-  $http.get('json/userAuthController.json').success(function(data) {
+        var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+  $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
+    console.log("Getting auth level");
     $scope.currentUserAuth = data;
+    console.log($scope.currentUserAuth.type);
 });
 });
 
@@ -486,7 +515,7 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 
 // EDIT edit-profile
 
-scheduleControllers.controller('editprofile', function editprofile($scope, $http) {
+scheduleControllers.controller('editprofile', function editprofile($location, $scope, $http) {
     console.log("Edit Controller");
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
@@ -495,7 +524,6 @@ scheduleControllers.controller('editprofile', function editprofile($scope, $http
     }
 };
     $scope.getUserInfo = function(){  
-    alert("beforePUT ahahahahahahahahaha");
       data = {};
       var getFirstName = $scope.user.name.split(" ");
       var userPhone = $scope.user.phone;
@@ -519,6 +547,7 @@ scheduleControllers.controller('editprofile', function editprofile($scope, $http
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){    
                     console.log("winning");
+                    $location.path('client-landing');
             }).error(function(data) {
                     console.log("failing");
             });
@@ -549,10 +578,9 @@ scheduleControllers.controller('editprofile', function editprofile($scope, $http
 //                                                                                          
 //                                                                                          
 
-scheduleControllers.controller('loginController', function loginController($location, $scope, $http) {
+scheduleControllers.controller('loginController', function loginController($location, $scope, $http, $rootScope) {
 
     $scope.loginUser = function(){  
-    alert("beforePUT ahahahahahahahahaha");
       data = {};
       var user = $scope.user.username;
       var pass = $scope.user.password;
@@ -569,6 +597,9 @@ scheduleControllers.controller('loginController', function loginController($loca
                     document.cookie="userType=staff";
                     $location.path("staff-landing");
                     console.log("winning");
+                    console.log($scope);
+                    $rootScope.loggedIn = true;
+                    $location.path('staff-landing');
             }).error(function(data) {
                     document.cookie="myAccessToken="+"NULL";
                     document.cookie="userType=null";
@@ -576,4 +607,32 @@ scheduleControllers.controller('loginController', function loginController($loca
                     console.log("failling");
             });
     }
+});
+
+
+//  /$$                                 /$$ /$$                    
+// | $$                                | $$|__/                    
+// | $$        /$$$$$$   /$$$$$$   /$$$$$$$ /$$ /$$$$$$$   /$$$$$$ 
+// | $$       /$$__  $$ |____  $$ /$$__  $$| $$| $$__  $$ /$$__  $$
+// | $$      | $$  \ $$  /$$$$$$$| $$  | $$| $$| $$  \ $$| $$  \ $$
+// | $$      | $$  | $$ /$$__  $$| $$  | $$| $$| $$  | $$| $$  | $$
+// | $$$$$$$$|  $$$$$$/|  $$$$$$$|  $$$$$$$| $$| $$  | $$|  $$$$$$$
+// |________/ \______/  \_______/ \_______/|__/|__/  |__/ \____  $$
+//                                                        /$$  \ $$
+//                                                       |  $$$$$$/
+//                                                        \______/ 
+
+
+scheduleControllers.controller('loadingController', function loadingController($location, $scope) {
+    console.log("loading page controller, let see where it goes");
+    if (readCookie('userType') === "staff") {
+        $location.path('staff-landing');
+    }else{
+        $location.path('client-landing');            
+    }
+});
+
+
+scheduleControllers.controller('createUser', function createUser($location, $scope) {
+
 });

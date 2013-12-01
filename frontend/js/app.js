@@ -24,7 +24,8 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 controller: 'loginController'
             }).
             when('/loading', {
-                templateUrl: 'partials/loading.html'
+                templateUrl: 'partials/loading.html',
+                controller: 'loadingController'
             }).
              when('/admin', {
                 templateUrl: 'partials/admin.html'
@@ -32,6 +33,10 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
              when('/edit-user', {
                 templateUrl: 'partials/edit-user.html'
             }).
+             when('/admin', {
+                templateUrl: 'partials/admin.html',
+                controller: 'adminController'
+            }).             
             otherwise({
                 redirectTo: '/loading',
             });
