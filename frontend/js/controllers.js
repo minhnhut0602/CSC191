@@ -151,6 +151,10 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     };
 
     $scope.getLoginStatus = function() {
+        if (readCookie('userType') === "staff") {
+            $location.path('staff-landing');
+            return;
+        }
         Facebook.getLoginStatus(function(response) {
             console.log(response);
 
@@ -277,45 +281,45 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).succ
 // | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
 // | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
 // |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
-scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
-    var config = {headers:  {
-            'authToken': readCookie("myAccessToken"),
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache',
-            // 'debug': 'asd'
-        }
-    };
+// scheduleControllers.controller('ClientLandingController', function ClientLandingController($scope, $http, $rootScope) {
+//     var config = {headers:  {
+//             'authToken': readCookie("myAccessToken"),
+//             'Content-Type': 'application/json',
+//             'Cache-Control': 'no-cache',
+//             // 'debug': 'asd'
+//         }
+//     };
 
-$http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
-    // console.log(data);
-    $scope.appointments = [];
-    for (var something in data){
-        var tempAppointment = {};
-        var date = new Date(data[something].startTime);
-        tempAppointment.startTime = date;
-        tempAppointment.appointmentStatus = data[something].appointmentStatus;
-        if (data[something].appointmentStatus === "APPROVED") {
-            tempAppointment.myColor = "success";
-        };
-        if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
-            tempAppointment.myColor = "danger";
-        };
-        if (data[something].appointmentStatus === "NEW") {
-            tempAppointment.myColor = "warning";
-        };
-        if (data[something].appointmentStatus === "COMPLETED") {
-            tempAppointment.myColor = "info";
+// $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+//     // console.log(data);
+//     $scope.appointments = [];
+//     for (var something in data){
+//         var tempAppointment = {};
+//         var date = new Date(data[something].startTime);
+//         tempAppointment.startTime = date;
+//         tempAppointment.appointmentStatus = data[something].appointmentStatus;
+//         if (data[something].appointmentStatus === "APPROVED") {
+//             tempAppointment.myColor = "success";
+//         };
+//         if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+//             tempAppointment.myColor = "danger";
+//         };
+//         if (data[something].appointmentStatus === "NEW") {
+//             tempAppointment.myColor = "warning";
+//         };
+//         if (data[something].appointmentStatus === "COMPLETED") {
+//             tempAppointment.myColor = "info";
 
-        };
-        var shit = getFucked(data[something].links);
-        tempAppointment.firstName = shit.first;
-        tempAppointment.lastName = shit.last;
-    };
-    $scope.appointments.push(tempAppointment);
-    console.log($scope.appointments);
+//         };
+//         var shit = getFucked(data[something].links);
+//         tempAppointment.firstName = shit.first;
+//         tempAppointment.lastName = shit.last;
+//     };
+//     $scope.appointments.push(tempAppointment);
+//     console.log($scope.appointments);
 
-});
-});
+// });
+// });
 
 
 //   /$$$$$$        /$$               /$$
@@ -517,6 +521,59 @@ scheduleControllers.controller('editprofile', function editprofile($scope, $http
                     console.log("winning");
             }).error(function(data) {
                     console.log("failing");
+            });
+    }
+});
+
+
+//   /$$                           /$$                                                      
+//  | $$                          |__/                                                      
+//  | $$        /$$$$$$   /$$$$$$  /$$ /$$$$$$$                                             
+//  | $$       /$$__  $$ /$$__  $$| $$| $$__  $$                                            
+//  | $$      | $$  \ $$| $$  \ $$| $$| $$  \ $$                                            
+//  | $$      | $$  | $$| $$  | $$| $$| $$  | $$                                            
+//  | $$$$$$$$|  $$$$$$/|  $$$$$$$| $$| $$  | $$                                            
+//  |________/ \______/  \____  $$|__/|__/  |__/                                            
+//                       /$$  \ $$                                                          
+//                      |  $$$$$$/                                                          
+//                       \______/                                                           
+//    /$$$$$$                        /$$                         /$$ /$$                    
+//   /$$__  $$                      | $$                        | $$| $$                    
+//  | $$  \__/  /$$$$$$  /$$$$$$$  /$$$$$$    /$$$$$$   /$$$$$$ | $$| $$  /$$$$$$   /$$$$$$ 
+//  | $$       /$$__  $$| $$__  $$|_  $$_/   /$$__  $$ /$$__  $$| $$| $$ /$$__  $$ /$$__  $$
+//  | $$      | $$  \ $$| $$  \ $$  | $$    | $$  \__/| $$  \ $$| $$| $$| $$$$$$$$| $$  \__/
+//  | $$    $$| $$  | $$| $$  | $$  | $$ /$$| $$      | $$  | $$| $$| $$| $$_____/| $$      
+//  |  $$$$$$/|  $$$$$$/| $$  | $$  |  $$$$/| $$      |  $$$$$$/| $$| $$|  $$$$$$$| $$      
+//   \______/  \______/ |__/  |__/   \___/  |__/       \______/ |__/|__/ \_______/|__/      
+//                                                                                          
+//                                                                                          
+//                                                                                          
+
+scheduleControllers.controller('loginController', function loginController($location, $scope, $http) {
+
+    $scope.loginUser = function(){  
+    alert("beforePUT ahahahahahahahahaha");
+      data = {};
+      var user = $scope.user.username;
+      var pass = $scope.user.password;
+      
+      console.log(user);
+      console.log(pass);
+      if (user == null || pass == null) {
+        console.log("fuck no");
+        return;
+      }
+      
+      $http.get('http://home.joubin.me/salon-scheduler-api/authorize?username='+user+'&password='+pass,data).success(function(data){    
+                    document.cookie="myAccessToken="+data.authToken;
+                    document.cookie="userType=staff";
+                    $location.path("staff-landing");
+                    console.log("winning");
+            }).error(function(data) {
+                    document.cookie="myAccessToken="+"NULL";
+                    document.cookie="userType=null";
+
+                    console.log("failling");
             });
     }
 });

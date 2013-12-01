@@ -20,7 +20,8 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 controller: 'editprofile'
             }).
             when('/login', {
-                templateUrl: 'partials/login.html'
+                templateUrl: 'partials/login.html',
+                controller: 'loginController'
             }).
             when('/loading', {
                 templateUrl: 'partials/loading.html'
