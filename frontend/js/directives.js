@@ -93,6 +93,24 @@ scheduleDirectives.directive('stylistselect', function($http, $log) {
         }
     }
 });
+
+//   /$$$$$$  /$$       /$$$$$$ /$$$$$$$$ /$$   /$$ /$$$$$$$$
+//  /$$__  $$| $$      |_  $$_/| $$_____/| $$$ | $$|__  $$__/
+// | $$  \__/| $$        | $$  | $$      | $$$$| $$   | $$
+// | $$      | $$        | $$  | $$$$$   | $$ $$ $$   | $$
+// | $$      | $$        | $$  | $$__/   | $$  $$$$   | $$
+// | $$    $$| $$        | $$  | $$      | $$\  $$$   | $$
+// |  $$$$$$/| $$$$$$$$ /$$$$$$| $$$$$$$$| $$ \  $$   | $$
+//  \______/ |________/|______/|________/|__/  \__/   |__/
+//  /$$        /$$$$$$  /$$   /$$ /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$
+// | $$       /$$__  $$| $$$ | $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$
+// | $$      | $$  \ $$| $$$$| $$| $$  \ $$  | $$  | $$$$| $$| $$  \__/
+// | $$      | $$$$$$$$| $$ $$ $$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$
+// | $$      | $$__  $$| $$  $$$$| $$  | $$  | $$  | $$  $$$$| $$|_  $$
+// | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
+// | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
+// |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
+
 scheduleDirectives.directive('appointmentgetter', function($http) {
     return {
         restrict: 'A',
@@ -172,6 +190,14 @@ scheduleDirectives.directive('stylistname', function($http) {
 });
 
 
+//   /$$$$$$   /$$$$$$  /$$       /$$$$$$$$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$$
+//  /$$__  $$ /$$__  $$| $$      | $$_____/| $$$ | $$| $$__  $$ /$$__  $$| $$__  $$
+// | $$  \__/| $$  \ $$| $$      | $$      | $$$$| $$| $$  \ $$| $$  \ $$| $$  \ $$
+// | $$      | $$$$$$$$| $$      | $$$$$   | $$ $$ $$| $$  | $$| $$$$$$$$| $$$$$$$/
+// | $$      | $$__  $$| $$      | $$__/   | $$  $$$$| $$  | $$| $$__  $$| $$__  $$
+// | $$    $$| $$  | $$| $$      | $$      | $$\  $$$| $$  | $$| $$  | $$| $$  \ $$
+// |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
+//  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
 
 scheduleDirectives.directive('calendar', function() {
     return {
@@ -275,6 +301,113 @@ scheduleDirectives.directive('modal', function() {
         },
         controller: function($scope) {
 
+        }
+    };
+});
+
+
+
+
+
+//   /$$$$$$  /$$$$$$$$  /$$$$$$  /$$$$$$$$ /$$$$$$$$
+//  /$$__  $$|__  $$__/ /$$__  $$| $$_____/| $$_____/
+// | $$  \__/   | $$   | $$  \ $$| $$      | $$
+// \  $$$$$$    | $$   | $$$$$$$$| $$$$$   | $$$$$
+//  \____  $$   | $$   | $$__  $$| $$__/   | $$__/
+//  /$$  \ $$   | $$   | $$  | $$| $$      | $$
+// |  $$$$$$    | $$   | $$  | $$| $$      | $$
+//  \______/    |__/   |__/  |__/|__/      |__/
+//  /$$        /$$$$$$  /$$   /$$ /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$
+// | $$       /$$__  $$| $$$ | $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$
+// | $$      | $$  \ $$| $$$$| $$| $$  \ $$  | $$  | $$$$| $$| $$  \__/
+// | $$      | $$$$$$$$| $$ $$ $$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$
+// | $$      | $$__  $$| $$  $$$$| $$  | $$  | $$  | $$  $$$$| $$|_  $$
+// | $$      | $$  | $$| $$\  $$$| $$  | $$  | $$  | $$\  $$$| $$  \ $$
+// | $$$$$$$$| $$  | $$| $$ \  $$| $$$$$$$/ /$$$$$$| $$ \  $$|  $$$$$$/
+// |________/|__/  |__/|__/  \__/|_______/ |______/|__/  \__/ \______/
+
+scheduleDirectives.directive('appointmentgetterStaff', function($http) {
+    return {
+        restrict: 'A',
+        template: '<div ng-repeat="appointment in appointments">'+
+            '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.dateYear,appointment.dateMonth,appointment.dateDay)">Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
+                '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.message}}"><br/>'+
+                '<button ng-disabled="appointment.active" type="button" class="btn btn-danger ">Deny</button>'+
+                '<button ng-disabled="appointment.active" type="button" class="btn btn-success" >Accept</button>'+
+            '</div>'+
+        '</div>',
+        link: function(scope, elm, attr) {
+            var config = { headers:  {
+                    'authToken': readCookie("myAccessToken"),
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                    // 'debug': 'asd'
+                }
+            };
+            $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+                scope.appointments = [];
+
+                for (var something in data){
+                    console.log(data[something])
+                    var tempAppointment = {};
+                    var date = new Date(data[something].startTime);
+                    tempAppointment.startTime = date;
+                    tempAppointment.appointmentStatus = data[something].appointmentStatus;
+                    tempAppointment.active = true;
+
+                    if (data[something].appointmentStatus === "APPROVED") {
+                        tempAppointment.myColor = "success";
+
+                    }
+                    if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
+                        tempAppointment.myColor = "danger";
+                    }
+                    if (data[something].appointmentStatus === "NEW") {
+                        tempAppointment.myColor = "warning";
+                        tempAppointment.active = false;
+                    }
+                    if (data[something].appointmentStatus === "COMPLETED") {
+                        tempAppointment.myColor = "info";
+                    }
+                    for (var link in data[something].links) {
+                        if (data[something].links[link].rel === "client") {
+                            tempAppointment.client = data[something].links[link].href;
+                        }
+                    }
+                    scope.appointments.push(tempAppointment);
+                }
+                console.log(scope.appointments);
+            });
+        },
+        controller: function($scope, $http) {
+
+        }
+    };
+});
+
+
+scheduleDirectives.directive('client', function($http) {
+    return {
+        restrict: 'E',
+        scope: {
+            clienturl: '='
+        },
+        replace: true,
+        template: '<span>{{client.firstName}} {{client.lastName}}</span>',
+        link: function(scope, elm, attr) {
+            var config = {headers:  {
+                    'authToken': readCookie("myAccessToken"),
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                    // 'debug': 'asd'
+                }
+            };
+            $http.get(scope.clienturl, config).success(function(data){
+
+                scope.client = data;
+            });
+        },
+        controller: function($scope) {
         }
     };
 });

@@ -19,9 +19,9 @@
 
             <tr ng-repeat="user in users | filter:query">
               <td>{{$index+1}}</td>
-              <td><img src="{{user.image}}"/></td>
-              <td>{{user.firstname}}</td>
-              <td>{{user.lastname}}</td>
+              <td><img src="http://{{user.avatarURL}}"/></td>
+              <td>{{user.firstName}}</td>
+              <td>{{user.lastName}}</td>
               <td >
                   <button type="button" class="btn btn-warning" ng-show="user.active"> Deactivate </button>
                   <button type="button" class="btn btn-success" ng-hide="user.active">Activate</button>

@@ -7,16 +7,18 @@
         <button type="button" class="btn btn-lg" ng-class="{true:'btn-primary', false:'btn-default'}[client]" ng-click="staff=false; client=true;">Client</button>
     </p>
     <form ng-show="staff" >
-        <h2>Please sign in</h2>
-        <div class="form-group">
-            <label for="email-input">Email</label>
-            <input type="text" class="form-control" id="email-input" placeholder="Email address" autofocus="">
-        </div>
-        <div class="form-group">
-            <label for="password-input">Password</label>
-            <input type="password" class="form-control" id="password-input" placeholder="Password">
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <ng-form>   
+            <h2>Please sign in</h2>
+            <div class="form-group">
+                <label for="email-input">Email</label>
+                <input type="text" class="form-control" id="email-input" placeholder="Email address" autofocus="" ng-model="user.username">
+            </div>
+            <div class="form-group">
+                <label for="password-input">Password</label>
+                <input type="password" class="form-control" id="password-input" placeholder="Password" ng-model="user.password">
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click='loginUser()'>Sign in</button>
+        </ng-form>
     </form>
 
     <form ng-show="client">
