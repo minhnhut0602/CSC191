@@ -1,10 +1,11 @@
-<div class="top">
-  <button type="button" class="btn btn-primary" > Create User </button>
+<div class="top" ng-controller="adminController">
+    <a href="#/edit-user"><button class="btn btn-primary"> Create User </button></a>
 </div>
 
 <div class="main" ng-controller="adminController">
-<input type="text" class="form-control" ng-model="query">
 
+
+<input type="text" class="form-control" ng-model="query">
    <table class="table ">
           <thead>
             <tr>
@@ -12,6 +13,7 @@
               <th>Image</th>
               <th>First Name</th>
               <th>Last Name</th>
+              <th>Type</th>
               <th>Active</th>
             </tr>
           </thead>
@@ -19,9 +21,10 @@
 
             <tr ng-repeat="user in users | filter:query">
               <td>{{$index+1}}</td>
-              <td><img src="{{user.image}}"/></td>
-              <td>{{user.firstname}}</td>
-              <td>{{user.lastname}}</td>
+              <td><img src="http://{{user.avatarURL}}" '></td>
+              <td>{{user.firstName}}</td>
+              <td>{{user.lastName}}</td>
+              <td>{{user.type}}</td>
               <td >
                   <button type="button" class="btn btn-warning" ng-show="user.active"> Deactivate </button>
                   <button type="button" class="btn btn-success" ng-hide="user.active">Activate</button>

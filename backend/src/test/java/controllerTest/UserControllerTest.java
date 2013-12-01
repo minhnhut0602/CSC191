@@ -602,6 +602,7 @@ public class UserControllerTest
 	@Test
 	public void adminPutUserTest() throws Exception
 	{
+		userAdmin.setId(id);
 		userAdmin.setType(UserType.ADMIN);
 		when(userRepo.findById(id)).thenReturn(userAdmin);
 		

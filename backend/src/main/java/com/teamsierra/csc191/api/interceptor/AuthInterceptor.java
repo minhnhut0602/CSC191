@@ -83,8 +83,6 @@ public class AuthInterceptor implements HandlerInterceptor{
 
         /*
          * TODO change appmode in system.properties before production
-    	 * WHEN REMOVED: go to UserControllerIntegrationTest.java and
-    	 * comment out the specified test method or the tests will fail.
     	 */
         if (p.getProperty("appmode", "prod").equalsIgnoreCase("dev") &&
             request.getHeader("debug") != null) {
@@ -108,6 +106,15 @@ public class AuthInterceptor implements HandlerInterceptor{
          * Check to see if the supplied auth token belongs to a user.
          */
         if (user != null) {
+        	/*
+        	 * This should stop inactive users from accessing the backend.
+        	 */
+        	if(!user.isActive())
+        	{
+        		throw new GenericException("This user has been deactivated by an admin.",
+        				HttpStatus.UNAUTHORIZED, L);
+        	}
+        	
             /*
              * User was found for supplied auth token, credentials verified, fill attributes and continue execution.
              */
@@ -142,6 +149,15 @@ public class AuthInterceptor implements HandlerInterceptor{
                 L.info("looking for user in database that matches facebook id: "+ ID);
                 user = userRepository.findByOAuthId(ID);
                 if (user != null) {
+                	/*
+                	 * This should stop inactive users from accessing the backend.
+                	 */
+                	if(!user.isActive())
+                	{
+                		throw new GenericException("This user has been deactivated by an admin.",
+                				HttpStatus.UNAUTHORIZED, L);
+                	}
+                	
                     /*
                      * User was found for this facebook session. update their auth token and continue execution.
                      */

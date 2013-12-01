@@ -479,7 +479,7 @@ public class UserController extends GenericController
         }
         else
         {
-            throw new GenericUserException("User not found in the database. "
+            throw new GenericUserException("User not found in the database or is inactive. "
                     + "Exception generated in call to getUser().",
                     HttpStatus.NOT_FOUND);
         }
@@ -686,7 +686,7 @@ public class UserController extends GenericController
      * @throws GenericUserException
      */
     @RequestMapping(value = "/stylists", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Resource<User>>> getStylists(HttpServletRequest request) throws GenericUserException
+    public ResponseEntity<List<Resource<User>>> getStylists() throws GenericUserException
     {
         List<User> stylists = userRepository.findAllByGroup(UserType.STYLIST);
         stylists.addAll(userRepository.findAllByGroup(UserType.ADMIN));
@@ -708,6 +708,47 @@ public class UserController extends GenericController
             throw new GenericUserException("No stylists found in the database.",
                     HttpStatus.NOT_FOUND);
         }
+    }
+    
+    @RequestMapping(value = "/clients", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Resource<User>>> getClients() throws GenericUserException
+    {
+        List<User> clients = userRepository.findAllByGroup(UserType.CLIENT);
+
+        if(clients != null && !clients.isEmpty())
+        {
+            List<Resource<User>> clientResources = new ArrayList<Resource<User>>();
+
+            for(User u : clients)
+            {
+                clientResources.add(ResourceHandler.createResource(u));
+            }
+
+            return new ResponseEntity<List<Resource<User>>>(clientResources,
+                    HttpStatus.OK);
+        }
+        else
+        {
+            throw new GenericUserException("No clients found in the database.",
+                    HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @RequestMapping(value = "/teapot/", method = RequestMethod.GET)
+    public void findTeapot() throws GenericUserException
+    {
+    	String teapot = "                       (\n" +
+    					"            _           ) )\n" +
+    			        "         _,(_)._        ((\n" +
+    			        "    ___,(_______).        )\n" +
+    			        "  ,'__.   /       \\    /\\_\n" +
+    			        " /,' /  |\"\"|       \\  /  /\n" +
+    			        "| | |   |__|       |,'  /\n" +
+    			        " \\`.|                  /\n" +
+    			        "  `. :           :    /\n" +
+    			        "    `.            :.,'\n" +
+    			        "      `-.________,-'\n";
+    	throw new GenericUserException(teapot, HttpStatus.I_AM_A_TEAPOT);
     }
 
     /**
@@ -984,7 +1025,12 @@ public class UserController extends GenericController
     private String updateAdmin(User user, User curUser)
     {
         String error = "";
-        curUser.setActive(user.isActive());
+        
+        //Admins cannot deactivate themselves
+        if(!curUser.getId().equals(id))
+        {
+        	curUser.setActive(user.isActive());
+        }
 
         UserType type = curUser.getType();
         if(type == UserType.ADMIN || type == UserType.STYLIST)
@@ -1049,7 +1095,11 @@ public class UserController extends GenericController
      */
     private boolean isValidAvatarURL(String avatarURL)
     {
-        return avatarURL.matches("[^\\s]+(\\.(?i)(png|gif|jpg))$"); // one or more characters followed by .png, .gif, or .jpg
+    	if(avatarURL.length() > 0)
+    	{
+    		return true;
+    	}
+        return false;//avatarURL.matches("[^\\s]+(\\.(?i)(png|gif|jpg))$"); // one or more characters followed by .png, .gif, or .jpg
     }
 
     /**
@@ -1094,19 +1144,5 @@ public class UserController extends GenericController
         int r = 8;
         int p = 1;
         return SCryptUtil.scrypt(password, N, r, p);
-    }
-
-    //@ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllExceptions(Exception e) throws GenericUserException
-    {
-        if(!(e instanceof GenericUserException))
-        {
-            throw new GenericUserException(e.getMessage(),
-                    HttpStatus.BAD_REQUEST);
-        }
-        else
-        {
-            throw (GenericUserException) e;
-        }
     }
 }

@@ -81,7 +81,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  *   "stylistID": "5273092cae29d92436b7f6f1",
  *   "startTime": "2013-11-20T15:00:00.000-08:00",
  *   "endTime": "2013-11-20T16:00:00.000-08:00",
- *   “appointmentStatus”: ”CANCELED”
+ *   "appointmentStatus": "CANCELED"
  * }
  *
  */
@@ -308,7 +308,9 @@ public class AppointmentController extends GenericController
 
         // Validate stylist
         stylist = userRepository.findById(requestData.getStylistID());
-        if (stylist == null || stylist.getType().compareTo(GenericModel.UserType.STYLIST) != 0 || !stylist.isActive())
+        if (stylist == null || 
+        		(stylist.getType().compareTo(GenericModel.UserType.STYLIST) != 0 && stylist.getType().compareTo(GenericModel.UserType.ADMIN) != 0) || //TODO added this in to make admins act as stylists as well
+        		!stylist.isActive())
             throw new GenericException("Invalid stylistID supplied", HttpStatus.NOT_FOUND, L);
         else
         {
@@ -475,14 +477,31 @@ public class AppointmentController extends GenericController
 
                 if (matches.size() > 0)
                 {
-                    throw new GenericException("There's already an APPROVED appointment in the same time range. ",
+                    throw new GenericException("There's already an APPROVED appointment in the same time range for the stylist. ",
+                                               HttpStatus.CONFLICT, L);
+                }
+                
+                //TODO I think this will keep clients from double booking
+                validateApprovedStatus.setStylistID(null);
+                validateApprovedStatus.setClientID(targetAppointment.getClientID());
+                matches = appRepository.findByCriteria(validateApprovedStatus);
+                
+                if (matches.size() > 0)
+                {
+                    throw new GenericException("There's already an APPROVED appointment in the same time range for the client. ",
                                                HttpStatus.CONFLICT, L);
                 }
             }
 
             targetAppointment.setAppointmentStatus(requestData.getAppointmentStatus());
         }
-
+        
+        //TODO added for the comment, couldnt get a hold of alex
+        if(requestData.getComment() != null && 
+        		(authType == GenericModel.UserType.ADMIN || authType == GenericModel.UserType.STYLIST))
+        {
+        	targetAppointment.setComment(requestData.getComment());
+        }
 
         appRepository.save(targetAppointment);
 
