@@ -24,6 +24,7 @@ public class Appointment extends GenericModel
     private AppointmentStatus appointmentStatus;
     private String appointmentType;
     private String appointmentTypeID;
+    private String comment;
 
     public String getClientID() {
         return clientID;
@@ -75,7 +76,15 @@ public class Appointment extends GenericModel
         this.appointmentType = appointmentType;
     }
 
-    @JsonIgnore
+    public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	@JsonIgnore
     public String getAppointmentTypeID()
     {
         return appointmentTypeID;

@@ -81,7 +81,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  *   "stylistID": "5273092cae29d92436b7f6f1",
  *   "startTime": "2013-11-20T15:00:00.000-08:00",
  *   "endTime": "2013-11-20T16:00:00.000-08:00",
- *   “appointmentStatus”: ”CANCELED”
+ *   "appointmentStatus": "CANCELED"
  * }
  *
  */
@@ -482,7 +482,13 @@ public class AppointmentController extends GenericController
 
             targetAppointment.setAppointmentStatus(requestData.getAppointmentStatus());
         }
-
+        
+        //TODO added for the comment, couldnt get a hold of alex
+        if(requestData.getComment() != null && 
+        		(authType == GenericModel.UserType.ADMIN || authType == GenericModel.UserType.STYLIST))
+        {
+        	targetAppointment.setComment(requestData.getComment());
+        }
 
         appRepository.save(targetAppointment);
 
