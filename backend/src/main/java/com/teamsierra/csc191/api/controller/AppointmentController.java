@@ -308,7 +308,9 @@ public class AppointmentController extends GenericController
 
         // Validate stylist
         stylist = userRepository.findById(requestData.getStylistID());
-        if (stylist == null || stylist.getType().compareTo(GenericModel.UserType.STYLIST) != 0 || !stylist.isActive())
+        if (stylist == null || 
+        		(stylist.getType().compareTo(GenericModel.UserType.STYLIST) != 0 && stylist.getType().compareTo(GenericModel.UserType.ADMIN) != 0) || //TODO added this in to make admins act as stylists as well
+        		!stylist.isActive())
             throw new GenericException("Invalid stylistID supplied", HttpStatus.NOT_FOUND, L);
         else
         {
