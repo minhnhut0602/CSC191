@@ -195,6 +195,11 @@ public class StylistAvailabilityRepository
 	   newAvail.removeRange(new Date(Long.MIN_VALUE), dateRange.getStartDate());
 	   newAvail.removeRange(dateRange.getEndDate(), new Date(Long.MAX_VALUE));
 	   
+	   if(dateRange.getStartDate().compareTo(dateRange.getEndDate()) == 0)
+	   {
+		   newAvail.add(dateRange);
+	   }
+	   
 	   StylistAvailability returnSA = new StylistAvailability();
 	   returnSA.setStylistID(stylistID);
 	   returnSA.setAvailability(newAvail);	   
