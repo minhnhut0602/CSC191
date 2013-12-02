@@ -102,7 +102,7 @@ public class AppointmentTypeController extends GenericController
         for (AppointmentType type: appointmentTypeRepository.findByCriteria(new AppointmentType()))
             resources.add(ResourceHandler.createResource(type));
 
-        return new ResponseEntity<>(resources, HttpStatus.FOUND);
+        return new ResponseEntity<>(resources, HttpStatus.OK);
     }
 
 
@@ -130,7 +130,7 @@ public class AppointmentTypeController extends GenericController
 
         Resource<AppointmentType> resource = ResourceHandler.createResource(foundTypes.get(0));
 
-        return new ResponseEntity<>(resource, HttpStatus.FOUND);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
 
