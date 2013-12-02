@@ -309,20 +309,22 @@ public class AppointmentController extends GenericController
         // Validate stylist
         stylist = userRepository.findById(requestData.getStylistID());
         if (stylist == null || 
-        		(stylist.getType().compareTo(GenericModel.UserType.STYLIST) != 0 && stylist.getType().compareTo(GenericModel.UserType.ADMIN) != 0) || //TODO added this in to make admins act as stylists as well
+        		(stylist.getType().compareTo(GenericModel.UserType.STYLIST) != 0 && stylist.getType().compareTo(GenericModel.UserType.ADMIN) != 0) ||
         		!stylist.isActive())
             throw new GenericException("Invalid stylistID supplied", HttpStatus.NOT_FOUND, L);
         else
         {
-            DateRange requestRange = new DateRange(requestData.getStartTime(), requestData.getEndTime());
-            StylistAvailability stylistAvail = availRepository.findByDateRange(requestRange, requestData.getStylistID());
-            if (stylistAvail == null)
-                throw new GenericException("Stylist is not available during the requested time",
-                                           HttpStatus.CONFLICT, L);
-            Availability avail = stylistAvail.getAvailability();
-            if (avail == null || avail.isEmpty())
-                throw new GenericException("Stylist is not available during the requested time",
-                                           HttpStatus.CONFLICT, L);
+        	DateRange requestRange = new DateRange(requestData.getStartTime(), requestData.getEndTime());
+        	StylistAvailability stylistAvail = availRepository.findById(requestData.getStylistID());
+        	Availability avail;
+        	
+        	if(stylistAvail == null || 
+        	  (avail = stylistAvail.getAvailability()) == null ||
+        	  !avail.isAvailable(requestRange))
+        	{
+        		throw new GenericException("Stylist is not available during the requested time",
+        								   HttpStatus.CONFLICT, L);
+        	}
         }
 
         // Validate client
