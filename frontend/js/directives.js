@@ -199,111 +199,111 @@ scheduleDirectives.directive('stylistname', function($http) {
 // |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$| $$ \  $$| $$$$$$$/| $$  | $$| $$  | $$
 //  \______/ |__/  |__/|________/|________/|__/  \__/|_______/ |__/  |__/|__/  |__/
 
-scheduleDirectives.directive('calendar', function() {
-    return {
-        restrict: 'E',
-        template: '',
-        scope: {
-            clickable: '='
-        },
-        link: function() {
+// scheduleDirectives.directive('calendar', function() {
+//     return {
+//         restrict: 'E',
+//         template: '',
+//         scope: {
+//             clickable: '='
+//         },
+//         link: function() {
 
-        },
-        controller: function($scope) {
-            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-            $scope.calendar = function(year, monthIndex, day) {
-                if (year === undefined &&
-                    month === undefined &&
-                    day === undefined) {
-                    var d = new Date();
-                year = d.getFullYear();
-                monthIndex = d.getMonth();
-                day = d.getDate();
-            }
+//         },
+//         controller: function($scope) {
+//             var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+//             var dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+//             $scope.calendar = function(year, monthIndex, day) {
+//                 if (year === undefined &&
+//                     month === undefined &&
+//                     day === undefined) {
+//                     var d = new Date();
+//                 year = d.getFullYear();
+//                 monthIndex = d.getMonth();
+//                 day = d.getDate();
+//             }
 
-            var date = new Date(year, monthIndex, 1);
-            var current = new Date(year, monthIndex, day);
-            var month = {};
-            var weeks = [];
+//             var date = new Date(year, monthIndex, 1);
+//             var current = new Date(year, monthIndex, day);
+//             var month = {};
+//             var weeks = [];
 
-            month.name = monthNames[monthIndex];
-            month.year = date.getFullYear();
-            month.number = date.getMonth();
+//             month.name = monthNames[monthIndex];
+//             month.year = date.getFullYear();
+//             month.number = date.getMonth();
 
-                // loop for weeks
-                for (var j=0 ; date.getMonth() === monthIndex ; j++) {
-                    //loop for days
-                    var weekdays = [];
-                    for (var k=0 ; date.getMonth() === monthIndex ; k++){
-                        // console.log(scope.date);
+//                 // loop for weeks
+//                 for (var j=0 ; date.getMonth() === monthIndex ; j++) {
+//                     //loop for days
+//                     var weekdays = [];
+//                     for (var k=0 ; date.getMonth() === monthIndex ; k++){
+//                         // console.log(scope.date);
 
-                        if (date.getDay() === 0 && k !== 0) {
-                            break;
-                        }
-                        // loop until you see the day go to 0 then jump out OR the month changes
-                        var dayNumber = date.getDate();
-                        var dayName   = dayNames[date.getDay()];
-                        var dayClass  = "";
-                        if (date.getTime() < current.getTime()) {
-                            dayClass = "inactive";
-                        }
-                        if (date.getDate()  === current.getDate() &&
-                            date.getMonth() === current.getMonth() &&
-                            date.getYear()  === current.getYear()) {
-                            dayClass = "today";
-                    }
-                    weekdays.push({number: dayNumber, name: dayName, class:dayClass});
+//                         if (date.getDay() === 0 && k !== 0) {
+//                             break;
+//                         }
+//                         // loop until you see the day go to 0 then jump out OR the month changes
+//                         var dayNumber = date.getDate();
+//                         var dayName   = dayNames[date.getDay()];
+//                         var dayClass  = "";
+//                         if (date.getTime() < current.getTime()) {
+//                             dayClass = "inactive";
+//                         }
+//                         if (date.getDate()  === current.getDate() &&
+//                             date.getMonth() === current.getMonth() &&
+//                             date.getYear()  === current.getYear()) {
+//                             dayClass = "today";
+//                     }
+//                     weekdays.push({number: dayNumber, name: dayName, class:dayClass});
 
-                        // increment the date
-                        date.setDate(date.getDate()+1);
-                    }
-                    weeks.push(weekdays);
-                }
-                // month.weeks = weeks;
-                // console.log(month);
-                month.weeks = weeks;
-                $scope.month = month;
-            };
-            var d = new Date();
-            $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
-            $scope.dayNow = d.getDate();
-            $scope.monthNow = {"num": d.getMonth(), "name":monthNames[d.getMonth()]};
-            $scope.yearNow = d.getFullYear();
-            $scope.monthNames = monthNames;
-        }
-    };
-});
+//                         // increment the date
+//                         date.setDate(date.getDate()+1);
+//                     }
+//                     weeks.push(weekdays);
+//                 }
+//                 // month.weeks = weeks;
+//                 // console.log(month);
+//                 month.weeks = weeks;
+//                 $scope.month = month;
+//             };
+//             var d = new Date();
+//             $scope.calendar(d.getFullYear(), d.getMonth(), d.getDate());
+//             $scope.dayNow = d.getDate();
+//             $scope.monthNow = {"num": d.getMonth(), "name":monthNames[d.getMonth()]};
+//             $scope.yearNow = d.getFullYear();
+//             $scope.monthNames = monthNames;
+//         }
+//     };
+// });
 
-scheduleDirectives.directive('modal', function() {
-    return {
-        restrict: 'E',
-        template:   '<div class="modal fade">'+
-                        '<div class="modal-dialog">'+
-                            '<div class="modal-content">'+
-                                '<div class="modal-header">'+
-                                    '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-                                    '<h4 class="modal-title">Modal title</h4>'+
-                                '</div>'+
-                                '<div class="modal-body">'+
-                                    '<p>One fine body&hellip;</p>'+
-                                '</div>'+
-                                '<div class="modal-footer">'+
-                                    '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
-                                    '<button type="button" class="btn btn-primary">Save changes</button>'+
-                                '</div>'+
-                            '</div><!-- /.modal-content -->'+
-                        '</div><!-- /.modal-dialog -->'+
-                    '</div><!-- /.modal -->',
-        scope: {
-            availability: '=',
-            day: '='
-        },
-        controller: function($scope) {
+// scheduleDirectives.directive('modal', function() {
+//     return {
+//         restrict: 'E',
+//         template:   '<div class="modal fade">'+
+//                         '<div class="modal-dialog">'+
+//                             '<div class="modal-content">'+
+//                                 '<div class="modal-header">'+
+//                                     '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+//                                     '<h4 class="modal-title">Modal title</h4>'+
+//                                 '</div>'+
+//                                 '<div class="modal-body">'+
+//                                     '<p>One fine body&hellip;</p>'+
+//                                 '</div>'+
+//                                 '<div class="modal-footer">'+
+//                                     '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
+//                                     '<button type="button" class="btn btn-primary">Save changes</button>'+
+//                                 '</div>'+
+//                             '</div><!-- /.modal-content -->'+
+//                         '</div><!-- /.modal-dialog -->'+
+//                     '</div><!-- /.modal -->',
+//         scope: {
+//             availability: '=',
+//             day: '='
+//         },
+//         controller: function($scope) {
 
-        }
-    };
-});
+//         }
+//     };
+// });
 
 
 

@@ -36,7 +36,7 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
              when('/admin', {
                 templateUrl: 'partials/admin.html',
                 controller: 'adminController'
-            }).             
+            }).
             otherwise({
                 redirectTo: '/loading',
             });
