@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import com.teamsierra.csc191.api.controller.UserController;
 import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
 import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 
@@ -39,8 +40,9 @@ public class UserControllerTest
 	
 	private UserRepository userRepo = mock(UserRepository.class);
 	private StylistAvailabilityRepository sar = mock(StylistAvailabilityRepository.class);
+	private AppointmentTypeRepository atr = mock(AppointmentTypeRepository.class);
 	
-	private MockMvc mockMVC = standaloneSetup(new UserController(userRepo, sar)).build();
+	private MockMvc mockMVC = standaloneSetup(new UserController(userRepo, sar, atr)).build();
 	
 	private static final String USER_SELF_LINK = "http://localhost/users/" + id;
 	private static final String USER_AVAILABILITY_LINK = "http://localhost/availability/" + id;

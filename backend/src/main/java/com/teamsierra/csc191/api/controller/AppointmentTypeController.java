@@ -1,23 +1,32 @@
 package com.teamsierra.csc191.api.controller;
 
-import com.teamsierra.csc191.api.exception.GenericException;
-import com.teamsierra.csc191.api.model.AppointmentType;
-import com.teamsierra.csc191.api.model.GenericModel;
-import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
-import com.teamsierra.csc191.api.resources.ResourceHandler;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import com.teamsierra.csc191.api.exception.GenericException;
+import com.teamsierra.csc191.api.model.AppointmentType;
+import com.teamsierra.csc191.api.model.GenericModel;
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
+import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
+import com.teamsierra.csc191.api.repository.UserRepository;
+import com.teamsierra.csc191.api.resources.ResourceHandler;
 
 /**
  * @Author: Alex Chernyak
@@ -69,11 +78,14 @@ public class AppointmentTypeController extends GenericController
 {
     @Autowired
     AppointmentTypeRepository appointmentTypeRepository;
+    UserRepository userRepository;
 
     @Autowired
-    public AppointmentTypeController(AppointmentTypeRepository atRepo)
+    public AppointmentTypeController(AppointmentTypeRepository atRepo,
+    								 UserRepository userRepo)
     {
         this.appointmentTypeRepository = atRepo;
+        this.userRepository = userRepo;
     }
 
     /**
@@ -161,6 +173,19 @@ public class AppointmentTypeController extends GenericController
 
         requestData.setId(null);
         Resource<AppointmentType> resource = ResourceHandler.createResource(appointmentTypeRepository.insert(requestData));
+        
+        //TODO remove if front end gets appointment types working
+        //adds all stylists to the new appointment type
+        List<User> users = userRepository.findAllByGroup(UserType.STYLIST);
+        users.addAll(userRepository.findAllByGroup(UserType.ADMIN));
+        if(users != null && users.size() != 0)
+        {
+	        for(User u : users)
+	        {
+	        	appointmentTypeRepository.addStylistToType(requestData.getId(), u.getId());
+	        }
+        }
+        //end TODO
 
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
