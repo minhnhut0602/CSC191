@@ -2,13 +2,16 @@ package com.teamsierra.csc191.api.controller;
 
 import com.lambdaworks.crypto.SCryptUtil;
 import com.teamsierra.csc191.api.exception.GenericUserException;
+import com.teamsierra.csc191.api.model.AppointmentType;
 import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
 import com.teamsierra.csc191.api.model.User;
+import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
 import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
 import com.teamsierra.csc191.api.util.Availability;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +44,16 @@ public class UserController extends GenericController
 
     private UserRepository userRepository;
     private StylistAvailabilityRepository sar;
+    private AppointmentTypeRepository apptTypeRepo;
 
     @Autowired
-    public UserController(UserRepository userRepo, StylistAvailabilityRepository stylistAvailRepo)
+    public UserController(UserRepository userRepo,
+    		StylistAvailabilityRepository stylistAvailRepo,
+    		AppointmentTypeRepository appointmentTypeRepo)
     {
         userRepository = userRepo;
         sar = stylistAvailRepo;
+        apptTypeRepo = appointmentTypeRepo;
     }
 
     /**
@@ -328,6 +336,27 @@ public class UserController extends GenericController
                 sa.setStylistID(user.getId());
                 sa.setAvailability(new Availability());
                 sar.insert(sa);
+                
+                //TODO remove if front end gets appointment types working
+                //adds the stylist to all appointment types
+                List<AppointmentType> appointmentTypes = apptTypeRepo.findByCriteria(new AppointmentType());
+                if(appointmentTypes != null && appointmentTypes.size() != 0)
+                {
+	                String userID = user.getId();
+	                try
+	                {
+		                for(AppointmentType at : appointmentTypes)
+		                {
+		                	apptTypeRepo.addStylistToType(at.getId(), userID);
+		                }
+	                }
+	                catch(Exception e)
+	                {
+	                	throw new GenericUserException("Exception generated while adding appointmentTypes"
+	                			+ " to the new user.", HttpStatus.INTERNAL_SERVER_ERROR);
+	                }
+                }
+                // end TODO
 
                 Resource<User> resource = ResourceHandler.createResource(user);
                 return new ResponseEntity<Resource<User>>(resource, HttpStatus.CREATED);
@@ -688,8 +717,8 @@ public class UserController extends GenericController
     @RequestMapping(value = "/stylists", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Resource<User>>> getStylists() throws GenericUserException
     {
-        List<User> stylists = userRepository.findAllByGroup(UserType.STYLIST);
-        stylists.addAll(userRepository.findAllByGroup(UserType.ADMIN));
+        List<User> stylists = userRepository.findAllActiveByGroup(UserType.STYLIST);
+        stylists.addAll(userRepository.findAllActiveByGroup(UserType.ADMIN));
 
         if(stylists != null && !stylists.isEmpty())
         {
@@ -713,7 +742,7 @@ public class UserController extends GenericController
     @RequestMapping(value = "/clients", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Resource<User>>> getClients() throws GenericUserException
     {
-        List<User> clients = userRepository.findAllByGroup(UserType.CLIENT);
+        List<User> clients = userRepository.findAllActiveByGroup(UserType.CLIENT);
 
         if(clients != null && !clients.isEmpty())
         {
