@@ -37,7 +37,9 @@ public class Availability implements Collection<DateRange>
 
 	public void setAvailability(Collection<DateRange> availability) 
 	{
-		this.availability = availability;
+		this.availability.clear();
+		
+		availability.addAll(availability);
 	}
 
 	/**

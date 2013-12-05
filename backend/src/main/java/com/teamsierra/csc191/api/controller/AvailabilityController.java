@@ -469,15 +469,8 @@ public class AvailabilityController extends GenericController
 			throw new GenericAvailabilityException("Unable to find stylist availability in the repository.",
 					HttpStatus.NOT_FOUND);
 		}
-
-		/* the following is done to ensure a consistent state of
-		 * no two overlapping DateRanges in the availability.
-		 */
-		Availability avail = new Availability();
-		avail.addAll(stylistAvailability.getAvailability());
 		
-		sa.setAvailability(avail);
-		
+		sa.setAvailability(stylistAvailability.getAvailability());
 		sar.save(sa);
 		
 		return new ResponseEntity<Resource<StylistAvailability>>(ResourceHandler.createResource(sa), HttpStatus.ACCEPTED);
