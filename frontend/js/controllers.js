@@ -802,6 +802,65 @@ scheduleControllers.controller('loadingController', function loadingController($
 });
 
 
-scheduleControllers.controller('createUser', function createUser($location, $scope) {
+
+
+//                                            /$$                    
+//                                           | $$                    
+//   /$$$$$$$  /$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$       
+//  /$$_____/ /$$__  $$ /$$__  $$ |____  $$|_  $$_/   /$$__  $$      
+// | $$      | $$  \__/| $$$$$$$$  /$$$$$$$  | $$    | $$$$$$$$      
+// | $$      | $$      | $$_____/ /$$__  $$  | $$ /$$| $$_____/      
+// |  $$$$$$$| $$      |  $$$$$$$|  $$$$$$$  |  $$$$/|  $$$$$$$      
+//  \_______/|__/       \_______/ \_______/   \___/   \_______/                                                                     
+//  /$$   /$$  /$$$$$$$  /$$$$$$   /$$$$$$                           
+// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$                          
+// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/                          
+// | $$  | $$ \____  $$| $$_____/| $$                                
+// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$                                
+//  \______/ |_______/  \_______/|__/                                
+                                                                  
+                                                                  
+scheduleControllers.controller('createUser', function createUser($location, $scope, $http) {
+
+    $scope.$watch('userInfo.email', function(newValue, oldValue, scope) {
+        scope.userInfo.imageHash = md5(scope.userInfo.email);
+     }, true);
+
+    $scope.createUserFunction = function(){
+
+var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+
+    var user = $scope.userInfo.email;
+    var pass = $scope.userInfo.password;
+    var imageURL = "http://www.gravatar.com/avatar/"+$scope.userInfo.imageHash;
+    var firstName = $scope.userInfo.firstName;
+    var lastName = $scope.userInfo.lastName;
+    var email = $scope.userInfo.email;
+    var type = $scope.userInfo.clientType;
+    toSend = {"firstName": firstName,
+      "lastName": lastName,
+      "email": email,
+      "password": pass,
+      "active": true,
+      "email": email,
+      "avatarURL": imageURL, 
+      "type": type};
+
+    console.log(toSend);
+    
+    
+
+  $http.post('http://home.joubin.me/salon-scheduler-api/users/',toSend, config).success(function(data){
+                console.log("winning");
+                $location.path('staff-landing');
+        }).error(function(data) {
+                console.log("failing");
+        });
+    }
 
 });

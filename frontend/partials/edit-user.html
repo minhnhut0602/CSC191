@@ -2,14 +2,16 @@
 </div>
 <div class="main">
 <div class="left">
-  <img src="http://www.gravatar.com/avatar/{{userInfo.image}}" style="width:100px; height:100px; ">asd = {{hash(userInfo.image)}}
+  <img src="http://www.gravatar.com/avatar/{{userInfo.imageHash}}" style="width:200px;  ">
 
 </div>
   <div class="right" style="width:50%;">
     <ng-form role="form ">
       <div class="form-group">
-        <label for="exampleInputEmail1">Gravatar URL</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="First Name" ng-model="userInfo.image">
+      <select ng-model="userInfo.clientType">
+        <option value="STYLIST">Stylist</option>
+        <option value="ADMIN">Admin</option>
+      </select>
         <label for="exampleInputEmail1">First Name</label>
         <input type="plaintext" class="form-control" id="username" placeholder="First Name" ng-model="userInfo.firstName">
         <label for="exampleInputEmail1">Last Name</label>
@@ -22,7 +24,7 @@
         <input type="password" class="form-control" id="passwordConfirm" placeholder="Password" ng-model="userInfo.passwordConformation">
 
       </div>
-        <button type="button" class="btn btn-primary" > Save </button>
+        <button type="button" class="btn btn-primary" ng-click="createUserFunction()"> Save </button>
 
     </ng-form>
   </div>
