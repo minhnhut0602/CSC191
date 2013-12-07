@@ -5,19 +5,7 @@ function readCookie(name) {
             return ca[i].replace(name, '');
     }
 
-function getFucked(inTheAss){
-    for (var link in inTheAss){
-        if (link.rel === "stylist") {
-           return $http.get(link.href, config).success(function(data2) {
-                console.log("reached the bottom of ass, also known as ahole"); // this should never happen
-                return {first: data2.firstName, last: data2.lastName}; // = something
-            }).error(function(data2){
-                return null;
-            });
-        }
-    }
 
-}
 
 
 function deleteAllCookies() {
