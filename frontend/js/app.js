@@ -40,7 +40,7 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/admin.html',
                 controller: 'adminController'
             }).
-            when('/edit-availabilty', {
+            when('/edit-availability', {
                 templateUrl: 'partials/edit-availabilty.html'
             }).
             otherwise({
