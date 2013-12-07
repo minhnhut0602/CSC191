@@ -8,6 +8,7 @@ import com.teamsierra.csc191.api.repository.StylistAvailabilityRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
 import com.teamsierra.csc191.api.util.Availability;
 import com.teamsierra.csc191.api.util.DateRange;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -18,8 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -138,8 +142,18 @@ public class AppointmentController extends GenericController
             default:
             break;
         }
+        
+        List<Appointment> appointments = appRepository.findByCriteria(findAppointment);
+        Collections.sort(appointments, new Comparator<Appointment>()
+        {
+			@Override
+			public int compare(Appointment a0, Appointment a1)
+			{
+				return a0.getStartTime().compareTo(a1.getStartTime());
+			}
+        });
 
-        for(Appointment appointment: appRepository.findByCriteria(findAppointment))
+        for(Appointment appointment : appointments)
             appointmentResources.add(ResourceHandler.createResource(appointment));
 
         if (appointmentResources.isEmpty())
