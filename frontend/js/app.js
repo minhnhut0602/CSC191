@@ -27,8 +27,8 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/loading.html',
                 controller: 'loadingController'
             }).
-            when('/stylists', {
-                templateUrl: 'partials/stylists.html'
+            when('/view-stylists', {
+                templateUrl: 'partials/view-stylists.html'
             }).
             when('/clients', {
                 templateUrl: 'partials/clients.html'
