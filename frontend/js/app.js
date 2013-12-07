@@ -30,6 +30,9 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
              when('/stylists', {
                 templateUrl: 'partials/stylists.html'
             }).
+             when('/clients', {
+                templateUrl: 'partials/clients.html'
+            }).             
              when('/edit-user', {
                 templateUrl: 'partials/edit-user.html'
             }).
