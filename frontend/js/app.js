@@ -34,7 +34,8 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/view-clients.html'
             }).
             when('/edit-user', {
-                templateUrl: 'partials/edit-user.html'
+                templateUrl: 'partials/edit-user.html',
+                controller: 'createUser'
             }).
             when('/admin', {
                 templateUrl: 'partials/admin.html',
