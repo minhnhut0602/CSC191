@@ -116,6 +116,7 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
         restrict: 'A',
         template:   '<div ng-repeat="appointment in appointments">'+
                         '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with <stylistname stylisturl="appointment.stylist"/> at {{appointment.startTime.toLocaleTimeString()}}' +
+                        '<br/><p><stylistname stylisturl=appointment.stylist/> said {{appointment.comment}}</p></div>'+
                         '</div>'+
                     '</div>',
         link: function(scope, elm, attr) {
@@ -134,6 +135,12 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
                     var date = new Date(data[something].startTime);
                     tempAppointment.startTime = date;
                     tempAppointment.appointmentStatus = data[something].appointmentStatus;
+                    tempAppointment.comment = data[something].comment;
+                    if (tempAppointment.comment != null) {
+                        tempAppointment.comment = "\""+data[something].comment+"\"";
+                    }else{
+                        tempAppointment.comment = "Pending";
+                    }
 
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
@@ -330,7 +337,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
     return {
         restrict: 'A',
         template: '<div ng-repeat="appointment in appointments">'+
-            '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}} {{appointment.ID}}<br/>'+
+            '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
                 '<ng-form ng-controller="acceptAppointmentsController">'+
                 '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
                 '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
