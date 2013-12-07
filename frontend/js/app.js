@@ -1,4 +1,4 @@
-var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'calendarModule', 'scheduleDirectives', 'facebook', 'ui.bootstrap']);
+var scheduleApp = angular.module('scheduleApp', ['scheduleControllers', 'calendarModule', 'availabilityModule' ,'scheduleDirectives', 'facebook', 'ui.bootstrap']);
 
 scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
     function($routeProvider, $httpProvider,FacebookProvider) {
@@ -27,15 +27,21 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/loading.html',
                 controller: 'loadingController'
             }).
-             when('/admin', {
-                templateUrl: 'partials/admin.html'
+            when('/view-stylists', {
+                templateUrl: 'partials/view-stylists.html'
             }).
-             when('/edit-user', {
+            when('/view-clients', {
+                templateUrl: 'partials/view-clients.html'
+            }).
+            when('/edit-user', {
                 templateUrl: 'partials/edit-user.html'
             }).
-             when('/admin', {
+            when('/admin', {
                 templateUrl: 'partials/admin.html',
                 controller: 'adminController'
+            }).
+            when('/edit-availability', {
+                templateUrl: 'partials/edit-availability.html'
             }).
             otherwise({
                 redirectTo: '/loading',
