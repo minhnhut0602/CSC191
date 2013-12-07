@@ -27,12 +27,13 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/loading.html',
                 controller: 'loadingController'
             }).
-             when('/admin', {
-                templateUrl: 'partials/admin.html'
+             when('/stylists', {
+                templateUrl: 'partials/stylists.html'
             }).
              when('/edit-user', {
                 templateUrl: 'partials/edit-user.html'
             }).
+
              when('/admin', {
                 templateUrl: 'partials/admin.html',
                 controller: 'adminController'
