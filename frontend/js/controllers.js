@@ -5,19 +5,7 @@ function readCookie(name) {
             return ca[i].replace(name, '');
     }
 
-function getFucked(inTheAss){
-    for (var link in inTheAss){
-        if (link.rel === "stylist") {
-           return $http.get(link.href, config).success(function(data2) {
-                console.log("reached the bottom of ass, also known as ahole"); // this should never happen
-                return {first: data2.firstName, last: data2.lastName}; // = something
-            }).error(function(data2){
-                return null;
-            });
-        }
-    }
 
-}
 
 
 function deleteAllCookies() {
@@ -449,11 +437,98 @@ scheduleControllers.controller('adminController', function adminController($loca
     }
 };
 $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
-    $scope.users = data;
-}).error(function(data2){
-    $score.user = "You have no access here";
+        $scope.users = data;
+    }).error(function(data2){
+        $score.user = "You have no access here";
+    });
 });
-});
+
+//  $$$$$$\  $$\                                                       
+// $$  __$$\ $$ |                                                      
+// $$ /  \__|$$$$$$$\   $$$$$$\  $$\  $$\  $$\                         
+// \$$$$$$\  $$  __$$\ $$  __$$\ $$ | $$ | $$ |                        
+//  \____$$\ $$ |  $$ |$$ /  $$ |$$ | $$ | $$ |                        
+// $$\   $$ |$$ |  $$ |$$ |  $$ |$$ | $$ | $$ |                        
+// \$$$$$$  |$$ |  $$ |\$$$$$$  |\$$$$$\$$$$  |                        
+//  \______/ \__|  \__| \______/  \_____\____/                                                                                                                                                                                                                         
+//           $$\ $$\                                                   
+//           $$ |$$ |                                                  
+//  $$$$$$\  $$ |$$ |                                                  
+//  \____$$\ $$ |$$ |                                                  
+//  $$$$$$$ |$$ |$$ |                                                  
+// $$  __$$ |$$ |$$ |                                                  
+// \$$$$$$$ |$$ |$$ |                                                  
+//  \_______|\__|\__|                                                                         
+//  $$$$$$\    $$\               $$\ $$\             $$\               
+// $$  __$$\   $$ |              $$ |\__|            $$ |              
+// $$ /  \__|$$$$$$\   $$\   $$\ $$ |$$\  $$$$$$$\ $$$$$$\    $$$$$$$\ 
+// \$$$$$$\  \_$$  _|  $$ |  $$ |$$ |$$ |$$  _____|\_$$  _|  $$  _____|
+//  \____$$\   $$ |    $$ |  $$ |$$ |$$ |\$$$$$$\    $$ |    \$$$$$$\  
+// $$\   $$ |  $$ |$$\ $$ |  $$ |$$ |$$ | \____$$\   $$ |$$\  \____$$\ 
+// \$$$$$$  |  \$$$$  |\$$$$$$$ |$$ |$$ |$$$$$$$  |  \$$$$  |$$$$$$$  |
+//  \______/    \____/  \____$$ |\__|\__|\_______/    \____/ \_______/ 
+//                     $$\   $$ |                                      
+//                     \$$$$$$  |                                      
+//                      \______/                                       
+
+scheduleControllers.controller('stylistsController', function stylistsController($location, $scope, $http) {
+    var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+$http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).success(function(data) {
+        $scope.users = data;
+    }).error(function(data2){
+        $score.user = "You have no access here";
+    });
+});                                                                    
+                                                                    
+
+
+//  $$$$$$\  $$\                                            
+// $$  __$$\ $$ |                                           
+// $$ /  \__|$$$$$$$\   $$$$$$\  $$\  $$\  $$\              
+// \$$$$$$\  $$  __$$\ $$  __$$\ $$ | $$ | $$ |             
+//  \____$$\ $$ |  $$ |$$ /  $$ |$$ | $$ | $$ |             
+// $$\   $$ |$$ |  $$ |$$ |  $$ |$$ | $$ | $$ |             
+// \$$$$$$  |$$ |  $$ |\$$$$$$  |\$$$$$\$$$$  |             
+//  \______/ \__|  \__| \______/  \_____\____/                                                                                                                                                                                         
+//           $$\ $$\                                        
+//           $$ |$$ |                                       
+//  $$$$$$\  $$ |$$ |                                       
+//  \____$$\ $$ |$$ |                                       
+//  $$$$$$$ |$$ |$$ |                                       
+// $$  __$$ |$$ |$$ |                                       
+// \$$$$$$$ |$$ |$$ |                                       
+//  \_______|\__|\__|                                                                                                                                                                                                            
+//  $$$$$$\  $$\ $$\                      $$\               
+// $$  __$$\ $$ |\__|                     $$ |              
+// $$ /  \__|$$ |$$\  $$$$$$\  $$$$$$$\ $$$$$$\    $$$$$$$\ 
+// $$ |      $$ |$$ |$$  __$$\ $$  __$$\\_$$  _|  $$  _____|
+// $$ |      $$ |$$ |$$$$$$$$ |$$ |  $$ | $$ |    \$$$$$$\  
+// $$ |  $$\ $$ |$$ |$$   ____|$$ |  $$ | $$ |$$\  \____$$\ 
+// \$$$$$$  |$$ |$$ |\$$$$$$$\ $$ |  $$ | \$$$$  |$$$$$$$  |
+//  \______/ \__|\__| \_______|\__|  \__|  \____/ \_______/ 
+                                                         
+                                                         
+                                                                                               
+
+scheduleControllers.controller('clientsController', function clientsController($location, $scope, $http) {
+    var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+$http.get('http://home.joubin.me/salon-scheduler-api/users/clients', config).success(function(data) {
+        $scope.users = data;
+    }).error(function(data2){
+        $score.user = "You have no access here";
+    });
+}); 
+
 
 //  /$$   /$$  /$$$$$$  /$$$$$$$$ /$$$$$$$
 // | $$  | $$ /$$__  $$| $$_____/| $$__  $$
