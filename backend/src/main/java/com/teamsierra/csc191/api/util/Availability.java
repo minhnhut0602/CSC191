@@ -99,8 +99,8 @@ public class Availability implements Collection<DateRange>
 	{
 		for(DateRange dr : availability)
 		{
-			if(dr.getStartDate().compareTo(dateRange.getStartDate()) >= 0 &&
-					dr.getEndDate().compareTo(dateRange.getEndDate()) <= 0)
+			if(dr.getStartDate().compareTo(dateRange.getStartDate()) <= 0 &&
+					dr.getEndDate().compareTo(dateRange.getEndDate()) >= 0)
 			{
 				return true;
 			}

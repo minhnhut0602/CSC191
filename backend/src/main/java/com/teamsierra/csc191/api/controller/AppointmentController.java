@@ -329,7 +329,7 @@ public class AppointmentController extends GenericController
         else
         {
         	DateRange requestRange = new DateRange(requestData.getStartTime(), requestData.getEndTime());
-        	StylistAvailability stylistAvail = availRepository.findById(requestData.getStylistID());
+        	StylistAvailability stylistAvail = availRepository.findByStylistID(requestData.getStylistID());
         	Availability avail;
         	
         	if(stylistAvail == null || 
