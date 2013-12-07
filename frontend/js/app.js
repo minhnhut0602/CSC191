@@ -41,7 +41,7 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 controller: 'adminController'
             }).
             when('/edit-availability', {
-                templateUrl: 'partials/edit-availabilty.html'
+                templateUrl: 'partials/edit-availability.html'
             }).
             otherwise({
                 redirectTo: '/loading',
