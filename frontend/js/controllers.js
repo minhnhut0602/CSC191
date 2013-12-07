@@ -223,7 +223,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.loggedIn = false;
                 document.cookie = "loggedIn=false"
 
-                
+
             });
         });
     // deleteAllCookies();
@@ -246,6 +246,8 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 document.cookie="myID="+response.authResponse["userID"];
                 $scope.getInfo();
                 $scope.$watch('tmpUserInfo', function(newValue, oldValue, scope) {
+                    $rootScope.userInfo = $scope.tmpUserInfo;
+                    $rootScope.userInfo.name = $scope.tmpUserInfo.firstName +' '+ $scope.tmpUserInfo.lastName;
                     console.log($scope.tmpUserInfo);
                      if ($scope.tmpUserInfo.firstName == null) {
                         $location.path('edit-profile');
@@ -318,14 +320,14 @@ scheduleControllers.controller('acceptAppointmentsController', function acceptAp
     }
 };
 
-    $scope.acceptAppointment = function(){  
+    $scope.acceptAppointment = function(){
         data = {};
         var comment = $scope.appointment.comment;
         var id = $scope.appointment.ID;
         console.log("accept: "+comment+" - "+ id);
-        data = {"appointmentStatus": "APPROVED", 
+        data = {"appointmentStatus": "APPROVED",
         "comment": comment};
-        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){    
+        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){
                 console.log("winning");
                 $location.path('staff-landing');
                 location.reload();
@@ -336,14 +338,14 @@ scheduleControllers.controller('acceptAppointmentsController', function acceptAp
 
     }
 
-    $scope.denyAppointment = function(){  
+    $scope.denyAppointment = function(){
         data = {};
         var comment = $scope.appointment.comment;
         var id = $scope.appointment.ID;
         console.log("accept: "+comment+" - "+ id);
-        data = {"appointmentStatus": "REJECTED", 
+        data = {"appointmentStatus": "REJECTED",
         "comment": comment};
-        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){    
+        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){
                 console.log("winning");
                 $location.path('staff-landing');
                 location.reload();
@@ -597,13 +599,13 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
     }
 };
 
-    $scope.getUserInfo = function(){  
+    $scope.getUserInfo = function(){
       data = {};
-      var getFirstName = $scope.user.name.split(" ");
-      var userPhone = $scope.user.phone;
-      var userHairColor = $scope.user.hairColor;
-      var userHairLength = $scope.user.hairLength;
-      var userEmail = $scope.user.email;
+      var getFirstName = $scope.userInfo.name.split(" ");
+      var userPhone = $scope.userInfo.phone;
+      var userHairColor = $scope.userInfo.hairColor;
+      var userHairLength = $scope.userInfo.hairLength;
+      var userEmail = $scope.userInfo.email;
       console.log($scope.user.email);
       console.log($scope.user.phone);
       console.log($scope.user.hairColor);
@@ -630,44 +632,44 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
 
 
 
-//   /$$                           /$$                                                      
-//  | $$                          |__/                                                      
-//  | $$        /$$$$$$   /$$$$$$  /$$ /$$$$$$$                                             
-//  | $$       /$$__  $$ /$$__  $$| $$| $$__  $$                                            
-//  | $$      | $$  \ $$| $$  \ $$| $$| $$  \ $$                                            
-//  | $$      | $$  | $$| $$  | $$| $$| $$  | $$                                            
-//  | $$$$$$$$|  $$$$$$/|  $$$$$$$| $$| $$  | $$                                            
-//  |________/ \______/  \____  $$|__/|__/  |__/                                            
-//                       /$$  \ $$                                                          
-//                      |  $$$$$$/                                                          
-//                       \______/                                                           
-//    /$$$$$$                        /$$                         /$$ /$$                    
-//   /$$__  $$                      | $$                        | $$| $$                    
-//  | $$  \__/  /$$$$$$  /$$$$$$$  /$$$$$$    /$$$$$$   /$$$$$$ | $$| $$  /$$$$$$   /$$$$$$ 
+//   /$$                           /$$
+//  | $$                          |__/
+//  | $$        /$$$$$$   /$$$$$$  /$$ /$$$$$$$
+//  | $$       /$$__  $$ /$$__  $$| $$| $$__  $$
+//  | $$      | $$  \ $$| $$  \ $$| $$| $$  \ $$
+//  | $$      | $$  | $$| $$  | $$| $$| $$  | $$
+//  | $$$$$$$$|  $$$$$$/|  $$$$$$$| $$| $$  | $$
+//  |________/ \______/  \____  $$|__/|__/  |__/
+//                       /$$  \ $$
+//                      |  $$$$$$/
+//                       \______/
+//    /$$$$$$                        /$$                         /$$ /$$
+//   /$$__  $$                      | $$                        | $$| $$
+//  | $$  \__/  /$$$$$$  /$$$$$$$  /$$$$$$    /$$$$$$   /$$$$$$ | $$| $$  /$$$$$$   /$$$$$$
 //  | $$       /$$__  $$| $$__  $$|_  $$_/   /$$__  $$ /$$__  $$| $$| $$ /$$__  $$ /$$__  $$
 //  | $$      | $$  \ $$| $$  \ $$  | $$    | $$  \__/| $$  \ $$| $$| $$| $$$$$$$$| $$  \__/
-//  | $$    $$| $$  | $$| $$  | $$  | $$ /$$| $$      | $$  | $$| $$| $$| $$_____/| $$      
-//  |  $$$$$$/|  $$$$$$/| $$  | $$  |  $$$$/| $$      |  $$$$$$/| $$| $$|  $$$$$$$| $$      
-//   \______/  \______/ |__/  |__/   \___/  |__/       \______/ |__/|__/ \_______/|__/      
-//                                                                                          
-//                                                                                          
-//                                                                                          
+//  | $$    $$| $$  | $$| $$  | $$  | $$ /$$| $$      | $$  | $$| $$| $$| $$_____/| $$
+//  |  $$$$$$/|  $$$$$$/| $$  | $$  |  $$$$/| $$      |  $$$$$$/| $$| $$|  $$$$$$$| $$
+//   \______/  \______/ |__/  |__/   \___/  |__/       \______/ |__/|__/ \_______/|__/
+//
+//
+//
 
 scheduleControllers.controller('loginController', function loginController($location, $scope, $http, $rootScope) {
 
-    $scope.loginUser = function(){  
+    $scope.loginUser = function(){
       data = {};
       var user = $scope.user.username;
       var pass = $scope.user.password;
-      
+
       console.log(user);
       console.log(pass);
       if (user == null || pass == null) {
         console.log("fuck no");
         return;
       }
-      
-      $http.get('http://home.joubin.me/salon-scheduler-api/authorize?username='+user+'&password='+pass,data).success(function(data){    
+
+      $http.get('http://home.joubin.me/salon-scheduler-api/authorize?username='+user+'&password='+pass,data).success(function(data){
                     document.cookie="myAccessToken="+data.authToken;
                     document.cookie="userType=staff";
                     $location.path("staff-landing");
@@ -687,9 +689,9 @@ scheduleControllers.controller('loginController', function loginController($loca
 });
 
 
-//  /$$                                 /$$ /$$                    
-// | $$                                | $$|__/                    
-// | $$        /$$$$$$   /$$$$$$   /$$$$$$$ /$$ /$$$$$$$   /$$$$$$ 
+//  /$$                                 /$$ /$$
+// | $$                                | $$|__/
+// | $$        /$$$$$$   /$$$$$$   /$$$$$$$ /$$ /$$$$$$$   /$$$$$$
 // | $$       /$$__  $$ |____  $$ /$$__  $$| $$| $$__  $$ /$$__  $$
 // | $$      | $$  \ $$  /$$$$$$$| $$  | $$| $$| $$  \ $$| $$  \ $$
 // | $$      | $$  | $$ /$$__  $$| $$  | $$| $$| $$  | $$| $$  | $$
@@ -697,7 +699,7 @@ scheduleControllers.controller('loginController', function loginController($loca
 // |________/ \______/  \_______/ \_______/|__/|__/  |__/ \____  $$
 //                                                        /$$  \ $$
 //                                                       |  $$$$$$/
-//                                                        \______/ 
+//                                                        \______/
 
 
 scheduleControllers.controller('loadingController', function loadingController($location, $scope) {
@@ -705,7 +707,7 @@ scheduleControllers.controller('loadingController', function loadingController($
     if (readCookie('userType') === "staff") {
         $location.path('staff-landing');
     }else{
-        $location.path('client-landing');            
+        $location.path('client-landing');
     }
 });
 
