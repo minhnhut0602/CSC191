@@ -596,12 +596,8 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
         'Cache-Control': 'no-cache',
     }
 };
-<<<<<<< HEAD
-    $scope.getUserInfo = function(){
-    alert("beforePUT ahahahahahahahahaha");
-=======
+
     $scope.getUserInfo = function(){  
->>>>>>> 891e89d9dce2db49a4f690c028d6f87f9886c2b3
       data = {};
       var getFirstName = $scope.user.name.split(" ");
       var userPhone = $scope.user.phone;
@@ -631,8 +627,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
             });
     }
 });
-<<<<<<< HEAD
-=======
+
 
 
 //   /$$                           /$$                                                      
@@ -718,4 +713,3 @@ scheduleControllers.controller('loadingController', function loadingController($
 scheduleControllers.controller('createUser', function createUser($location, $scope) {
 
 });
->>>>>>> 891e89d9dce2db49a4f690c028d6f87f9886c2b3
