@@ -345,6 +345,21 @@ scheduleControllers.controller('acceptAppointmentsController', function acceptAp
     }
 
 
+    $scope.cancelAppointment = function(){
+        alert("cancelling "+ $scope.appointment.ID);
+        data = {};
+        var id = $scope.appointment.ID;
+        data = {"appointmentStatus": "CANCELED"};
+        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){
+                console.log("winning");
+                $location.path('staff-landing');
+                location.reload();
+        }).error(function(data) {
+                alert("There is a conflict");
+                console.log("failing");
+        });
+
+    }
 
 });
 
