@@ -52,6 +52,9 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/create-services.html',
                 controller: 'createService'
             }).
+            when('/staff-calendar', {
+                templateUrl: 'partials/staff-calendar.html'
+            }).
             otherwise({
                 redirectTo: '/loading',
             });

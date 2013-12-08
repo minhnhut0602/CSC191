@@ -491,7 +491,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                 $scope.appointmentInfo.types = types;
                 console.log(types);
             });
-            $http.get('http://home.joubin.me/salon-scheduler-api/users/me', config).success(function(stylistAccounts) {
+            $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(stylistAccounts) {
                 var stylists = [];
                 stylists.push({
                     name: stylistAccounts.firstName +' '+ stylistAccounts.lastName,
@@ -605,7 +605,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                                             '<div class="modal-body">'+
                                                 '<form class="new-appointment-form">' +
                                                     '<div class="clearfix">' +
-                                                        '<label class="control-label appointment-type-label">Stylist</label>' +
+                                                        '<label class="control-label appointment-type-label">Client</label>' +
                                                         '<div class="appointment-stylist-selection">' +
                                                             '<select ng-model="newAppointment.client" class="selectpicker-popover" id="appointment-stylist" ng-options="i.name for i in day.clients">' +
                                                             '</select>' +
@@ -690,6 +690,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
 function StaffCalendarModalInstance($scope, $http, $modalInstance, day, times) {
     $scope.day = day;
     $scope.day.times = [];
+    console.log($scope.day);
     for (stylist in $scope.day.stylists) { //iterate through stylists
         $scope.day.stylists[stylist].types = [];
         for (type in $scope.day.types) { //iterate through types
