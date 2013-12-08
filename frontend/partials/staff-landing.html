@@ -2,7 +2,7 @@
     <h2 class="left">Upcoming</h2>
     <div class=" right vertical-center-parent">
         <div class="vertical-center-child">
-            <button type="button" class="btn btn-primary">Make an Appointment</button>
+            <a href="#/staff-calendar" class="btn btn-primary">Make an Appointment</a>
         </div>
     </div>
 </div>
@@ -26,7 +26,7 @@
             <h2 class="month-name">{{month.name}}</h2>
             <div class="week" ng-repeat="week in month.weeks">
                 <div ng-repeat="day in week" class="day {{day.name}} {{day.class}}"><strong>{{day.number}}</strong></div>
-            </div>     
+            </div>
         </div>
     </div>
 
