@@ -21,13 +21,13 @@
 
             <tr ng-repeat="user in users | filter:query">
               <td>{{$index+1}}</td>
-              <td><img src="http://{{user.avatarURL}}" '></td>
+              <td><img src="http://{{user.avatarURL}}"></td>
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
-              <td>{{user.type}}</td>
+              <td>{{user.type}} {{user.id}}</td>
               <td >
-                  <button type="button" class="btn btn-warning" ng-show="user.active"> Deactivate </button>
-                  <button type="button" class="btn btn-success" ng-hide="user.active">Activate</button>
+                  <button type="button" class="btn btn-warning" ng-show="user.active" ng-click="deactivateButton(user)"> Deactivate </button>
+                  <button type="button" class="btn btn-success" ng-hide="user.active" ng-click="activateButton(user)">Activate</button>
               </td>
             </tr>
           </tbody>

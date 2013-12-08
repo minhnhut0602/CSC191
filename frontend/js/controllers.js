@@ -454,8 +454,31 @@ scheduleControllers.controller('adminController', function adminController($loca
 $http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
         $scope.users = data;
     }).error(function(data2){
-        $score.user = "You have no access here";
+        $scope.user = "You have no access here";
     });
+
+    $scope.activateButton = function(user){
+        data = {"active": true};
+        $http.put('http://home.joubin.me/salon-scheduler-api/users/'+user.id, data, config).success(function(data){
+                console.log("winning");
+                user.active = true;
+                $location.path('admin');
+        }).error(function(data) {
+                alert("This did not work! Are you an admin?");
+        });
+    }
+
+    $scope.deactivateButton = function(user){
+        data = {"active": false};
+        $http.put('http://home.joubin.me/salon-scheduler-api/users/'+user.id, data, config).success(function(data){
+                console.log("winning");
+                user.active = false;
+                $location.path('admin');
+
+        }).error(function(data) {
+                alert("This did not work! Are you an admin?");
+        });
+    }
 });
 
 //  $$$$$$\  $$\
