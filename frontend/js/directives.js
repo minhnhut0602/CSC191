@@ -277,7 +277,7 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
         },
         controller: function($scope, $http) {
 
-        }
+            }
     };
 });
 
