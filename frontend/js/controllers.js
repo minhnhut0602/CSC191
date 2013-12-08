@@ -966,11 +966,10 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
 
 
     $scope.deleteSelected = function(selected){
-          $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
-                console.log("winning");
+          $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+selected, config).success(function(data){
                 $location.path('create-services');
             }).error(function(data) {
-                console.log("failing");
+                alert(data);
         });
     }
 
