@@ -42,7 +42,8 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 controller: 'adminController'
             }).
             when('/edit-availability', {
-                templateUrl: 'partials/edit-availability.html'
+                templateUrl: 'partials/edit-availability.html',
+                controller: 'TimepickerDemoCtrl'
             }).
             otherwise({
                 redirectTo: '/loading',
