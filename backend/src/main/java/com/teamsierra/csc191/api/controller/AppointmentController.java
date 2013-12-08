@@ -407,8 +407,8 @@ public class AppointmentController extends GenericController
      */
     @RequestMapping(value = "/{appointmentID}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource<Appointment>> editAppointment(@RequestBody Appointment requestData,
-                                                                  @PathVariable String appointmentID,
-                                                                  HttpServletRequest request) throws Exception
+                                                                 @PathVariable String appointmentID,
+                                                                 HttpServletRequest request) throws Exception
     {
         this.setRequestControllerState(request);
 
@@ -462,6 +462,12 @@ public class AppointmentController extends GenericController
                 break;
 
             case APPROVED:
+                if (this.authType == GenericModel.UserType.STYLIST &&
+                    requestData.getAppointmentStatus() != null &&
+                    requestData.getAppointmentStatus().compareTo(GenericModel.AppointmentStatus.APPROVED) == 0)
+                    throw new GenericException("Appointment has been already APPROVED",
+                                               HttpStatus.CONFLICT, L);
+
                 break;
 
             case COMPLETED:
@@ -469,6 +475,11 @@ public class AppointmentController extends GenericController
                     throw new GenericException("Stylist cannot update COMPLETED appointments",
                                                HttpStatus.CONFLICT, L);
                 break;
+
+            case CANCELED:
+                if (this.authType == GenericModel.UserType.STYLIST)
+                    throw new GenericException("Stylist cannot update CANCELED appointments",
+                                               HttpStatus.CONFLICT, L);
 
             default:
                 // Restrict client initiated updates for other appointment statuses
@@ -512,8 +523,8 @@ public class AppointmentController extends GenericController
 
             targetAppointment.setAppointmentStatus(requestData.getAppointmentStatus());
         }
-        
-        //TODO added for the comment, couldnt get a hold of alex
+
+        // Update other fields
         if(requestData.getComment() != null && 
         		(authType == GenericModel.UserType.ADMIN || authType == GenericModel.UserType.STYLIST))
         {

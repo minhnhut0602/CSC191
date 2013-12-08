@@ -160,5 +160,25 @@ public class AppointmentTypeRepository
         return "";
     }
 
+
+    /**
+     * Remove appointment type from repository
+     * @param appointmentTypeID
+     * @return
+     */
+    public String deleteType(String appointmentTypeID)
+    {
+        Query query = new Query();
+
+        if (appointmentTypeID != null && !appointmentTypeID.isEmpty())
+        {
+            query.addCriteria(where("_id").is(appointmentTypeID));
+
+            mongoTemplate.remove(query, AppointmentType.class);
+        }
+
+        return "";
+    }
+
 }
 

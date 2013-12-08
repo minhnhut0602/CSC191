@@ -1,24 +1,5 @@
 package com.teamsierra.csc191.api.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.teamsierra.csc191.api.exception.GenericException;
 import com.teamsierra.csc191.api.model.AppointmentType;
 import com.teamsierra.csc191.api.model.GenericModel;
@@ -27,6 +8,19 @@ import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.AppointmentTypeRepository;
 import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @Author: Alex Chernyak
@@ -135,6 +129,48 @@ public class AppointmentTypeController extends GenericController
 
 
     /**
+     * Delete existing appointment type
+     * @param typeID
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{typeID}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<Object> deleteType(@PathVariable String typeID,
+                                             HttpServletRequest request) throws Exception
+    {
+        this.setRequestControllerState(request);
+        AppointmentType findType = new AppointmentType();
+        List<AppointmentType> foundTypes;
+
+        switch (this.authType)
+        {
+            case ADMIN:
+                // admins and stylists are allowed to remove stylists from types
+                break;
+
+            case CLIENT:
+            case STYLIST:
+            default:
+                throw new GenericException("This API call is forbidden", HttpStatus.FORBIDDEN, L);
+        }
+
+        if (typeID == null || typeID.isEmpty())
+            throw new GenericException("TypeID is not supplied", HttpStatus.BAD_REQUEST, L);
+
+        findType.setId(typeID);
+        foundTypes = appointmentTypeRepository.findByCriteria(findType);
+        if (foundTypes == null || foundTypes.isEmpty())
+            throw new GenericException("Appointment type was not found", HttpStatus.NOT_FOUND, L);
+
+        // Delete type
+        appointmentTypeRepository.deleteType(typeID);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+
+    /**
      * Add appointment type
      * @param requestData
      * @param request
@@ -199,7 +235,8 @@ public class AppointmentTypeController extends GenericController
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.POST)
+    @ResponseBody
     public ResponseEntity<Resource<GenericModel>> addStylistToType(@PathVariable String typeID,
                                                                    @PathVariable String stylistID,
                                                                    HttpServletRequest request) throws Exception
@@ -212,11 +249,11 @@ public class AppointmentTypeController extends GenericController
         switch (this.authType)
         {
             case ADMIN:
-                // admins are allowed to add stylists
+            case STYLIST:
+                // admins and stylists are allowed to add stylists to types
                 break;
 
             case CLIENT:
-            case STYLIST:
             default:
                 throw new GenericException("Permission denied for this API call", HttpStatus.UNAUTHORIZED, L);
         }
@@ -253,7 +290,8 @@ public class AppointmentTypeController extends GenericController
 
 
     @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> removeStylistFromType(@PathVariable String typeID,
+    @ResponseBody
+    public ResponseEntity<Resource<GenericModel>> removeStylistFromType(@PathVariable String typeID,
                                                         @PathVariable String stylistID,
                                                         HttpServletRequest request) throws Exception
     {
@@ -265,11 +303,11 @@ public class AppointmentTypeController extends GenericController
         switch (this.authType)
         {
             case ADMIN:
-                // admins are allowed to add stylists
+            case STYLIST:
+                // admins and stylists are allowed to remove stylists from types
                 break;
 
             case CLIENT:
-            case STYLIST:
             default:
                 throw new GenericException("This API call is forbidden", HttpStatus.FORBIDDEN, L);
         }
@@ -281,7 +319,39 @@ public class AppointmentTypeController extends GenericController
             throw new GenericException("Must provide a typeId in url", HttpStatus.BAD_REQUEST, L);
 
         appointmentTypeRepository.deleteStylistFromType(typeID, stylistID);
+        GenericModel response = new AppointmentType();
+        response.setId(typeID);
+        Resource<GenericModel> resource = new Resource<>(response);
+        resource.add(linkTo(AppointmentTypeController.class).slash(response).withSelfRel());
 
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
+    }
+
+
+    /**
+     * This is a stupid hack requested by Mr. Jabbari because he was dam too lazy
+     * to actually call two different methods from the front end. He owes me a COFFEE!
+     * @param typeID
+     * @param stylistID
+     * @param add
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<Resource<GenericModel>> modifyTypeStylist(@PathVariable String typeID,
+                                                                    @PathVariable String stylistID,
+                                                                    @RequestParam Boolean add,
+                                                                    HttpServletRequest request) throws Exception
+    {
+       if (add)
+       {
+           return addStylistToType(typeID, stylistID, request);
+       }
+       else
+       {
+           return removeStylistFromType(typeID, stylistID, request);
+       }
     }
 }
