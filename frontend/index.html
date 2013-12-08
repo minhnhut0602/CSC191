@@ -84,8 +84,8 @@
                             <span>Login</span>
                         </a>
                     </li> -->
-                    <li data-ng-show="loggedIn">
-                        <a class="gn-icon" data-ng-show="loggedIn" data-ng-disabled="facebookReady" data-ng-click="logout()">
+                    <li ng-show="loggedIn" >
+                        <a class="gn-icon"  ng-click="logout()">
                         <i class="fa fa-sign-out"></i>
                             <span>Logout</span>
                         </a>
