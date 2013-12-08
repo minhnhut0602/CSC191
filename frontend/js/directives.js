@@ -116,8 +116,8 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
         restrict: 'A',
         template:   '<div ng-repeat="appointment in appointments">'+
                         '<ng-form ng-controller="acceptAppointmentsController">'+
-                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with <stylistname stylisturl="appointment.stylist"/> at {{appointment.startTime.toLocaleTimeString()}}' +
-                        '<br/><p><stylistname stylisturl=appointment.stylist/> said {{appointment.comment}} {{appointment.ID}}</p>'+
+                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >On {{appointment.startTime.getFullYear()}}-{{appointment.startTime.getMonth()}}-{{appointment.startTime.getDate()}} you have an appointment with <stylistname stylisturl="appointment.stylist"/> at {{appointment.startTime.toLocaleTimeString()}}' +
+                        '<br/><p><stylistname stylisturl=appointment.stylist/> said {{appointment.comment}} </p>'+
                         '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
                         '<button type="button" class="btn btn-danger" ng-click="cancelAppointment()">Cancel</button>'+
                         '</ng-form>'+

@@ -736,7 +736,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");
-                    $location.path('client-landing');
+                    $location.path('loading');
             }).error(function(data) {
                     alert("something is failing");
             });
