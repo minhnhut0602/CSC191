@@ -965,7 +965,14 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
     });
 
 
-
+    $scope.deleteSelected = function(selected){
+          $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
+                console.log("winning");
+                $location.path('create-services');
+            }).error(function(data) {
+                console.log("failing");
+        });
+    }
 
     $scope.addService = function(){
 
@@ -975,7 +982,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
           $http.post('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
                 console.log("winning");
                 $location.path('create-services');
-        }).error(function(data) {
+            }).error(function(data) {
                 console.log("failing");
         });
 

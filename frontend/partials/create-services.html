@@ -39,6 +39,7 @@
               <th>Service Name</th>
               <th>Service Duration</th>
               <th>Stylists</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -51,6 +52,9 @@
                 <span ng-repeat="stylist in ap.stylists">
                    <stylistname stylisturl="'http://home.joubin.me/salon-scheduler-api/users/'+stylist"/> 
                 </span>
+              </td>
+              <td>
+                <button class="btn btn-danger" ng-click="deleteSelected(ap.id)">Delete {{ap.id}}</button>
               </td>
             </tr>
           </tbody>
