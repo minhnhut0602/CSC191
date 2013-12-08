@@ -44,32 +44,6 @@ calendarModule.directive('calendar', function($http, $location) {
                 $scope.appointmentInfo.stylists = stylists;
                 console.log(stylists);
             });
-            $scope.appointmentInfo.times = [
-                {time: "8:00am"},
-                {time: "8:30am"},
-                {time: "9:00am"},
-                {time: "9:30am"},
-                {time: "10:00am"},
-                {time: "10:30am"},
-                {time: "11:00am"},
-                {time: "11:30am"},
-                {time: "12:00pm"},
-                {time: "12:30pm"},
-                {time: "1:00pm"},
-                {time: "1:30pm"},
-                {time: "2:00pm"},
-                {time: "2:30pm"},
-                {time: "3:00pm"},
-                {time: "3:30pm"},
-                {time: "4:00pm"},
-                {time: "4:30pm"},
-                {time: "5:00pm"},
-                {time: "5:30pm"},
-                {time: "6:00pm"},
-                {time: "6:30pm"},
-                {time: "7:00pm"},
-                {time: "7:30pm"}
-            ];
             console.log($scope.appointmentInfo);
 
             var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -161,7 +135,7 @@ calendarModule.directive('calendar', function($http, $location) {
                                         '<div class="modal-content">'+
                                             '<div class="modal-header">'+
                                                 '<button type="button" class="close" aria-hidden="true" ng-click="cancel()">&times;</button>'+
-                                                '<h4 class="modal-title">Make A New Appointment</h4>'+
+                                                '<h4 class="modal-title">Make A New Appointment for {{day.month}}/{{day.date}}/{{day.year}}</h4>'+
                                             '</div>'+
                                             '<div class="modal-body">'+
                                                 '<form class="new-appointment-form">' +
@@ -190,7 +164,7 @@ calendarModule.directive('calendar', function($http, $location) {
                                             '</div>'+
                                             '<div class="modal-footer">'+
                                                 '<button class="btn btn-primary" ng-click="ok()">OK</button>'+
-                                                '<button class="btn btn-warning" ng-click="cancel()">Cancel</button>'+
+                                                '<button class="btn btn-danger" ng-click="cancel()">Cancel</button>'+
                                             '</div>'+
                                         '</div><!-- /.modal-content -->'+
                                     '</div><!-- /.modal-dialog -->'+

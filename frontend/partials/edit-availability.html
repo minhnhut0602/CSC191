@@ -85,6 +85,54 @@
         </div>
     </div>
     <div class="col-md-1"></div>
+</div>
 
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <h3>Saturday</h3>
+        <div>
+            <div ng-model="availability[6].startTime" class="well well-small" style="display:inline-block;">
+                <h4>Start Time</h4>
+                <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+            </div>
+        </div>
+        <div>
+            <div ng-model="availability[6].endTime" ng-change="changed()" class="well well-small" style="display:inline-block;">
+                <h4>End Time</h4>
+                <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <h3>Sunday</h3>
+        <div>
+            <div ng-model="availability[0].startTime" class="well well-small" style="display:inline-block;">
+                <h4>Start Time</h4>
+                <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+            </div>
+        </div>
+        <div>
+            <div ng-model="availability[0].endTime" ng-change="changed()" class="well well-small" style="display:inline-block;">
+                <h4>End Time</h4>
+                <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+</div>
 
+<div class="form-horizontal">
+    <div class="form-group">
+        <label class="col-md-2 control-label">Repeat</label>
+        <div class="col-md-2">
+            <input type="number" class="form-control" ng-model="repeat">
+        </div>
+    </div>
 </div>

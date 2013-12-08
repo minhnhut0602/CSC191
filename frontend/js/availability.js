@@ -1,6 +1,6 @@
 var availabilityModule = angular.module('availabilityModule', []);
 
-availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl($scope) {
+availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl($scope, $http, $location) {
     $scope.mytime = new Date();
     while ($scope.mytime.getDay() != 0) {//sunday
         $scope.mytime.setDate($scope.mytime.getDate()-1);
@@ -9,6 +9,7 @@ availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl(
     $scope.mytime.setSeconds(0);
     $scope.mytime.setMilliseconds(0);
 
+    $scope.repeat = 0;
     $scope.availability = [];
 
     //sunday
@@ -57,7 +58,30 @@ availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl(
 
     $scope.ismeridian = true;
 
-    $scope.submit = function() {
-        //TODO do availability thing
+
+    $scope.submit = function(repeatAmt) {
+        var availability = {};
+        availability.availability = [];
+        for (var i=0 ; i<$scope.repeat ; i++) {
+            for (day in $scope.availability) {
+                availability.availability.push({
+                    startDate: $scope.availability[day].startTime.getTime()+(86400000*i),
+                    endDate: $scope.availability[day].endTime.getTime()+(86400000*i)
+                });
+            }
+        }
+        var config = {
+            headers: {
+                'authToken': readCookie("myAccessToken"),
+                'Content-Type': 'application/json'
+            }
+        };
+        console.log(availability);
+        $http.put('http://home.joubin.me/salon-scheduler-api/availability/me/', availability, config).success(function(data) {
+            console.log("availability saved");
+            $location.path('staff-landing');
+        }).error(function(data) {
+            alert("OH NO SOMETHING BROKE\n"+ data);
+        });
     };
 });
