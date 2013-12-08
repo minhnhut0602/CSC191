@@ -937,7 +937,7 @@ scheduleControllers.controller('userProfileController', function userProfileCont
             $scope.selectedHairColor = data.hairColor;
             $scope.selectedHairLength = data.hairLength;
             $scope.selectedAvatar = data.avatarURL;
-    }).error(function(data) {
+        }).error(function(data) {
             $scope.selectedFirstName = "You have no access";
             $scope.selectedLastName = "You have no access";
             $scope.selectedPhone = "You have no access";
