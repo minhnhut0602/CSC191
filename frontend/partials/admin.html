@@ -13,6 +13,7 @@
               <th>Image</th>
               <th>First Name</th>
               <th>Last Name</th>
+              <th>Email</th>
               <th>Type</th>
               <th>Active</th>
             </tr>
@@ -24,7 +25,8 @@
               <td><img src="{{user.avatarURL}}" height="50" class="avatar"></td>
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
-              <td>{{user.type}} {{user.id}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.type}}</td>
               <td >
                   <button type="button" class="btn btn-warning" ng-show="user.active" ng-click="deactivateButton(user)"> Deactivate </button>
                   <button type="button" class="btn btn-success" ng-hide="user.active" ng-click="activateButton(user)">Activate</button>

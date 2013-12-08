@@ -442,16 +442,21 @@ scheduleDirectives.directive('stylistname', function($http) {
 scheduleDirectives.directive('appointmentgetterStaff', function($http) {
     return {
         restrict: 'A',
-        template: '<div ng-repeat="appointment in appointments">'+
-            '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
-                '<ng-form ng-controller="acceptAppointmentsController">'+
-                '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
-                '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
-                '<button ng-disabled="appointment.active" type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button>'+
-                '<button ng-disabled="appointment.active" type="button" class="btn btn-success" ng-click="acceptAppointment()">Accept</button>'+
-                '</ng-form>'+
-            '</div>'+
-        '</div>',
+        template:  '<button class="btn btn-default" ng-click="query.appStatus = \'\'">All</button> '+
+                   '<button class="btn btn-success"  ng-click="query.appStatus = \'APPROVED\'">Accepted</button> '+ 
+                   '<button class="btn btn-warning"  ng-click="query.appStatus = \'NEW\'"">Pending</button> '+ 
+                   '<button class="btn btn-danger" ng-click="query.appStatus = \'CANCELED\'">Canceled</button> '+
+                   '<button class="btn btn-danger"  ng-click="query.appStatus = \'REJECTED\'">Rejected</button><br/><br/>'+  
+                    '<div ng-repeat="appointment in appointments | filter:query:strict" >'+
+                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
+                            '<ng-form ng-controller="acceptAppointmentsController">'+
+                            '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
+                            '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
+                            '<button  type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button>  '+
+                            '<button  type="button" class="btn btn-success" ng-click="acceptAppointment()">Accept</button>'+
+                            '</ng-form>'+
+                        '</div>'+
+                    '</div>',
         link: function(scope, elm, attr) {
             var config = { headers:  {
                     'authToken': readCookie("myAccessToken"),
@@ -472,7 +477,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                     tempAppointment.active = true;
                     tempAppointment.comment = data[something].comment;
                     tempAppointment.ID = data[something].id;
-
+                    tempAppointment.appStatus = data[something].appointmentStatus;
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
 
