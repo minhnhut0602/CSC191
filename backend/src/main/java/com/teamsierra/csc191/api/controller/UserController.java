@@ -1124,7 +1124,10 @@ public class UserController extends GenericController
      */
     private boolean isValidEmail(String email)
     {
-        return email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+    	User user = userRepository.findByEmail(email);
+    	
+        return email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+        		&& (user == null || user.getToken().equals(authToken));
     }
 
     /**
