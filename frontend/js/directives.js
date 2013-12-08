@@ -118,9 +118,9 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
                         '<ng-form ng-controller="acceptAppointmentsController">'+
                         '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startDate.getFullYear(),appointment.startDate.getMonth(),appointment.startTime.getDate())">You have an appointment with <stylistname stylisturl="appointment.stylist"/> </br>'+
                         'on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime}}</br>'+
-                        '<div ng-hide="appointment.comment == \'Pending\'"><stylistname stylisturl=appointment.stylist/> said: {{appointment.comment}}</div>'+
+                        '<div ng-hide="appointment.comment == \'\'"><stylistname stylisturl=appointment.stylist/> said: {{appointment.comment}}</div>'+
                         '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
-                        '<button type="button" class="btn btn-danger" ng-click="cancelAppointment()">Cancel</button>'+
+                        '<div ng-hide="appointment.hideCancel == \'true\'"><button type="button" class="btn btn-danger" ng-click="cancelAppointment()">Cancel</button></div>'+
                         '</ng-form>'+
                         '</div>'+
                     '</div>',
@@ -243,24 +243,28 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
                     if (tempAppointment.comment != null) {
                         tempAppointment.comment = "\""+data[something].comment+"\"";
                     }else{
-                        tempAppointment.comment = "Pending";
+                        tempAppointment.comment = "";
                     }
 
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
                         tempAppointment.appStatus = "Approved";
+                        tempAppointment.hideCancel = "false";
                     } else
                     if (data[something].appointmentStatus === "REJECTED") {
                         tempAppointment.myColor = "danger";
                         tempAppointment.appStatus = "Declined";
+                        tempAppointment.hideCancel = "true";
                     } else
                     if (data[something].appointmentStatus === "NEW") {
                         tempAppointment.myColor = "warning";
                         tempAppointment.appStatus = "Pending";
+                        tempAppointment.hideCancel = "false";
                     } else
                     if (data[something].appointmentStatus === "COMPLETED") {
                         tempAppointment.myColor = "info";
                         tempAppointment.appStatus = "Completed";
+                        tempAppointment.hideCancel = "true";
                     }
 
                     for (var link in data[something].links) {
@@ -458,7 +462,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                             '<ng-form ng-controller="acceptAppointmentsController">'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
-                            '<button  type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button>  '+
+                            '<button ng-disabled="appointment.denyButtonDisabled" type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button>'+
                             '<button  type="button" class="btn btn-success" ng-click="acceptAppointment()">Accept</button>'+
                             '</ng-form>'+
                         '</div>'+
@@ -582,16 +586,24 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
 
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
+                        tempAppointment.denyButtonDisabled = "";
+                        tempAppointment.acceptButtonDisabled = "true";
                     }
                     if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
                         tempAppointment.myColor = "danger";
+                        tempAppointment.denyButtonDisabled = "true";
+                        tempAppointment.acceptButtonDisabled = "";
                     }
                     if (data[something].appointmentStatus === "NEW") {
                         tempAppointment.myColor = "warning";
                         tempAppointment.active = false;
+                        tempAppointment.denyButtonDisabled = "";
+                        tempAppointment.acceptButtonDisabled = "true";
                     }
                     if (data[something].appointmentStatus === "COMPLETED") {
                         tempAppointment.myColor = "info";
+                        tempAppointment.denyButtonDisabled = "true";
+                        tempAppointment.acceptButtonDisabled = "";
                     }
                     for (var link in data[something].links) {
                         if (data[something].links[link].rel === "client") {
