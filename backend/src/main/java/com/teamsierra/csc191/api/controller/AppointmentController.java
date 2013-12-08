@@ -137,6 +137,7 @@ public class AppointmentController extends GenericController
             break;
 
             case ADMIN:
+            	findAppointment.setStylistID(this.id);
             break;
 
             default:
