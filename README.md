@@ -32,7 +32,7 @@ In order for facebook to authenticate clients on the frontend, it requires that 
 
 However, the frontend code and the backend code technically live on two different servers show in the diagram below.
 
-![image](http://imgur.com/bSpVXSn)
+![image](http://i.imgur.com/bSpVXSn.png)
 
     > The design descion for this can be found in the SDS and the SRS in the documentation folder.
 
