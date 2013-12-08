@@ -910,3 +910,30 @@ var config = {headers:  {
     }
 
 });
+
+
+scheduleControllers.controller('userProfileController', function userProfileController($location, $scope, $http) {
+     var target = $location.search()['clientID'];
+    var config = {headers:  {
+            'authToken': readCookie("myAccessToken"),
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+        }
+    };
+
+   $http.get('http://home.joubin.me/salon-scheduler-api/users/'+target, config).success(function(data){
+            console.log(data);
+            $scope.selectedFirstName = data.firstName;
+            $scope.selectedLastName = data.lastName;
+            $scope.selectedPhone = data.phone;
+            $scope.selectedEmail = data.email;
+            $scope.selectedHairColor = data.hairColor;
+            $scope.selectedHairLength = data.hairLength;
+            $scope.selectedAvatar = data.avatarURL;
+    }).error(function(data) {
+            $scope.selectedFirstName = "You have no access";
+            $scope.selectedLastName = "You have no access";
+            $scope.selectedPhone = "You have no access";
+            $scope.selectedEmail = "You have no access";
+    });
+});

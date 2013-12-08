@@ -1,0 +1,41 @@
+
+<div class="top">
+    <h2 class="left">View Profile</h2>
+    <div class=" right vertical-center-parent">
+        <div class="vertical-center-child">
+        </div>
+    </div>
+
+</div>
+
+<div class="wrapper" ng-init="getUserInfo()">
+    <div class="jumbotron" style="height:100%"><br>
+
+        <div style=" float:left;">
+                <span class="label label-primary">Name</span>
+               {{selectedFirstName}} {{selectedLastName}}
+               <br>
+
+                <span class="label label-primary">Phone</span>
+                {{selectedPhone}}
+                <br>
+
+                <span class="label label-primary">Email</span>
+                {{selectedEmail}}
+                <br>
+
+                <span class="label label-primary">Hair Color</span>
+                {{selectedHairColor}}
+                <br>
+                <span class="label label-primary">Hair Length</span>
+                {{selectedHairLength}}
+                <br>
+        </div>
+        <div style="float:right;">
+                <img src="{{selectedAvatar}}?type=large" style="float:left;">
+        </div>
+    </div>
+
+     
+    
+</div>

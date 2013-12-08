@@ -45,6 +45,10 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/edit-availability.html',
                 controller: 'TimepickerDemoCtrl'
             }).
+            when('/user-profile', {
+                templateUrl: 'partials/user-profile.html',
+                controller: 'userProfileController'
+            }).            
             otherwise({
                 redirectTo: '/loading',
             });
