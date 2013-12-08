@@ -466,7 +466,7 @@ scheduleControllers.controller('adminController', function adminController($loca
         'Cache-Control': 'no-cache',
     }
 };
-$http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
         $scope.users = data;
     }).error(function(data2){
         $scope.user = "You have no access here";
@@ -750,8 +750,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
       "hairColor": userHairColor,
       "hairLength": userHairLength,
       "active": true,
-      "email": userEmail,
-      'avatarURL': 'https://graph.facebook.com/'+facebookUser+'/picture'};
+      "email": userEmail};
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");
