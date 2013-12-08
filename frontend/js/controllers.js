@@ -808,24 +808,25 @@ scheduleControllers.controller('loginController', function loginController($loca
       console.log(user);
       console.log(pass);
       if (user == null || pass == null) {
-        console.log("fuck no");
+        console.log("Please provide a url");
         return;
       }
 
       $http.get('http://home.joubin.me/salon-scheduler-api/authorize?username='+user+'&password='+pass,data).success(function(data){
                     document.cookie="myAccessToken="+data.authToken;
                     document.cookie="userType=staff";
-                    $location.path("staff-landing");
+                    // $location.path("staff-landing");
                     console.log("winning");
                     console.log($scope);
                     $rootScope.loggedIn = true;
                     document.cookie = "loggedIn=true"
 
                     $location.path('staff-landing');
+
             }).error(function(data) {
                     document.cookie="myAccessToken="+"NULL";
                     document.cookie="userType=null";
-
+                    alert(data);
                     console.log("failling");
             });
     }
@@ -847,14 +848,18 @@ scheduleControllers.controller('loginController', function loginController($loca
 
 scheduleControllers.controller('loadingController', function loadingController($location, $scope) {
     console.log("loading page controller, let see where it goes");
-    if (readCookie('userType') === "staff") {
+    if (readCookie('userType') !== "CLIENT" && readCookie('userType') != null) {
         $location.path('staff-landing');
+
     }else{
         $location.path('client-landing');
     }
 });
 
 
+scheduleControllers.controller('staffLanding', function staffLanding($location, $scope) {
+
+});
 
 
 //                                            /$$
@@ -960,7 +965,14 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
     });
 
 
-
+    $scope.deleteSelected = function(selected){
+          $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
+                console.log("winning");
+                $location.path('create-services');
+            }).error(function(data) {
+                console.log("failing");
+        });
+    }
 
     $scope.addService = function(){
 
@@ -970,7 +982,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
           $http.post('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
                 console.log("winning");
                 $location.path('create-services');
-        }).error(function(data) {
+            }).error(function(data) {
                 console.log("failing");
         });
 

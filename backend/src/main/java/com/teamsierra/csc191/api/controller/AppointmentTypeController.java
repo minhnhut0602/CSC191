@@ -218,7 +218,7 @@ public class AppointmentTypeController extends GenericController
         {
 	        for(User u : users)
 	        {
-	        	appointmentTypeRepository.addStylistToType(requestData.getId(), u.getId());
+	        	//appointmentTypeRepository.addStylistToType(requestData.getId(), u.getId());
 	        }
         }
         //end TODO
