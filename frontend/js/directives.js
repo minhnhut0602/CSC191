@@ -448,7 +448,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                    '<button class="btn btn-danger" ng-click="query.appStatus = \'CANCELED\'">Canceled</button> '+
                    '<button class="btn btn-danger"  ng-click="query.appStatus = \'REJECTED\'">Rejected</button><br/><br/>'+  
                     '<div ng-repeat="appointment in appointments | filter:query:strict" >'+
-                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >Appointment with <client clienturl="appointment.client"/> at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
+                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with <client clienturl="appointment.client"/> on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
                             '<ng-form ng-controller="acceptAppointmentsController">'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
@@ -465,6 +465,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                     // 'debug': 'asd'
                 }
             };
+
             $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
                 scope.appointments = [];
 
@@ -478,9 +479,99 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                     tempAppointment.comment = data[something].comment;
                     tempAppointment.ID = data[something].id;
                     tempAppointment.appStatus = data[something].appointmentStatus;
+
+                    var monthNum = tempAppointment.startTime.getMonth();
+                    var dayNum = tempAppointment.startTime.getDay();
+                    var dateNum = tempAppointment.startTime.getDate();
+                    var yearNum = tempAppointment.startTime.getFullYear();
+
+                    tempAppointment.yearNum = yearNum;
+
+                    var monthName = "";
+                    switch(monthNum)
+                    {
+                        case 0:
+                            monthName = "January"
+                        break;
+                        case 1:
+                            monthName = "February"
+                        break;
+                        case 2:
+                            monthName = "March"
+                        break;
+                        case 3:
+                            monthName = "April"
+                        break;
+                        case 4:
+                            monthName = "May"
+                        break;
+                        case 5:
+                            monthName = "June"
+                        break;
+                        case 6:
+                            monthName = "July"
+                        break;
+                        case 7:
+                            monthName = "August"
+                        break;
+                        case 8:
+                            monthName = "September"
+                        break;
+                        case 9:
+                            monthName = "October"
+                        break;
+                        case 10:
+                            monthName = "November"
+                        break;
+                        case 11:
+                            monthName = "December"
+                        break;
+                    }
+                    tempAppointment.monthName = monthName;
+
+                    var dayName = "";
+                    switch(dayNum)
+                    {
+                        case 0:
+                            dayName = "Sunday";
+                        break;
+                        case 1:
+                            dayName = "Monday";
+                        break;
+                        case 2:
+                            dayName = "Tuesday";
+                        break;
+                        case 3:
+                            dayName = "Wednesday";
+                        break;
+                        case 4:
+                            dayName = "Thursday";
+                        break;
+                        case 5:
+                            dayName = "Friday";
+                        break;
+                        case 6:
+                            dayName = "Saturday";
+                        break;
+                    }
+                    tempAppointment.dayName = dayName;
+
+                    var dateNumSuffix = "";
+                    if(dateNum == 1 || dateNum == 21 || dateNum == 31)
+                    {
+                        dateNumSuffix = "st";
+                    } else if(dateNum == 2 || dateNum == 22)
+                    {
+                        dateNumSuffix = "nd";
+                    } else if(dateNum == 3 || dateNum == 23)
+                    {
+                        dateNumSuffix = "rd";
+                    } else dateNumSuffix = "th";
+                    tempAppointment.dateNum = dateNum;
+                    tempAppointment.dateNumSuffix = dateNumSuffix;
+
                     if (data[something].appointmentStatus === "APPROVED") {
                         tempAppointment.myColor = "success";
-
                     }
                     if (data[something].appointmentStatus === "REJECTED" || data[something].appointmentStatus === "CANCELED") {
                         tempAppointment.myColor = "danger";
@@ -534,3 +625,29 @@ scheduleDirectives.directive('client', function($http) {
         }
     };
 });
+
+
+scheduleDirectives.directive('passwordMatch', [function () {
+    return {
+        restrict: 'A',
+        scope:true,
+        require: 'ngModel',
+        link: function (scope, elem , attrs,control) {
+            var checker = function () {
+ 
+                //get the value of the first password
+                var e1 = scope.$eval(attrs.ngModel); 
+ 
+                //get the value of the other password  
+                var e2 = scope.$eval(attrs.passwordMatch);
+                return e1 == e2;
+            };
+            scope.$watch(checker, function (n) {
+ 
+                //set the form control to valid if both 
+                //passwords are the same, else invalid
+                control.$setValidity("unique", n);
+            });
+        }
+    };
+}]);

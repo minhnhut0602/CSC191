@@ -466,7 +466,7 @@ scheduleControllers.controller('adminController', function adminController($loca
         'Cache-Control': 'no-cache',
     }
 };
-$http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
         $scope.users = data;
     }).error(function(data2){
         $scope.user = "You have no access here";
@@ -478,6 +478,8 @@ $http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).su
                 console.log("winning");
                 user.active = true;
                 $location.path('admin');
+                location.reload();
+
         }).error(function(data) {
                 alert("This did not work! Are you an admin?");
         });
@@ -489,6 +491,8 @@ $http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).su
                 console.log("winning");
                 user.active = false;
                 $location.path('admin');
+                location.reload();
+
 
         }).error(function(data) {
                 alert("This did not work! Are you an admin?");
@@ -746,14 +750,15 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
       "hairColor": userHairColor,
       "hairLength": userHairLength,
       "active": true,
-      "email": userEmail,
-      'avatarURL': 'https://graph.facebook.com/'+facebookUser+'/picture'};
+      "email": userEmail};
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");
                     $location.path('loading');
+                    location.reload();
+
             }).error(function(data) {
-                    alert("something is failing");
+                    alert(data);
             });
     }
 
@@ -762,6 +767,8 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
             $scope.userInfo = data;
             $scope.userInfo.name = $scope.userInfo.firstName +' '+ $scope.userInfo.lastName;
             console.log($scope.userInfo);
+        }).error(function(data){
+            alert(data);
         });
     }
 });
