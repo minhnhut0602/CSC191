@@ -738,7 +738,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
                     console.log("winning");
                     $location.path('client-landing');
             }).error(function(data) {
-                    console.log("failing");
+                    alert("something is failing");
             });
     }
 });
