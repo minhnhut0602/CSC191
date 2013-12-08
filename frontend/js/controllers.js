@@ -224,6 +224,15 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             document.cookie = "loggedIn=false"
             deleteAllCookies();
             $location.path("login");
+            Facebook.logout(function() {
+            $scope.$apply(function() {
+                $scope.user   = {};
+                $scope.loggedIn = false;
+                document.cookie = "loggedIn=false"
+
+
+            });
+        });
 
     // deleteAllCookies();
     // $location.path('login');
@@ -457,7 +466,7 @@ scheduleControllers.controller('adminController', function adminController($loca
         'Cache-Control': 'no-cache',
     }
 };
-$http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).success(function(data) {
         $scope.users = data;
     }).error(function(data2){
         $scope.user = "You have no access here";

@@ -49,22 +49,22 @@
         <nav class="gn-menu-wrapper">
             <div class="gn-scroller">
                 <ul class="gn-menu" ng-controller="userAuthController">
-                    <li class="gn-search-item" ng-show="currentUserAuth.type != 'admin'">
+                    <!-- <li class="gn-search-item" ng-show="currentUserAuth.type != 'admin'">
                         <a class="gn-icon"><i class="fa fa-search"></i></a>
                         <input placeholder="Search" type="search" class="gn-search">
-                    </li>
-                    <li ng-show="currentUserAuth.type != 'admin'">
+                    </li> -->
+                    <li>
                         <a class="gn-icon" href="#/calendar/">
                             <i class="fa fa-calendar"></i>
                             <span>Make an Appointment</span>
                         </a>
                     </li>
-                    <li ng-show="currentUserAuth.type != 'admin'">
+ <!--                    <li ng-show="currentUserAuth.type != 'admin'">
                         <a class="gn-icon">
                             <i class="fa fa-clock-o"></i>
                             <span>View History</span>
                         </a>
-                    </li>
+                    </li> -->
                     <li ng-show="currentUserAuth.type != 'admin'">
                         <a class="gn-icon" href="#/edit-profile">
                             <i class="fa fa-pencil-square-o"></i>
@@ -73,18 +73,39 @@
                     </li>
                     <li ng-show="currentUserAuth.type != 'CLIENT'">
                         <script type="text/javascript">console.log(currentUserAuth.type)</script>
+                         <a class="gn-icon" href="#/view-clients" >
+                            <i class="fa fa-user"></i>
+                            <span>View Clients</span>
+                        </a>
+                    </li>
+                    <li ng-show="currentUserAuth.type != 'CLIENT'">
+                        <script type="text/javascript">console.log(currentUserAuth.type)</script>
                          <a class="gn-icon" href="#/admin" >
                             <i class="fa fa-tasks"></i>
                             <span>Admin</span>
                         </a>
-                    </li>
+                    </li>       
+                    <li ng-show="currentUserAuth.type == 'CLIENT'">
+                        <script type="text/javascript">console.log(currentUserAuth.type)</script>
+                         <a class="gn-icon" href="#/view-stylists" >
+                            <i class="fa fa-tasks"></i>
+                            <span>View Stylists</span>
+                        </a>
+                    </li>  
+                    <li ng-show="currentUserAuth.type != 'CLIENT'">
+                        <script type="text/javascript">console.log(currentUserAuth.type)</script>
+                         <a class="gn-icon" href="#/edit-availability" >
+                            <i class="fa fa-clock-o"></i>
+                            <span>Edit Availability</span>
+                        </a>
+                    </li>                                                                                                             
                    <!--  <li data-ng-show="!loggedIn">
                         <a class="gn-icon" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login()">
                         <i class="fa fa-sign-in"></i>
                             <span>Login</span>
                         </a>
                     </li> -->
-                    <li ng-show="loggedIn" >
+                    <li>
                         <a class="gn-icon"  ng-click="logout()">
                         <i class="fa fa-sign-out"></i>
                             <span>Logout</span>
