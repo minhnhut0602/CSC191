@@ -289,7 +289,7 @@ scheduleDirectives.directive('stylistname', function($http) {
             stylisturl: '='
         },
         replace: true,
-        template: '<span>{{stylist.firstName}}</span>',
+        template: '<span>{{stylist.firstName}} {{stylist.lastName}}</span>',
         link: function(scope, elm, attr) {
             var config = {headers:  {
                     'authToken': readCookie("myAccessToken"),

@@ -48,6 +48,10 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
                 templateUrl: 'partials/user-profile.html',
                 controller: 'userProfileController'
             }).
+            when('/create-services', {
+                templateUrl: 'partials/create-services.html',
+                controller: 'createService'
+            }).
             otherwise({
                 redirectTo: '/loading',
             });

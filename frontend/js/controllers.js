@@ -944,3 +944,37 @@ scheduleControllers.controller('userProfileController', function userProfileCont
             $scope.selectedEmail = "You have no access";
     });
 });
+
+
+scheduleControllers.controller('createService', function createService($location, $scope, $http) {
+var config = {headers:  {
+        'authToken': readCookie("myAccessToken"),
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+    }
+};
+$http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).success(function(data) {
+        $scope.localAppoitnmentTypes = data;
+    }).error(function(data){
+        alert(data);
+    });
+
+
+
+
+    $scope.addService = function(){
+
+        toSend = {"appointmentType": $scope.service.name, 
+        "durationInMinutes": $scope.service.duration};
+
+          $http.post('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
+                console.log("winning");
+                $location.path('create-services');
+        }).error(function(data) {
+                console.log("failing");
+        });
+
+    }
+
+});
+
