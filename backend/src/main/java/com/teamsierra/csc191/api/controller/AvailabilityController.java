@@ -3,6 +3,7 @@ package com.teamsierra.csc191.api.controller;
 import com.teamsierra.csc191.api.exception.GenericAvailabilityException;
 import com.teamsierra.csc191.api.model.Appointment;
 import com.teamsierra.csc191.api.model.GenericModel.AppointmentStatus;
+import com.teamsierra.csc191.api.model.GenericModel.UserType;
 import com.teamsierra.csc191.api.model.StylistAvailability;
 import com.teamsierra.csc191.api.model.User;
 import com.teamsierra.csc191.api.repository.AppointmentRepository;
@@ -11,6 +12,7 @@ import com.teamsierra.csc191.api.repository.UserRepository;
 import com.teamsierra.csc191.api.resources.ResourceHandler;
 import com.teamsierra.csc191.api.util.Availability;
 import com.teamsierra.csc191.api.util.DateRange;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 
 @Controller
@@ -464,6 +467,45 @@ public class AvailabilityController extends GenericController
 		}
 		
 		StylistAvailability sa = sar.findByStylistID(stylistID);
+		if(sa == null)
+		{
+			throw new GenericAvailabilityException("Unable to find stylist availability in the repository.",
+					HttpStatus.NOT_FOUND);
+		}
+		
+		sa.setAvailability(stylistAvailability.getAvailability());
+		sar.save(sa);
+		
+		return new ResponseEntity<Resource<StylistAvailability>>(ResourceHandler.createResource(sa), HttpStatus.ACCEPTED);
+	}
+	
+	@RequestMapping(value = "/me/", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Resource<StylistAvailability>> updateMyAvailability(@RequestBody StylistAvailability stylistAvailability,
+																			  HttpServletRequest request) throws Exception
+	{
+		try
+    	{
+    		this.setRequestControllerState(request);
+    	}
+    	catch(Exception e)
+    	{
+    		throw new GenericAvailabilityException(e.getMessage(),
+    				HttpStatus.BAD_REQUEST);
+    	}
+		
+		if(stylistAvailability.getAvailability() == null)
+		{
+			throw new GenericAvailabilityException("Invalid request. The availability cannot be null.",
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		if(authType == UserType.CLIENT)
+		{
+			throw new GenericAvailabilityException("Clients cannot modify stylist availability.",
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		StylistAvailability sa = sar.findByStylistID(id);
 		if(sa == null)
 		{
 			throw new GenericAvailabilityException("Unable to find stylist availability in the repository.",
