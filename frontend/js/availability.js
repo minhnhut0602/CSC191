@@ -9,7 +9,7 @@ availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl(
     $scope.mytime.setSeconds(0);
     $scope.mytime.setMilliseconds(0);
 
-    $scope.repeat = 0;
+    $scope.repeat = 1;
     $scope.availability = [];
 
     //sunday
@@ -62,6 +62,9 @@ availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl(
     $scope.submit = function(repeatAmt) {
         var availability = {};
         availability.availability = [];
+        if ($scope.repeat < 1) {
+            $scope.repeat = 1;
+        }
         for (var i=0 ; i<$scope.repeat ; i++) {
             for (day in $scope.availability) {
                 availability.availability.push({

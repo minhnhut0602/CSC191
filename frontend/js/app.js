@@ -7,7 +7,6 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
         $routeProvider.
             when('/calendar', {
                 templateUrl: 'partials/calendar.html',
-                controller: 'CalendarGenerator'
             }).
             when('/client-landing', {
                 templateUrl: 'partials/client-landing.html'
@@ -48,7 +47,7 @@ scheduleApp.config(['$routeProvider', '$httpProvider','FacebookProvider',
             when('/user-profile', {
                 templateUrl: 'partials/user-profile.html',
                 controller: 'userProfileController'
-            }).            
+            }).
             otherwise({
                 redirectTo: '/loading',
             });

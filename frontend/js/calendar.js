@@ -4,11 +4,41 @@ var calendarModule = angular.module('calendarModule', []);
 calendarModule.directive('calendar', function($http, $location) {
     return {
         restrict: 'E',
-        template:   '<div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">'+
-                        '<div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" ng-click="open(appointmentInfo, day.times)">'+
-                            '<strong>{{day.number}}</strong>'+
+        template:
+                    '<div class="row">'+
+                        '<ul class="pagination" >'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+0)%12],(monthNow.num+0)%12, dayNow)">{{monthNames[((monthNow.num+0)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+1)%12],(monthNow.num+1)%12,1)">{{monthNames[((monthNow.num+1)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+2)%12],(monthNow.num+2)%12,1)">{{monthNames[((monthNow.num+2)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+3)%12],(monthNow.num+3)%12,1)">{{monthNames[((monthNow.num+3)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+4)%12],(monthNow.num+4)%12,1)">{{monthNames[((monthNow.num+4)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+5)%12],(monthNow.num+5)%12,1)">{{monthNames[((monthNow.num+5)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+6)%12],(monthNow.num+6)%12,1)">{{monthNames[((monthNow.num+6)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+7)%12],(monthNow.num+7)%12,1)">{{monthNames[((monthNow.num+7)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+8)%12],(monthNow.num+8)%12,1)">{{monthNames[((monthNow.num+8)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+9)%12],(monthNow.num+9)%12,1)">{{monthNames[((monthNow.num+9)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+10)%12],(monthNow.num+10)%12,1)">{{monthNames[((monthNow.num+10)%12)]}} </a></li>'+
+                            '<li><a ng-click="calendar({true: yearNow+1, false: yearNow}[monthNow.num > (monthNow.num+11)%12],(monthNow.num+11)%12,1)">{{monthNames[((monthNow.num+11)%12)]}} </a></li>'+
+                        '</ul>'+
+                    '</div>'+
+                    '<div class="clearfix"></div>'+
+                    '<div class="month">'+
+                        '<div class="month-name"><h1>{{month.name}} {{month.year}}</h1></div>'+
+                        '<div class="week-name">'+
+                            '<div class="day-name sunday">Sunday</div>'+
+                            '<div class="day-name monday">Monday</div>'+
+                            '<div class="day-name tuesday">Tuesday</div>'+
+                            '<div class="day-name wednesday">Wednesday</div>'+
+                            '<div class="day-name thursday">Thursday</div>'+
+                            '<div class="day-name friday">Friday</div>'+
+                            '<div class="day-name saturday">Saturday</div>'+
+                        '</div day>'+
+                        '<div class="week" ng-repeat="week in month.weeks" ng-init="dayInfo = true">'+
+                            '<div ng-repeat="day in week" class="day {{day.name}} {{day.class}}" ng-click="open(appointmentInfo, day.times)">'+
+                                '<strong>{{day.number}}</strong>'+
+                            '</div>'+
+                            '<div class="day-info" ng-hide="dayInfo"></div>'+
                         '</div>'+
-                        '<div class="day-info" ng-hide="dayInfo"></div>'+
                     '</div>',
         scope: {
             day: '='
@@ -53,19 +83,19 @@ calendarModule.directive('calendar', function($http, $location) {
                     month === undefined &&
                     day === undefined) {
                     var d = new Date();
-                year = d.getFullYear();
-                monthIndex = d.getMonth();
-                day = d.getDate();
-            }
+                    year = d.getFullYear();
+                    monthIndex = d.getMonth();
+                    day = d.getDate();
+                }
 
-            var date = new Date(year, monthIndex, 1);
-            var current = new Date(year, monthIndex, day);
-            var month = {};
-            var weeks = [];
+                var date = new Date(year, monthIndex, 1);
+                var current = new Date(year, monthIndex, day);
+                var month = {};
+                var weeks = [];
 
-            month.name = monthNames[monthIndex];
-            month.year = date.getFullYear();
-            month.number = date.getMonth();
+                month.name = monthNames[monthIndex];
+                month.year = date.getFullYear();
+                month.number = date.getMonth();
 
                 // loop for weeks
                 for (var j=0 ; date.getMonth() === monthIndex ; j++) {
@@ -80,11 +110,11 @@ calendarModule.directive('calendar', function($http, $location) {
                         // loop until you see the day go to 0 then jump out OR the month changes
                         var dayTimes = []
                         var tempDate = new Date(date.getTime());
-                        tempDate.setHours(7);
-                        tempDate.setMinutes(30);
+                        tempDate.setHours(-1);
+                        tempDate.setMinutes(45);
                         tempDate.setSeconds(0);
-                        for (var l=0 ; l<24 ; l++) {
-                            tempDate.setTime(tempDate.getTime()+(1800000));
+                        for (var l=0 ; l<96 ; l++) {
+                            tempDate.setTime(tempDate.getTime()+(900000));
                             dayTimes.push({
                                 epoch: tempDate.getTime(),
                                 time: tempDate.toLocaleTimeString()
@@ -285,14 +315,55 @@ calendarModule.controller('CalendarGenerator', function CalendarGenerator($scope
     $scope.yearNow = d.getFullYear();
     $scope.monthNames = monthNames;
 });
-function CalendarModalInstance($scope, $modalInstance, day, times) {
+function CalendarModalInstance($scope, $http, $modalInstance, day, times) {
     $scope.day = day;
-    $scope.day.times = times;
+    $scope.day.times = [];
     $scope.newAppointment = {
-        stylist: day.stylists[0],
+        stylist: {},
         type: day.types[0],
         time: times[0]
     };
+
+    //TODO get availability for this day
+    var selectedDay = new Date(times[0].epoch);
+    var config = {
+        headers: {
+            authToken: readCookie('myAccessToken')
+        }
+    };
+    $http.get('/salon-scheduler-api/availability?year='+selectedDay.getFullYear()+'&month='+selectedDay.getMonth()+'&day='+selectedDay.getDate(), config).success(function(data) {
+        $scope.availability = data;
+        console.log($scope.availability);
+    }).error(function(data) {
+        alert("Unable to get availability data. Please close the window and select the day again.");
+    })
+    //TODO set times to new variable
+    //TODO add watch on availability variable and change times when it is chnaged
+    $scope.$watch('newAppointment.stylist', function(newValue, oldValue, scope) {
+        console.log(newValue);
+        console.log($scope.availability);
+        for (stylist in $scope.availability) {
+            console.log("checking: "+$scope.availability[stylist].stylistID+" with "+newValue.id);
+            if ($scope.availability[stylist].stylistID === newValue.id) {
+                for (time in times) {
+                    console.log($scope.availability[stylist].availability);
+                    for (range in $scope.availability[stylist].availability) {
+                        var startDate = new Date($scope.availability[stylist].availability[range].startDate);
+                        var endDate = new Date($scope.availability[stylist].availability[range].endDate);
+
+                        console.log("startDate: "+ startDate.toLocaleString()+ " endDate: "+ endDate.toLocaleString());
+
+                        console.log("testing: "+times[time].epoch+" to "+$scope.availability[stylist].availability[range].startDate)
+                        if (times[time].epoch >= $scope.availability[stylist].availability[range].startDate &&
+                            times[time].epoch+($scope.newAppointment.type.duration*60000) <= $scope.availability[stylist].availability[range].endDate) {
+                            console.log("adding: "+ times[time].time);
+                            $scope.day.times.push(times[time]);
+                        }
+                    }
+                }
+            }
+        }
+    });
 
     $scope.ok = function() {
         $modalInstance.close($scope.newAppointment);
