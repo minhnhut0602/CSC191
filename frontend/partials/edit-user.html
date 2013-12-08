@@ -1,30 +1,32 @@
 <div class="top">
-  <button type="button" class="btn btn-primary" > Save </button>
 </div>
 <div class="main">
 <div class="left">
-  <form action="upload_file.php" method="post" enctype="multipart/form-data">
-    <label for="file">Filename:</label>
-    <input type="file" name="file" id="file" class="btn btn-default"><br>
-    <input type="submit" name="submit" value="Upload" class="btn btn-default">
-  </form>
+  <img src="http://www.gravatar.com/avatar/{{userInfo.imageHash}}" style="width:200px;  ">
 
 </div>
   <div class="right" style="width:50%;">
-    <form role="form ">
+    <ng-form role="form ">
       <div class="form-group">
+      <select ng-model="userInfo.clientType">
+        <option value="STYLIST">Stylist</option>
+        <option value="ADMIN">Admin</option>
+      </select>
         <label for="exampleInputEmail1">First Name</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="First Name">
+        <input type="plaintext" class="form-control" id="username" placeholder="First Name" ng-model="userInfo.firstName">
         <label for="exampleInputEmail1">Last Name</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="Last Name">
-        <label for="exampleInputEmail1">User</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="User">
+        <input type="plaintext" class="form-control" id="username" placeholder="Last Name" ng-model="userInfo.lastName">
+        <label for="exampleInputEmail1">Email</label>
+        <input type="plaintext" class="form-control" id="username" placeholder="User" ng-model="userInfo.email">
         <label for="exampleInputEmail1">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Password">
-        <label for="exampleInputEmail1">Password</label>
-        <input type="password" class="form-control" id="passwordConfirm" placeholder="Password">
+        <input type="password" class="form-control" id="password" placeholder="Password" ng-model="userInfo.password">
+        <label for="exampleInputEmail1">Confirm Password</label>
+        <input type="password" class="form-control" id="passwordConfirm" placeholder="Password" ng-model="userInfo.passwordConformation">
+
       </div>
-    </form>
+        <button type="button" class="btn btn-primary" ng-click="createUserFunction()"> Save </button>
+
+    </ng-form>
   </div>
 </div>
 

@@ -223,6 +223,8 @@ calendarModule.directive('calendar', function($http, $location) {
                     $http.post('http://home.joubin.me/salon-scheduler-api/appointments', newAppointment, config).success(function(data) {
                         console.log(data);
                         $location.path('client-landing');
+                    }).error(function(data){
+                        alert("Error: it seems that "+ data);
                     });
 
                 });

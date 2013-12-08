@@ -742,7 +742,19 @@ public class UserController extends GenericController
     @RequestMapping(value = "/clients", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Resource<User>>> getClients() throws GenericUserException
     {
-        List<User> clients = userRepository.findAllActiveByGroup(UserType.CLIENT);
+    	List<User> clients = null;
+    	
+    	switch(authType)
+    	{
+    		case CLIENT: clients = new ArrayList<User>(); 
+    					 clients.add(userRepository.findById(id));
+    					 break;
+    		case STYLIST: //fall through
+    		case ADMIN: clients = userRepository.findAllActiveByGroup(UserType.CLIENT);
+    					break;
+    	}
+    	
+    	
 
         if(clients != null && !clients.isEmpty())
         {
