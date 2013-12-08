@@ -19,6 +19,8 @@ function deleteAllCookies() {
     }
 }
 
+
+
 var scheduleControllers = angular.module('scheduleControllers', []);
 
 
@@ -167,12 +169,23 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         };
         $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
             $scope.tmpUserInfo = data;
-            $rootScope.user.name = data.firstName+" "+data.lastName;
+            $scope.user.name = data.firstName +' '+ data.lastName;
+            console.log($scope.user);
+            $scope.user.avatar = data.avatarURL;
+            // $rootScope.user = data;
         });
+        // $scope.$watch('tmpUserInfo', function(newValue, oldValue, scope) {
+        //             $rootScope.userInfo = $scope.tmpUserInfo;
+        //             $rootScope.userInfo.name = $scope.tmpUserInfo.firstName +' '+ $scope.tmpUserInfo.lastName;
+        //             console.log($scope.tmpUserInfo);
+        //              if ($scope.tmpUserInfo.firstName == null) {
+        //                 $location.path('edit-profile');
+        //             }
+        // }, true);
     }
     $scope.user = {};
     // Defining user logged status
-    $scope.loggedIn = false;
+    $rootScope.loggedIn = false;
     // document.cookie = "loggedIn=false"
 
 
@@ -189,9 +202,10 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     // From now and on you can use the Facebook service just as Facebook api says
     // Take into account that you will need $scope.$apply when being inside Facebook functions scope and not angular
     $scope.login = function() {
-        if (readCookie('userType') === "staff") {
+        if (readCookie('userType') === "staff" || readCookie('userType') === "admin") {
             $location.path('staff-landing');
-            $scope.loggedIn = true;
+            $scope.getInfo();
+            $rootScope.loggedIn = true;
             document.cookie = "loggedIn=true"
 
             // $scope.me();
@@ -205,7 +219,12 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         });
     };
     $scope.logout = function() {
-        Facebook.logout(function() {
+            $scope.user   = {};
+            $rootScope.loggedIn = false;
+            document.cookie = "loggedIn=false"
+            deleteAllCookies();
+            $location.path("login");
+            Facebook.logout(function() {
             $scope.$apply(function() {
                 $scope.user   = {};
                 $scope.loggedIn = false;
@@ -214,6 +233,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
 
             });
         });
+
     // deleteAllCookies();
     // $location.path('login');
     // location.reload();
@@ -226,23 +246,15 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             console.log(response);
 
             if(response.status == 'connected') {
-                $scope.loggedIn = true;
+                $rootScope.loggedIn = true;
                 document.cookie = "loggedIn=true"
 
                 $scope.me();
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
                 $scope.getInfo();
-                $scope.$watch('tmpUserInfo', function(newValue, oldValue, scope) {
-                    $rootScope.userInfo = $scope.tmpUserInfo;
-                    $rootScope.userInfo.name = $scope.tmpUserInfo.firstName +' '+ $scope.tmpUserInfo.lastName;
-                    console.log($scope.tmpUserInfo);
-                     if ($scope.tmpUserInfo.firstName == null) {
-                        $location.path('edit-profile');
-                    }
-                 }, true);
+                
                 $scope.user = response;
-                $rootScope.user = $scope.user;
                 $rootScope.facebook = response;
 
                 $location.path('client-landing');
@@ -267,7 +279,6 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 // Here you could re-check for user status (just in case)
 
                 $scope.user = response;
-                $rootScope.user = $scope.user;
                 console.log(response);
                 document.cookie = "facebookUsersName="+response.first_name;
                 document.cookie = "facebookUsersLastName="+response.last_name;
@@ -346,18 +357,22 @@ scheduleControllers.controller('acceptAppointmentsController', function acceptAp
 
 
     $scope.cancelAppointment = function(){
-        alert("cancelling "+ $scope.appointment.ID);
-        data = {};
-        var id = $scope.appointment.ID;
-        data = {"appointmentStatus": "CANCELED"};
-        $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){
-                console.log("winning");
-                $location.path('staff-landing');
-                location.reload();
-        }).error(function(data) {
-                alert("There is a conflict");
-                console.log("failing");
-        });
+        if (confirm('Are you sure you want to save this thing into the database?')) {
+            data = {};
+            var id = $scope.appointment.ID;
+            data = {"appointmentStatus": "CANCELED"};
+            $http.put('http://home.joubin.me/salon-scheduler-api/appointments/'+id, data, config).success(function(data){
+                    console.log("winning");
+                    $location.path('staff-landing');
+                    location.reload();
+            }).error(function(data) {
+                    alert("There is a conflict");
+                    console.log("failing");
+            });
+        } else {
+            alert("Okay, Cancelling");
+        }
+       
 
     }
 
@@ -451,7 +466,7 @@ scheduleControllers.controller('adminController', function adminController($loca
         'Cache-Control': 'no-cache',
     }
 };
-$http.get('http://home.joubin.me/salon-scheduler-api/users', config).success(function(data) {
+$http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).success(function(data) {
         $scope.users = data;
     }).error(function(data2){
         $scope.user = "You have no access here";
@@ -712,7 +727,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
     }
 };
 
-    $scope.getUserInfo = function(){
+    $scope.setUserInfo = function(){
       data = {};
       var getFirstName = $scope.userInfo.name.split(" ");
       var userPhone = $scope.userInfo.phone;
@@ -732,7 +747,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
       "hairLength": userHairLength,
       "active": true,
       "email": userEmail,
-      'avatarURL': 'graph.facebook.com/'+facebookUser+'/picture'};
+      'avatarURL': 'https://graph.facebook.com/'+facebookUser+'/picture'};
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");
@@ -740,6 +755,14 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
             }).error(function(data) {
                     alert("something is failing");
             });
+    }
+
+    $scope.getUserInfo = function() {
+        $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data){
+            $scope.userInfo = data;
+            $scope.userInfo.name = $scope.userInfo.firstName +' '+ $scope.userInfo.lastName;
+            console.log($scope.userInfo);
+        });
     }
 });
 

@@ -8,7 +8,7 @@
 
 </div>
 
-<div class="wrapper">
+<div class="wrapper" ng-init="getUserInfo()">
     <div class="jumbotron edit-user-jumbo">
         <h3>Hello, {{user.name}}!</h3>
         <p>Here, you can edit some profile information. If you see that some of the items are disabled, its because we are pulling that information from your facebook profile</p>
@@ -35,7 +35,7 @@
             <span class="label label-primary">Hair Length</span>
             <input type="text" class="form-control" placeholder="Longish" ng-model="userInfo.hairLength">
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="getUserInfo()">Save</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="setUserInfo()">Save</button>
             </ng-form>
         </form>
     </div>

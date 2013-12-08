@@ -21,7 +21,7 @@
 
             <tr ng-repeat="user in users | filter:query">
               <td>{{$index+1}}</td>
-              <td><img src="http://{{user.avatarURL}}"></td>
+              <td><img src="{{user.avatarURL}}" height="50" class="avatar"></td>
               <td>{{user.firstName}}</td>
               <td>{{user.lastName}}</td>
               <td>{{user.type}} {{user.id}}</td>
