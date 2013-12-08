@@ -244,7 +244,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
                 $scope.getInfo();
-                
+
                 $scope.user = response;
                 $rootScope.facebook = response;
 
@@ -363,7 +363,7 @@ scheduleControllers.controller('acceptAppointmentsController', function acceptAp
         } else {
             alert("Okay, Cancelling");
         }
-       
+
 
     }
 
@@ -841,22 +841,22 @@ scheduleControllers.controller('loadingController', function loadingController($
 
 
 
-//                                            /$$                    
-//                                           | $$                    
-//   /$$$$$$$  /$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$       
-//  /$$_____/ /$$__  $$ /$$__  $$ |____  $$|_  $$_/   /$$__  $$      
-// | $$      | $$  \__/| $$$$$$$$  /$$$$$$$  | $$    | $$$$$$$$      
-// | $$      | $$      | $$_____/ /$$__  $$  | $$ /$$| $$_____/      
-// |  $$$$$$$| $$      |  $$$$$$$|  $$$$$$$  |  $$$$/|  $$$$$$$      
-//  \_______/|__/       \_______/ \_______/   \___/   \_______/                                                                     
-//  /$$   /$$  /$$$$$$$  /$$$$$$   /$$$$$$                           
-// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$                          
-// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/                          
-// | $$  | $$ \____  $$| $$_____/| $$                                
-// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$                                
-//  \______/ |_______/  \_______/|__/                                
-                                                                  
-                                                                  
+//                                            /$$
+//                                           | $$
+//   /$$$$$$$  /$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$
+//  /$$_____/ /$$__  $$ /$$__  $$ |____  $$|_  $$_/   /$$__  $$
+// | $$      | $$  \__/| $$$$$$$$  /$$$$$$$  | $$    | $$$$$$$$
+// | $$      | $$      | $$_____/ /$$__  $$  | $$ /$$| $$_____/
+// |  $$$$$$$| $$      |  $$$$$$$|  $$$$$$$  |  $$$$/|  $$$$$$$
+//  \_______/|__/       \_______/ \_______/   \___/   \_______/
+//  /$$   /$$  /$$$$$$$  /$$$$$$   /$$$$$$
+// | $$  | $$ /$$_____/ /$$__  $$ /$$__  $$
+// | $$  | $$|  $$$$$$ | $$$$$$$$| $$  \__/
+// | $$  | $$ \____  $$| $$_____/| $$
+// |  $$$$$$/ /$$$$$$$/|  $$$$$$$| $$
+//  \______/ |_______/  \_______/|__/
+
+
 scheduleControllers.controller('createUser', function createUser($location, $scope, $http) {
 
     $scope.$watch('userInfo.email', function(newValue, oldValue, scope) {
@@ -885,12 +885,12 @@ var config = {headers:  {
       "password": pass,
       "active": true,
       "email": email,
-      "avatarURL": imageURL, 
+      "avatarURL": imageURL,
       "type": type};
 
     console.log(toSend);
-    
-    
+
+
 
   $http.post('http://home.joubin.me/salon-scheduler-api/users/',toSend, config).success(function(data){
                 console.log("winning");
