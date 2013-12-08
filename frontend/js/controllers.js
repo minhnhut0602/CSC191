@@ -167,8 +167,19 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
         };
         $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
             $scope.tmpUserInfo = data;
-            $rootScope.user.name = data.firstName+" "+data.lastName;
+            $scope.user.name = data.firstName +' '+ data.lastName;
+            console.log($scope.user);
+            $scope.user.avatar = data.avatarURL;
+            // $rootScope.user = data;
         });
+        // $scope.$watch('tmpUserInfo', function(newValue, oldValue, scope) {
+        //             $rootScope.userInfo = $scope.tmpUserInfo;
+        //             $rootScope.userInfo.name = $scope.tmpUserInfo.firstName +' '+ $scope.tmpUserInfo.lastName;
+        //             console.log($scope.tmpUserInfo);
+        //              if ($scope.tmpUserInfo.firstName == null) {
+        //                 $location.path('edit-profile');
+        //             }
+        // }, true);
     }
     $scope.user = {};
     // Defining user logged status
@@ -189,8 +200,9 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
     // From now and on you can use the Facebook service just as Facebook api says
     // Take into account that you will need $scope.$apply when being inside Facebook functions scope and not angular
     $scope.login = function() {
-        if (readCookie('userType') === "staff") {
+        if (readCookie('userType') === "staff" || readCookie('userType') === "admin") {
             $location.path('staff-landing');
+            $scope.getInfo();
             $scope.loggedIn = true;
             document.cookie = "loggedIn=true"
 
@@ -233,16 +245,8 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 document.cookie="myAccessToken="+response.authResponse["accessToken"];
                 document.cookie="myID="+response.authResponse["userID"];
                 $scope.getInfo();
-                $scope.$watch('tmpUserInfo', function(newValue, oldValue, scope) {
-                    $rootScope.userInfo = $scope.tmpUserInfo;
-                    $rootScope.userInfo.name = $scope.tmpUserInfo.firstName +' '+ $scope.tmpUserInfo.lastName;
-                    console.log($scope.tmpUserInfo);
-                     if ($scope.tmpUserInfo.firstName == null) {
-                        $location.path('edit-profile');
-                    }
-                 }, true);
+                
                 $scope.user = response;
-                $rootScope.user = $scope.user;
                 $rootScope.facebook = response;
 
                 $location.path('client-landing');
@@ -267,7 +271,6 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 // Here you could re-check for user status (just in case)
 
                 $scope.user = response;
-                $rootScope.user = $scope.user;
                 console.log(response);
                 document.cookie = "facebookUsersName="+response.first_name;
                 document.cookie = "facebookUsersLastName="+response.last_name;
@@ -712,7 +715,7 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
     }
 };
 
-    $scope.getUserInfo = function(){
+    $scope.setUserInfo = function(){
       data = {};
       var getFirstName = $scope.userInfo.name.split(" ");
       var userPhone = $scope.userInfo.phone;
@@ -740,6 +743,14 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
             }).error(function(data) {
                     alert("something is failing");
             });
+    }
+
+    $scope.getUserInfo = function() {
+        $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data){
+            $scope.userInfo = data;
+            $scope.userInfo.name = $scope.userInfo.firstName +' '+ $scope.userInfo.lastName;
+            console.log($scope.userInfo);
+        });
     }
 });
 

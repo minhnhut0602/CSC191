@@ -43,7 +43,7 @@
     </script>
 </head>
 <body ng-controller="AuthController">
-<ul id="gn-menu" class="gn-menu-main" >
+<ul id="gn-menu" class="gn-menu-main" ng-init="getInfo()">
     <li class="gn-trigger">
         <a class="gn-icon gn-icon-menu"><i class="fa fa-reorder"></i></a>
         <nav class="gn-menu-wrapper">
@@ -95,7 +95,7 @@
         </nav>
     </li>
     <li><a href="#/loading"><h2>Salon Scheduler<h2></a></li>
-    <li><a href="#/edit-profile">{{user.name}}<img class="avatar" src="https://graph.facebook.com/{{user.username}}/picture"></a></li>
+    <li><a href="#/edit-profile">{{user.name}}<img class="avatar" src="{{user.avatar}}" height="50"></a></li>
 </ul>
 
 
