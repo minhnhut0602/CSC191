@@ -6,27 +6,29 @@
 
 </div>
   <div class="right" style="width:50%;">
+  <form name="myForm">
     <ng-form role="form ">
       <div class="form-group">
-      <select ng-model="userInfo.clientType">
+      <select ng-model="userInfo.clientType" required>
         <option value="STYLIST">Stylist</option>
         <option value="ADMIN">Admin</option>
-      </select>
+      </select><br/>
         <label for="exampleInputEmail1">First Name</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="First Name" ng-model="userInfo.firstName">
+        <input type="plaintext" class="form-control" id="username" placeholder="First Name" ng-model="userInfo.firstName" required>
         <label for="exampleInputEmail1">Last Name</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="Last Name" ng-model="userInfo.lastName">
+        <input type="plaintext" class="form-control" id="username" placeholder="Last Name" ng-model="userInfo.lastName" required>
         <label for="exampleInputEmail1">Email</label>
-        <input type="plaintext" class="form-control" id="username" placeholder="User" ng-model="userInfo.email">
+        <input type="plaintext" class="form-control" id="username" placeholder="User" ng-model="userInfo.email" required>
         <label for="exampleInputEmail1">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Password" ng-model="userInfo.password">
+        <input type="password" class="form-control" id="password" placeholder="Password" ng-model="userInfo.password" required>
         <label for="exampleInputEmail1">Confirm Password</label>
-        <input type="password" class="form-control" id="passwordConfirm" placeholder="Password" ng-model="userInfo.passwordConformation">
+        <input type="password" class="form-control" id="passwordConfirm" placeholder="Password" ng-model="userInfo.passwordConformation" password-match="userInfo.password" required>
 
       </div>
-        <button type="button" class="btn btn-primary" ng-click="createUserFunction()"> Save </button>
+        <button type="button" class="btn btn-primary" ng-click="createUserFunction()" ng-disabled="!myForm.$valid"> Save </button>
 
     </ng-form>
+    </form>
   </div>
 </div>
 
