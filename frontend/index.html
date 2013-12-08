@@ -65,7 +65,7 @@
                             <span>View History</span>
                         </a>
                     </li> -->
-                    <li ng-show="currentUserAuth.type != 'admin'">
+                    <li>
                         <a class="gn-icon" href="#/edit-profile">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit Profile</span>
@@ -78,7 +78,7 @@
                             <span>View Clients</span>
                         </a>
                     </li>
-                    <li ng-show="currentUserAuth.type != 'CLIENT'">
+                    <li ng-show="currentUserAuth.type == 'ADMIN'">
                         <script type="text/javascript">console.log(currentUserAuth.type)</script>
                          <a class="gn-icon" href="#/admin" >
                             <i class="fa fa-tasks"></i>

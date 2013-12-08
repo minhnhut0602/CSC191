@@ -116,7 +116,8 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
         restrict: 'A',
         template:   '<div ng-repeat="appointment in appointments">'+
                         '<ng-form ng-controller="acceptAppointmentsController">'+
-                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())">You have an appointment with <stylistname stylisturl="appointment.stylist"/> on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime.toLocaleTimeString()}}'+
+                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startDate.getFullYear(),appointment.startDate.getMonth(),appointment.startTime.getDate())">You have an appointment with <stylistname stylisturl="appointment.stylist"/> </br>'+
+                        'on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime}}</br>'+
                         '<div ng-hide="appointment.comment == \'Pending\'"><stylistname stylisturl=appointment.stylist/> said: {{appointment.comment}}</div>'+
                         '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
                         '<button type="button" class="btn btn-danger" ng-click="cancelAppointment()">Cancel</button>'+
@@ -138,16 +139,20 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
                 for (var something in data){
                     var tempAppointment = {};
                     var date = new Date(data[something].startTime);
-                    tempAppointment.startTime = date;
+                    tempAppointment.startDate = date;
                     tempAppointment.ID = data[something].id;
                     tempAppointment.appointmentStatus = data[something].appointmentStatus;
                     tempAppointment.comment = data[something].comment;
                     tempAppointment.appStatus = "";
 
-                    var monthNum = tempAppointment.startTime.getMonth();
-                    var dayNum = tempAppointment.startTime.getDay();
-                    var dateNum = tempAppointment.startTime.getDate();
-                    var yearNum = tempAppointment.startTime.getFullYear();
+                    var monthNum = tempAppointment.startDate.getMonth();
+                    var dayNum = tempAppointment.startDate.getDay();
+                    var dateNum = tempAppointment.startDate.getDate();
+                    var yearNum = tempAppointment.startDate.getFullYear();
+
+                    var myTime = tempAppointment.startDate.toLocaleTimeString();
+                    var tempMyTime = myTime.slice(0,myTime.length-6)+myTime.slice(myTime.length-3);
+                    tempAppointment.startTime = tempMyTime;
 
                     tempAppointment.yearNum = yearNum;
 
@@ -284,7 +289,7 @@ scheduleDirectives.directive('stylistname', function($http) {
             stylisturl: '='
         },
         replace: true,
-        template: '<span>{{stylist.firstName}}</span>',
+        template: '<span>{{stylist.firstName}} {{stylist.lastName}}</span>',
         link: function(scope, elm, attr) {
             var config = {headers:  {
                     'authToken': readCookie("myAccessToken"),
@@ -448,7 +453,8 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                    '<button class="btn btn-danger" ng-click="query.appStatus = \'CANCELED\'">Canceled</button> '+
                    '<button class="btn btn-danger"  ng-click="query.appStatus = \'REJECTED\'">Rejected</button><br/><br/>'+  
                     '<div ng-repeat="appointment in appointments | filter:query:strict" >'+
-                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startTime.getFullYear(),appointment.startTime.getMonth(),appointment.startTime.getDate())" >You have an appointment with <client clienturl="appointment.client"/> on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime.toLocaleTimeString()}}<br/>'+
+                        '<div class="alert alert-{{appointment.myColor}} " ng-click="calendar(appointment.startDate.getFullYear(),appointment.startDate.getMonth(),appointment.startDate.getDate())" >You have an appointment with <client clienturl="appointment.client"/> </br>'+
+                            'on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime}}<br/>'+
                             '<ng-form ng-controller="acceptAppointmentsController">'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
@@ -473,17 +479,21 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                     console.log(data[something])
                     var tempAppointment = {};
                     var date = new Date(data[something].startTime);
-                    tempAppointment.startTime = date;
+                    tempAppointment.startDate = date;
                     tempAppointment.appointmentStatus = data[something].appointmentStatus;
                     tempAppointment.active = true;
                     tempAppointment.comment = data[something].comment;
                     tempAppointment.ID = data[something].id;
                     tempAppointment.appStatus = data[something].appointmentStatus;
 
-                    var monthNum = tempAppointment.startTime.getMonth();
-                    var dayNum = tempAppointment.startTime.getDay();
-                    var dateNum = tempAppointment.startTime.getDate();
-                    var yearNum = tempAppointment.startTime.getFullYear();
+                    var monthNum = tempAppointment.startDate.getMonth();
+                    var dayNum = tempAppointment.startDate.getDay();
+                    var dateNum = tempAppointment.startDate.getDate();
+                    var yearNum = tempAppointment.startDate.getFullYear();
+
+                    var myTime = tempAppointment.startDate.toLocaleTimeString();
+                    var tempMyTime = myTime.slice(0,myTime.length-6)+myTime.slice(myTime.length-3);
+                    tempAppointment.startTime = tempMyTime;
 
                     tempAppointment.yearNum = yearNum;
 

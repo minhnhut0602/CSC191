@@ -1,0 +1,59 @@
+<div class="top" ng-controller="createService">
+<h4>Create Services</h4>
+</div>
+
+<div class="main" ng-controller="createService">
+<ng-form>
+  <form>
+      <span class="label label-primary">Service Name*</span>
+      <input type="text" class="form-control" placeholder="Womens Haircut " autofocus=""  ng-model="service.name" required name="serviceName" style="width:300px; display:inline;" ng-model="service.duration">
+      <span class="label label-primary">Duration*</span>
+      <select style="width:100px;" ng-model="service.duration">
+        <option value="15">0:15</option>
+        <option value="30">0:30</option>
+        <option value="45">0:45</option>
+        <option value="60">1:00</option>
+        <option value="75">1:15</option>
+        <option value="90">1:30</option>
+        <option value="105">1:45</option>
+        <option value="120">2:00</option>
+        <option value="135">2:15</option>
+        <option value="150">2:30</option>
+        <option value="165">2:45</option>
+        <option value="180">3:00</option>
+        <option value="195">3:15</option>
+        <option value="210">3:30</option>
+        <option value="225">3:45</option>
+        <option value="240">4:00</option>
+      </select>
+      <button type="button" class="btn btn-primary" ng-click="addService()" > Add </button>
+  </form>
+</ng-form>
+<hr>
+
+<input type="text" class="form-control" ng-model="query">
+   <table class="table ">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Service Name</th>
+              <th>Service Duration</th>
+              <th>Stylists</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr ng-repeat="ap in localAppoitnmentTypes | filter:query">
+              <td>{{$index+1}}</td>
+              <td>{{ap.appointmentType}}</td>
+              <td>{{ap.durationInMinutes}}</td>
+              <td>
+                <span ng-repeat="stylist in ap.stylists">
+                  | <stylistname stylisturl="'http://home.joubin.me/salon-scheduler-api/users/'+stylist"/> |
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+
