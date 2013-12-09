@@ -758,9 +758,12 @@ $scope.updateClientServices = function(){
             $http.put('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+$scope.localAppoitnmentTypes[item].me,{}, config).success(function(data) {
                 $scope.localAppoitnmentTypes[item].savedStat = "Saved";
             }).error(function(data){
-                alert(data);
+                if (data !== ''){ 
+                    alert(data);
+                }
             });
     }
+    alert('All stats updated');
 }
 
     
