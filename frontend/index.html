@@ -54,7 +54,7 @@
                         <input placeholder="Search" type="search" class="gn-search">
                     </li> -->
                     <li>
-                        <a class="gn-icon" href="#/calendar/">
+                        <a class="gn-icon" href="#/calendar/" ng-show="currentUserAuth.type == 'CLIENT' || currentUserAuth.type == 'ADMIN' || currentUserAuth.type == 'STYLIST'">
                             <i class="fa fa-calendar"></i>
                             <span>Make an Appointment</span>
                         </a>
@@ -66,12 +66,12 @@
                         </a>
                     </li>
                     <li>
-                        <a class="gn-icon" href="#/edit-profile">
+                        <a class="gn-icon" href="#/edit-profile" ng-show="currentUserAuth.type == 'CLIENT' || currentUserAuth.type == 'ADMIN' || currentUserAuth.type == 'STYLIST'">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit Profile</span>
                         </a>
                     </li>
-                    <li ng-show="currentUserAuth.type != 'CLIENT'">
+                    <li ng-show="currentUserAuth.type == 'ADMIN' || currentUserAuth.type == 'STYLIST'">
                         <script type="text/javascript">console.log(currentUserAuth.type)</script>
                          <a class="gn-icon" href="#/view-clients" >
                             <i class="fa fa-user"></i>
@@ -92,7 +92,7 @@
                             <span>View Stylists</span>
                         </a>
                     </li>  
-                    <li ng-show="currentUserAuth.type != 'CLIENT'">
+                    <li ng-show="currentUserAuth.type == 'ADMIN' || currentUserAuth.type == 'STYLIST'">
                         <script type="text/javascript">console.log(currentUserAuth.type)</script>
                          <a class="gn-icon" href="#/edit-availability" >
                             <i class="fa fa-clock-o"></i>
@@ -105,7 +105,7 @@
                             <span>Login</span>
                         </a>
                     </li> -->
-                    <li>
+                    <li ng-show="currentUserAuth.type == 'CLIENT' || currentUserAuth.type == 'ADMIN' || currentUserAuth.type == 'STYLIST'">
                         <a class="gn-icon"  ng-click="logout()">
                         <i class="fa fa-sign-out"></i>
                             <span>Logout</span>
