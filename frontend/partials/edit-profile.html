@@ -15,8 +15,7 @@
     </div>
 
 <div class="jumbotron edit-user-jumbo" ng-show="currentUserAuth.type != 'CLIENT'">
-    <button>Save</button>
-   <div ng-controller="createService">
+  <button class="btn btn-lg btn-primary btn-block" type="submit"  ng-click="updateClientServices(localAppoitnmentTypes)">Update Services {{allsaved}}</button>
    <table class="table " >
           <thead>
             <tr>
@@ -33,12 +32,11 @@
               <td>{{ap.appointmentType}}</td>
               <td>{{ap.durationInMinutes}}</td>
               <td>
-                <input type="checkbox"/>
+                <input type="checkbox" name="ap.id"  id="ap.id" value="1" ng-model="ap.me">
               </td>
             </tr>
           </tbody>
     </table>
-    </div>
 </div>
 
     <div class="container">

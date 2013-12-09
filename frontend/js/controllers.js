@@ -587,6 +587,7 @@ scheduleControllers.controller('clientsController', function clientsController($
 };
 $http.get('http://home.joubin.me/salon-scheduler-api/users/clients', config).success(function(data) {
         $scope.users = data;
+
     }).error(function(data2){
         $score.user = "You have no access here";
     });
@@ -629,6 +630,7 @@ scheduleControllers.controller('userAuthController', function userAuthController
   $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
     console.log("Getting auth level");
     $scope.currentUserAuth = data;
+    document.cookie="backendUserID="+data.id;
     console.log($scope.currentUserAuth.type);
 });
 });
@@ -730,6 +732,7 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 
 scheduleControllers.controller('editprofile', function editprofile($location, $scope, $http) {
     // alert($scope.user.type);
+    $scope.allSaved = 'asd';
     console.log("Edit Controller");
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
@@ -738,6 +741,30 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
     }
 };
 
+$http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).success(function(data) {
+        $scope.localAppoitnmentTypes = data;
+        console.log(data);
+    }).error(function(data){
+        alert(data);
+});
+$scope.updateClientServices = function(obj){
+    console.log(obj);
+    for(item in obj){
+            var appoitnmentTypeID = obj[item].id;
+            if (obj[item].me == undefined) {
+                obj[item].me = false;
+            }
+            console.log('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+obj[item].me);
+            $http.put('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+obj[item].me,{}, config).success(function(data) {
+                $scope.allSaved = "Saved";
+            }).error(function(data){
+                $scope.allSaved = "";
+                alert(data);
+            });
+    }
+}
+
+    
     $scope.setUserInfo = function(){
       data = {};
       var getFirstName = $scope.userInfo.name.split(" ");
