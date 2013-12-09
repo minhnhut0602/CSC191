@@ -461,9 +461,9 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                             'on {{appointment.dayName}}, {{appointment.monthName}} {{appointment.dateNum}}{{appointment.dateNumSuffix}}, {{appointment.yearNum}} at {{appointment.startTime}}<br/>'+
                             '<ng-form ng-controller="acceptAppointmentsController">'+
                             '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="hidden" placeholder="{{appointment.ID}}" ng-model="appointment.ID"><br/>'+
-                            '<input ng-disabled="appointment.active" class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
-                            '<button ng-disabled="appointment.denyButtonDisabled" type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button>'+
-                            '<button  type="button" class="btn btn-success" ng-click="acceptAppointment()">Accept</button>'+
+                            '<input  class="form-control" id="disabledInput" type="text" placeholder="{{appointment.comment}}" ng-model="appointment.comment"><br/>'+
+                            '<button ng-disabled="appointment.denyButtonDisabled" type="button" class="btn btn-danger" ng-click="denyAppointment()">Deny</button> '+
+                            '<button ng-disabled="appointment.acceptButtonDisabled" type="button" class="btn btn-success" ng-click="acceptAppointment()">Accept</button>'+
                             '</ng-form>'+
                         '</div>'+
                     '</div>',
@@ -598,7 +598,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                         tempAppointment.myColor = "warning";
                         tempAppointment.active = false;
                         tempAppointment.denyButtonDisabled = "";
-                        tempAppointment.acceptButtonDisabled = "true";
+                        tempAppointment.acceptButtonDisabled = "";
                     }
                     if (data[something].appointmentStatus === "COMPLETED") {
                         tempAppointment.myColor = "info";
