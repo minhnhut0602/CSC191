@@ -19,6 +19,11 @@ function deleteAllCookies() {
     }
 }
 
+function sayStuff(){
+    alert(stuff);
+    return false;
+}
+
 
 
 var scheduleControllers = angular.module('scheduleControllers', []);
@@ -207,6 +212,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.getInfo();
             $rootScope.loggedIn = true;
             document.cookie = "loggedIn=true"
+
 
             // $scope.me();
             location.reload();
@@ -723,6 +729,7 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 // EDIT edit-profile
 
 scheduleControllers.controller('editprofile', function editprofile($location, $scope, $http) {
+    // alert($scope.user.type);
     console.log("Edit Controller");
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
@@ -815,6 +822,7 @@ scheduleControllers.controller('loginController', function loginController($loca
       $http.get('http://home.joubin.me/salon-scheduler-api/authorize?username='+user+'&password='+pass,data).success(function(data){
                     document.cookie="myAccessToken="+data.authToken;
                     document.cookie="userType=staff";
+
                     // $location.path("staff-landing");
                     console.log("winning");
                     console.log($scope);
@@ -950,7 +958,28 @@ scheduleControllers.controller('userProfileController', function userProfileCont
     });
 });
 
-
+//  /$$      /$$                                                              
+// | $$$    /$$$                                                              
+// | $$$$  /$$$$  /$$$$$$  /$$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$             
+// | $$ $$/$$ $$ |____  $$| $$__  $$ |____  $$ /$$__  $$ /$$__  $$            
+// | $$  $$$| $$  /$$$$$$$| $$  \ $$  /$$$$$$$| $$  \ $$| $$$$$$$$            
+// | $$\  $ | $$ /$$__  $$| $$  | $$ /$$__  $$| $$  | $$| $$_____/            
+// | $$ \/  | $$|  $$$$$$$| $$  | $$|  $$$$$$$|  $$$$$$$|  $$$$$$$            
+// |__/     |__/ \_______/|__/  |__/ \_______/ \____  $$ \_______/            
+//                                             /$$  \ $$                      
+//                                            |  $$$$$$/                      
+//                                             \______/                       
+//   /$$$$$$                                 /$$                              
+//  /$$__  $$                               |__/                              
+// | $$  \__/  /$$$$$$   /$$$$$$  /$$    /$$ /$$  /$$$$$$$  /$$$$$$   /$$$$$$$
+// |  $$$$$$  /$$__  $$ /$$__  $$|  $$  /$$/| $$ /$$_____/ /$$__  $$ /$$_____/
+//  \____  $$| $$$$$$$$| $$  \__/ \  $$/$$/ | $$| $$      | $$$$$$$$|  $$$$$$ 
+//  /$$  \ $$| $$_____/| $$        \  $$$/  | $$| $$      | $$_____/ \____  $$
+// |  $$$$$$/|  $$$$$$$| $$         \  $/   | $$|  $$$$$$$|  $$$$$$$ /$$$$$$$/
+//  \______/  \_______/|__/          \_/    |__/ \_______/ \_______/|_______/ 
+                                                                           
+                                                                           
+                                                                           
 scheduleControllers.controller('createService', function createService($location, $scope, $http) {
 var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
@@ -968,6 +997,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
     $scope.deleteSelected = function(selected){
           $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+selected, config).success(function(data){
                 $location.path('create-services');
+                location.reload();
             }).error(function(data) {
                 alert(data);
         });
@@ -981,6 +1011,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
           $http.post('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
                 console.log("winning");
                 $location.path('create-services');
+                location.reload();
             }).error(function(data) {
                 console.log("failing");
         });

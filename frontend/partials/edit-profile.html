@@ -8,11 +8,38 @@
 
 </div>
 
-<div class="wrapper" ng-init="getUserInfo()">
-    <div class="jumbotron edit-user-jumbo">
+<div class="wrapper" ng-init="getUserInfo()" ng-controller="userAuthController">
+    <div class="jumbotron edit-user-jumbo" ng-show="currentUserAuth.type == 'CLIENT'" >
         <h3>Hello, {{user.name}}!</h3>
         <p>Here, you can edit some profile information. If you see that some of the items are disabled, its because we are pulling that information from your facebook profile</p>
     </div>
+
+<div class="jumbotron edit-user-jumbo" ng-show="currentUserAuth.type != 'CLIENT'">
+    <button>Save</button>
+   <div ng-controller="createService">
+   <table class="table " >
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Service Name</th>
+              <th>Service Duration</th>
+              <th>Add/Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr ng-repeat="ap in localAppoitnmentTypes">
+              <td>{{$index+1}}</td>
+              <td>{{ap.appointmentType}}</td>
+              <td>{{ap.durationInMinutes}}</td>
+              <td>
+                <input type="checkbox"/>
+              </td>
+            </tr>
+          </tbody>
+    </table>
+    </div>
+</div>
 
     <div class="container">
 
