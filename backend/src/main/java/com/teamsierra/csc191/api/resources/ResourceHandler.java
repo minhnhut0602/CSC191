@@ -77,7 +77,7 @@ public class ResourceHandler extends ResourceSupport
      * @param type
      * @return
      */
-    public static Resource<AppointmentType> createResource(AppointmentType type)
+    public static Resource<AppointmentType> createResource(AppointmentType type, String meStylistID)
     {
         Resource<AppointmentType> resource;
         if (type != null)
@@ -87,7 +87,13 @@ public class ResourceHandler extends ResourceSupport
 
         // generate links
         for (String stylistID : type.getStylists())
+        {
+            if (meStylistID != null && !meStylistID.isEmpty())
+            {
+                type.setMe(stylistID.equalsIgnoreCase(meStylistID));
+            }
             resource.add(linkTo(UserController.class).slash(stylistID).withRel("stylist"));
+        }
 
         resource.add(linkTo(AppointmentTypeController.class).slash(type.getId()).withSelfRel());
 

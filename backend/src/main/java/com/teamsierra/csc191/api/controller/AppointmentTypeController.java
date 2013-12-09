@@ -89,12 +89,35 @@ public class AppointmentTypeController extends GenericController
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Resource<AppointmentType>>> getAllTypes() throws Exception
+    public ResponseEntity<List<Resource<AppointmentType>>> getAllTypes(HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
         List<Resource<AppointmentType>> resources = new ArrayList<>();
 
         for (AppointmentType type: appointmentTypeRepository.findByCriteria(new AppointmentType()))
-            resources.add(ResourceHandler.createResource(type));
+        {
+            resources.add(ResourceHandler.createResource(type, this.id));
+        }
+
+        return new ResponseEntity<>(resources, HttpStatus.OK);
+    }
+
+
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<List<Resource<AppointmentType>>> getStylistTypes(@RequestParam String stylistID,
+                                                                           HttpServletRequest request) throws Exception
+    {
+        this.setRequestControllerState(request);
+
+        List<Resource<AppointmentType>> resources = new ArrayList<>();
+        AppointmentType findType = new AppointmentType();
+        String[] stylists = new String[]{stylistID};
+        findType.setStylists(stylists);
+
+        for (AppointmentType type: appointmentTypeRepository.findByCriteria(findType))
+            resources.add(ResourceHandler.createResource(type, this.id));
 
         return new ResponseEntity<>(resources, HttpStatus.OK);
     }
@@ -108,8 +131,10 @@ public class AppointmentTypeController extends GenericController
      */
     @RequestMapping(value = "/{typeID}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Resource<AppointmentType>> getType(@PathVariable String typeID) throws Exception
+    public ResponseEntity<Resource<AppointmentType>> getType(@PathVariable String typeID,
+                                                             HttpServletRequest request) throws Exception
     {
+        this.setRequestControllerState(request);
         AppointmentType findType = new AppointmentType();
         List<AppointmentType> foundTypes;
 
@@ -122,7 +147,7 @@ public class AppointmentTypeController extends GenericController
         if (foundTypes == null || foundTypes.isEmpty())
             throw new GenericException("Appointment type was not found", HttpStatus.NOT_FOUND, L);
 
-        Resource<AppointmentType> resource = ResourceHandler.createResource(foundTypes.get(0));
+        Resource<AppointmentType> resource = ResourceHandler.createResource(foundTypes.get(0), this.id);
 
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
@@ -208,7 +233,8 @@ public class AppointmentTypeController extends GenericController
             throw new GenericException("Appointment type already exists", HttpStatus.CONFLICT, L);
 
         requestData.setId(null);
-        Resource<AppointmentType> resource = ResourceHandler.createResource(appointmentTypeRepository.insert(requestData));
+        Resource<AppointmentType> resource = ResourceHandler.createResource(appointmentTypeRepository.insert(requestData),
+                                                                            this.id);
         
         //TODO remove if front end gets appointment types working
         //adds all stylists to the new appointment type
@@ -244,6 +270,9 @@ public class AppointmentTypeController extends GenericController
         this.setRequestControllerState(request);
         List<AppointmentType> types = new ArrayList<>();
         AppointmentType findType = new AppointmentType();
+        GenericModel response = new AppointmentType();
+        Boolean isDuplicate = false;
+        response.setId(typeID);
         findType.setId(typeID);
 
         switch (this.authType)
@@ -275,13 +304,19 @@ public class AppointmentTypeController extends GenericController
         for (String sid: types.get(0).getStylists())
         {
             if (stylistID.equalsIgnoreCase(sid))
-                throw new GenericException("Appointment type is already assigned to the stylist",
-                                           HttpStatus.CONFLICT, L);
+            {
+                isDuplicate = true;
+
+                //throw new GenericException("Appointment type is already assigned to the stylist",
+                //                           HttpStatus.CONFLICT, L);
+            }
         }
 
 
-        GenericModel response = new AppointmentType();
-        response.setId(appointmentTypeRepository.addStylistToType(typeID, stylistID));
+        if (!isDuplicate)
+        {
+            response.setId(appointmentTypeRepository.addStylistToType(typeID, stylistID));
+        }
         Resource<GenericModel> resource = new Resource<>(response);
         resource.add(linkTo(AppointmentTypeController.class).slash(response).withSelfRel());
 
