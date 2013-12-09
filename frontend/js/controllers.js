@@ -747,44 +747,56 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
     }).error(function(data){
         alert(data);
 });
-$scope.updateClientServices = function(obj){
-    console.log(obj);
-    for(item in obj){
-            var appoitnmentTypeID = obj[item].id;
-            if (obj[item].me == undefined) {
-                obj[item].me = false;
+$scope.updateClientServices = function(){
+    console.log($scope.localAppoitnmentTypes);
+    for(item in $scope.localAppoitnmentTypes){
+            var appoitnmentTypeID = $scope.localAppoitnmentTypes[item].id;
+            if ($scope.localAppoitnmentTypes[item].me == undefined) {
+                $scope.localAppoitnmentTypes[item].me = false;
             }
-            console.log('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+obj[item].me);
-            $http.put('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+obj[item].me,{}, config).success(function(data) {
-                $scope.allSaved = "Saved";
+            console.log('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+$scope.localAppoitnmentTypes[item].me);
+            $http.put('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+$scope.localAppoitnmentTypes[item].me,{}, config).success(function(data) {
+                $scope.localAppoitnmentTypes[item].savedStat = "Saved";
             }).error(function(data){
-                $scope.allSaved = "";
                 alert(data);
             });
     }
 }
 
     
-    $scope.setUserInfo = function(){
-      data = {};
-      var getFirstName = $scope.userInfo.name.split(" ");
-      var userPhone = $scope.userInfo.phone;
-      var userHairColor = $scope.userInfo.hairColor;
-      var userHairLength = $scope.userInfo.hairLength;
-      var userEmail = $scope.userInfo.email;
-      console.log($scope.user.email);
-      console.log($scope.user.phone);
-      console.log($scope.user.hairColor);
-      console.log($scope.user.hairLength);
-      console.log(getFirstName);
-      var facebookUser = readCookie('facebookActualUserName');
-      data = {"firstName": getFirstName[0],
-      "lastName": getFirstName[1],
-      "phone": userPhone,
-      "hairColor": userHairColor,
-      "hairLength": userHairLength,
-      "active": true,
-      "email": userEmail};
+$scope.setUserInfo = function(){
+    data = {};
+    var getFirstName = $scope.userInfo.name.split(" ");
+    var userPhone = $scope.userInfo.phone;
+    var userHairColor = $scope.userInfo.hairColor;
+    var userHairLength = $scope.userInfo.hairLength;
+    var userEmail = $scope.userInfo.email;
+    console.log($scope.user.email);
+    console.log($scope.user.phone);
+    console.log($scope.user.hairColor);
+    console.log($scope.user.hairLength);
+    console.log(getFirstName);
+    var facebookUser = readCookie('facebookActualUserName');
+    
+    if ($scope.userInfo.password1 == undefined || $scope.userInfo.password === '') {
+        data = {"firstName": getFirstName[0],
+        "lastName": getFirstName[1],
+        "phone": userPhone,
+        "hairColor": userHairColor,
+        "hairLength": userHairLength,
+        "active": true,
+        "email": userEmail};
+    }else{
+        data = {"firstName": getFirstName[0],
+        "lastName": getFirstName[1],
+        "phone": userPhone,
+        "hairColor": userHairColor,
+        "hairLength": userHairLength,
+        "active": true,
+        "email": userEmail, 
+        "password": $scope.userInfo.password1};
+        }
+
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");

@@ -32,10 +32,12 @@
               <td>{{ap.appointmentType}}</td>
               <td>{{ap.durationInMinutes}}</td>
               <td>
-                <input type="checkbox" name="ap.id"  id="ap.id" value="1" ng-model="ap.me">
+                <input type="checkbox" name="ap.id"  id="ap.id" value="1" ng-model="ap.me"> 
               </td>
             </tr>
+            {{ap.savedStat}}
           </tbody>
+
     </table>
 </div>
 
@@ -59,7 +61,13 @@
 
             <span class="label label-primary">Hair Length</span>
             <input type="text" class="form-control" placeholder="Longish" ng-model="userInfo.hairLength">
-             
+            <div ng-show="currentUserAuth.type != 'CLIENT'">
+                  <span class="label label-primary">Change Password *</span>
+                  <input type="password" class="form-control" ng-model="userInfo.password1">
+                  <span class="label label-primary">Confirm Password Change*</span>
+                  <input type="password" class="form-control" ng-model="userInfo.password2" password-match="userInfo.password1">
+            </div>
+
             <button class="btn btn-lg btn-primary btn-block ng-valid" type="submit" ng-disabled="!myForm.$valid"  ng-click="setUserInfo()">Save</button>
             </ng-form>
         </form>
