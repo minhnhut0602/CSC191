@@ -2,6 +2,8 @@ package com.teamsierra.csc191.api.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.beans.Transient;
+
 /**
  * @Author: Alex Chernyak
  * @Date: 11/5/13
@@ -16,6 +18,7 @@ public class AppointmentType extends GenericModel
     private int durationInMinutes;
     private double basePrice;
     private String[] stylists;
+    private Boolean isMe;
 
     public String getAppointmentType()
     {
@@ -55,5 +58,17 @@ public class AppointmentType extends GenericModel
     public void setStylists(String[] stylists)
     {
         this.stylists = stylists;
+    }
+
+    @Transient
+    public Boolean getMe()
+    {
+        return isMe;
+    }
+
+    @Transient
+    public void setMe(Boolean me)
+    {
+        isMe = me;
     }
 }

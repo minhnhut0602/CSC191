@@ -8,11 +8,38 @@
 
 </div>
 
-<div class="wrapper" ng-init="getUserInfo()">
-    <div class="jumbotron edit-user-jumbo">
+<div class="wrapper" ng-init="getUserInfo()" ng-controller="userAuthController">
+    <div class="jumbotron edit-user-jumbo" ng-show="currentUserAuth.type == 'CLIENT'" >
         <h3>Hello, {{user.name}}!</h3>
         <p>Here, you can edit some profile information. If you see that some of the items are disabled, its because we are pulling that information from your facebook profile</p>
     </div>
+
+<div class="jumbotron edit-user-jumbo" ng-show="currentUserAuth.type != 'CLIENT'">
+  <button class="btn btn-lg btn-primary btn-block" type="submit"  ng-click="updateClientServices(localAppoitnmentTypes)">Update Services {{allsaved}}</button>
+   <table class="table " >
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Service Name</th>
+              <th>Service Duration</th>
+              <th>Add/Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr ng-repeat="ap in localAppoitnmentTypes">
+              <td>{{$index+1}}</td>
+              <td>{{ap.appointmentType}}</td>
+              <td>{{ap.durationInMinutes}}</td>
+              <td>
+                <input type="checkbox" name="ap.id"  id="ap.id" value="1" ng-model="ap.me"> 
+              </td>
+            </tr>
+            {{ap.savedStat}}
+          </tbody>
+
+    </table>
+</div>
 
     <div class="container">
 
@@ -34,7 +61,13 @@
 
             <span class="label label-primary">Hair Length</span>
             <input type="text" class="form-control" placeholder="Longish" ng-model="userInfo.hairLength">
-             
+            <div ng-show="currentUserAuth.type != 'CLIENT'">
+                  <span class="label label-primary">Change Password *</span>
+                  <input type="password" class="form-control" ng-model="userInfo.password1">
+                  <span class="label label-primary">Confirm Password Change*</span>
+                  <input type="password" class="form-control" ng-model="userInfo.password2" password-match="userInfo.password1">
+            </div>
+
             <button class="btn btn-lg btn-primary btn-block ng-valid" type="submit" ng-disabled="!myForm.$valid"  ng-click="setUserInfo()">Save</button>
             </ng-form>
         </form>

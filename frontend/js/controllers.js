@@ -19,6 +19,11 @@ function deleteAllCookies() {
     }
 }
 
+function sayStuff(){
+    alert(stuff);
+    return false;
+}
+
 
 
 var scheduleControllers = angular.module('scheduleControllers', []);
@@ -207,6 +212,7 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
             $scope.getInfo();
             $rootScope.loggedIn = true;
             document.cookie = "loggedIn=true"
+
 
             // $scope.me();
             location.reload();
@@ -581,6 +587,7 @@ scheduleControllers.controller('clientsController', function clientsController($
 };
 $http.get('http://home.joubin.me/salon-scheduler-api/users/clients', config).success(function(data) {
         $scope.users = data;
+
     }).error(function(data2){
         $score.user = "You have no access here";
     });
@@ -623,6 +630,7 @@ scheduleControllers.controller('userAuthController', function userAuthController
   $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(data) {
     console.log("Getting auth level");
     $scope.currentUserAuth = data;
+    document.cookie="backendUserID="+data.id;
     console.log($scope.currentUserAuth.type);
 });
 });
@@ -723,6 +731,8 @@ scheduleControllers.controller('stafflist', function stafflist($scope, $http) {
 // EDIT edit-profile
 
 scheduleControllers.controller('editprofile', function editprofile($location, $scope, $http) {
+    // alert($scope.user.type);
+    $scope.allSaved = 'asd';
     console.log("Edit Controller");
     var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
@@ -731,26 +741,65 @@ scheduleControllers.controller('editprofile', function editprofile($location, $s
     }
 };
 
-    $scope.setUserInfo = function(){
-      data = {};
-      var getFirstName = $scope.userInfo.name.split(" ");
-      var userPhone = $scope.userInfo.phone;
-      var userHairColor = $scope.userInfo.hairColor;
-      var userHairLength = $scope.userInfo.hairLength;
-      var userEmail = $scope.userInfo.email;
-      console.log($scope.user.email);
-      console.log($scope.user.phone);
-      console.log($scope.user.hairColor);
-      console.log($scope.user.hairLength);
-      console.log(getFirstName);
-      var facebookUser = readCookie('facebookActualUserName');
-      data = {"firstName": getFirstName[0],
-      "lastName": getFirstName[1],
-      "phone": userPhone,
-      "hairColor": userHairColor,
-      "hairLength": userHairLength,
-      "active": true,
-      "email": userEmail};
+$http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).success(function(data) {
+        $scope.localAppoitnmentTypes = data;
+        console.log(data);
+    }).error(function(data){
+        alert(data);
+});
+$scope.updateClientServices = function(){
+    console.log($scope.localAppoitnmentTypes);
+    for(item in $scope.localAppoitnmentTypes){
+            var appoitnmentTypeID = $scope.localAppoitnmentTypes[item].id;
+            if ($scope.localAppoitnmentTypes[item].me == undefined) {
+                $scope.localAppoitnmentTypes[item].me = false;
+            }
+            console.log('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+$scope.localAppoitnmentTypes[item].me);
+            $http.put('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+appoitnmentTypeID+'?add='+$scope.localAppoitnmentTypes[item].me,{}, config).success(function(data) {
+                $scope.localAppoitnmentTypes[item].savedStat = "Saved";
+            }).error(function(data){
+                if (data !== ''){ 
+                    alert(data);
+                }
+            });
+    }
+    alert('All stats updated');
+}
+
+    
+$scope.setUserInfo = function(){
+    data = {};
+    var getFirstName = $scope.userInfo.name.split(" ");
+    var userPhone = $scope.userInfo.phone;
+    var userHairColor = $scope.userInfo.hairColor;
+    var userHairLength = $scope.userInfo.hairLength;
+    var userEmail = $scope.userInfo.email;
+    console.log($scope.user.email);
+    console.log($scope.user.phone);
+    console.log($scope.user.hairColor);
+    console.log($scope.user.hairLength);
+    console.log(getFirstName);
+    var facebookUser = readCookie('facebookActualUserName');
+    
+    if ($scope.userInfo.password1 == undefined || $scope.userInfo.password === '') {
+        data = {"firstName": getFirstName[0],
+        "lastName": getFirstName[1],
+        "phone": userPhone,
+        "hairColor": userHairColor,
+        "hairLength": userHairLength,
+        "active": true,
+        "email": userEmail};
+    }else{
+        data = {"firstName": getFirstName[0],
+        "lastName": getFirstName[1],
+        "phone": userPhone,
+        "hairColor": userHairColor,
+        "hairLength": userHairLength,
+        "active": true,
+        "email": userEmail, 
+        "password": $scope.userInfo.password1};
+        }
+
       console.log(data);
       $http.put('http://home.joubin.me/salon-scheduler-api/users/me/',data, config).success(function(data){
                     console.log("winning");
@@ -815,6 +864,7 @@ scheduleControllers.controller('loginController', function loginController($loca
       $http.get('http://home.joubin.me/salon-scheduler-api/authorize?username='+user+'&password='+pass,data).success(function(data){
                     document.cookie="myAccessToken="+data.authToken;
                     document.cookie="userType=staff";
+
                     // $location.path("staff-landing");
                     console.log("winning");
                     console.log($scope);
@@ -950,7 +1000,28 @@ scheduleControllers.controller('userProfileController', function userProfileCont
     });
 });
 
-
+//  /$$      /$$                                                              
+// | $$$    /$$$                                                              
+// | $$$$  /$$$$  /$$$$$$  /$$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$             
+// | $$ $$/$$ $$ |____  $$| $$__  $$ |____  $$ /$$__  $$ /$$__  $$            
+// | $$  $$$| $$  /$$$$$$$| $$  \ $$  /$$$$$$$| $$  \ $$| $$$$$$$$            
+// | $$\  $ | $$ /$$__  $$| $$  | $$ /$$__  $$| $$  | $$| $$_____/            
+// | $$ \/  | $$|  $$$$$$$| $$  | $$|  $$$$$$$|  $$$$$$$|  $$$$$$$            
+// |__/     |__/ \_______/|__/  |__/ \_______/ \____  $$ \_______/            
+//                                             /$$  \ $$                      
+//                                            |  $$$$$$/                      
+//                                             \______/                       
+//   /$$$$$$                                 /$$                              
+//  /$$__  $$                               |__/                              
+// | $$  \__/  /$$$$$$   /$$$$$$  /$$    /$$ /$$  /$$$$$$$  /$$$$$$   /$$$$$$$
+// |  $$$$$$  /$$__  $$ /$$__  $$|  $$  /$$/| $$ /$$_____/ /$$__  $$ /$$_____/
+//  \____  $$| $$$$$$$$| $$  \__/ \  $$/$$/ | $$| $$      | $$$$$$$$|  $$$$$$ 
+//  /$$  \ $$| $$_____/| $$        \  $$$/  | $$| $$      | $$_____/ \____  $$
+// |  $$$$$$/|  $$$$$$$| $$         \  $/   | $$|  $$$$$$$|  $$$$$$$ /$$$$$$$/
+//  \______/  \_______/|__/          \_/    |__/ \_______/ \_______/|_______/ 
+                                                                           
+                                                                           
+                                                                           
 scheduleControllers.controller('createService', function createService($location, $scope, $http) {
 var config = {headers:  {
         'authToken': readCookie("myAccessToken"),
@@ -966,11 +1037,11 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
 
 
     $scope.deleteSelected = function(selected){
-          $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
-                console.log("winning");
+          $http.delete('http://home.joubin.me/salon-scheduler-api/appointmentTypes/'+selected, config).success(function(data){
                 $location.path('create-services');
+                location.reload();
             }).error(function(data) {
-                console.log("failing");
+                alert(data);
         });
     }
 
@@ -982,6 +1053,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
           $http.post('http://home.joubin.me/salon-scheduler-api/appointmentTypes/',toSend, config).success(function(data){
                 console.log("winning");
                 $location.path('create-services');
+                location.reload();
             }).error(function(data) {
                 console.log("failing");
         });
