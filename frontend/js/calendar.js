@@ -655,11 +655,12 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                     console.log(appointment);
 
                     var newAppointment = {};
-                    newAppointment.stylistID = appointment.stylist.id;
+                    newAppointment.clientID = appointment.client.id;
                     newAppointment.appointmentType = appointment.type.type;
                     newAppointment.appointmentTypeID = appointment.type.id;
                     newAppointment.startTime = appointment.time.epoch;
                     newAppointment.endTime = appointment.time.epoch + (appointment.type.duration*60000);
+                    newAppointment.appointmentStatus = "APPROVED";
 
                     var config = {
                         headers: {
@@ -668,7 +669,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                     }
                     $http.post('http://home.joubin.me/salon-scheduler-api/appointments', newAppointment, config).success(function(data) {
                         console.log(data);
-                        $location.path('client-landing');
+                        $location.path('staff-landing');
                     }).error(function(data){
                         alert("Error: it seems that "+ data);
                     });
