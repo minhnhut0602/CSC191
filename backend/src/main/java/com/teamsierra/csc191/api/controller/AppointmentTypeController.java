@@ -235,7 +235,7 @@ public class AppointmentTypeController extends GenericController
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<Resource<GenericModel>> addStylistToType(@PathVariable String typeID,
                                                                    @PathVariable String stylistID,
@@ -332,26 +332,27 @@ public class AppointmentTypeController extends GenericController
      * This is a stupid hack requested by Mr. Jabbari because he was dam too lazy
      * to actually call two different methods from the front end. He owes me a COFFEE!
      * @param typeID
-     * @param stylistID
      * @param add
      * @param request
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/{typeID}/{stylistID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{typeID}", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<Resource<GenericModel>> modifyTypeStylist(@PathVariable String typeID,
-                                                                    @PathVariable String stylistID,
                                                                     @RequestParam Boolean add,
                                                                     HttpServletRequest request) throws Exception
     {
-       if (add)
-       {
+        this.setRequestControllerState(request);
+        String stylistID = this.id;
+
+        if (add)
+        {
            return addStylistToType(typeID, stylistID, request);
-       }
-       else
-       {
+        }
+        else
+        {
            return removeStylistFromType(typeID, stylistID, request);
-       }
+        }
     }
 }
