@@ -902,7 +902,19 @@ $scope.setUserInfo = function(){
     $scope.getUserInfo = function() {
         $http.get('/salon-scheduler-api/users/me/', config).success(function(data){
             $scope.userInfo = data;
-            $scope.userInfo.name = $scope.userInfo.firstName +' '+ $scope.userInfo.lastName;
+            if ($scope.userInfo.firstName === null) {
+                $scope.userInfo.firstName = '';
+            }
+            if ($scope.userInfo.lastName === null) {
+                $scope.userInfo.lastName = '';
+            }
+            if ($scope.userInfo.lastName === '' && $scope.userInfo.firstName === '') {
+                $scope.userInfo.name = '';
+            } else {
+                $scope.userInfo.name = $scope.userInfo.firstName +' '+ $scope.userInfo.lastName;
+            }
+
+
             console.log($scope.userInfo);
         }).error(function(data){
             alert(data);

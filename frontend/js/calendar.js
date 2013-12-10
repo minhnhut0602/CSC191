@@ -166,7 +166,7 @@ calendarModule.directive('calendar', function($http, $location) {
                                         '<div class="modal-content">'+
                                             '<div class="modal-header">'+
                                                 '<button type="button" class="close" aria-hidden="true" ng-click="cancel()">&times;</button>'+
-                                                '<h4 class="modal-title">Make A New Appointment for {{day.month}}/{{day.date}}/{{day.year}}</h4>'+
+                                                '<h4 class="modal-title">Make A New Appointment for {{monthNum}}/{{dayNum}}/{{yearNum}}</h4>'+
                                             '</div>'+
                                             '<div class="modal-body">'+
                                                 '<form class="new-appointment-form">' +
@@ -334,6 +334,10 @@ function CalendarModalInstance($scope, $http, $modalInstance, day, times) {
         type: {},
         time: {}
     };
+    var currentDate = new Date(times[0].epoch);
+    $scope.dayNum = currentDate.getDate();
+    $scope.monthNum = currentDate.getMonth()+1;
+    $scope.yearNum = currentDate.getFullYear();
 
     //TODO get availability for this day
     var selectedDay = new Date(times[0].epoch);
@@ -600,7 +604,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                                         '<div class="modal-content">'+
                                             '<div class="modal-header">'+
                                                 '<button type="button" class="close" aria-hidden="true" ng-click="cancel()">&times;</button>'+
-                                                '<h4 class="modal-title">Make A New Appointment for {{day.month}}/{{day.date}}/{{day.year}}</h4>'+
+                                                '<h4 class="modal-title">Make A New Appointment for {{monthNum}}/{{dayNum}}/{{yearNum}}</h4>'+
                                             '</div>'+
                                             '<div class="modal-body">'+
                                                 '<form class="new-appointment-form">' +
@@ -708,6 +712,10 @@ function StaffCalendarModalInstance($scope, $http, $modalInstance, day, times) {
         type: {},
         time: {}
     };
+    var currentDate = new Date(times[0].epoch);
+    $scope.dayNum = currentDate.getDate();
+    $scope.monthNum = currentDate.getMonth()+1;
+    $scope.yearNum = currentDate.getFullYear();
 
     //TODO get availability for this day
     var selectedDay = new Date(times[0].epoch);

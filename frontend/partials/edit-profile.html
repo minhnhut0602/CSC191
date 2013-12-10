@@ -10,7 +10,7 @@
 
 <div class="wrapper" ng-init="getUserInfo()" ng-controller="userAuthController">
     <div class="jumbotron edit-user-jumbo" ng-show="userInfo.type == 'CLIENT'" >
-        <h3>Hello, {{user.name}}!</h3>
+        <h3>Hello {{userInfo.name}}!</h3>
         <p>Here, you can edit some profile information. If you see that some of the items are disabled, its because we are pulling that information from your facebook profile</p>
     </div>
 
@@ -48,7 +48,7 @@
             <h2 class="form-signin-heading">Edit Information</h2>
 
             <span class="label label-primary">Name *</span>
-            <input type="text" class="form-control" placeholder="{{userInfo.firstName}} {{userInfo.lastName}}" autofocus=""  ng-model="userInfo.name" required name="firstlast">
+            <input type="text" class="form-control" placeholder="First Last" autofocus=""  ng-model="userInfo.name" required name="firstlast">
 
             <span class="label label-primary">Phone *</span>
             <input type="text" name="phone"  class="form-control" placeholder="9165551234" ng-model="userInfo.phone" name="phone" required>
