@@ -1,5 +1,5 @@
-CSC191
-======
+CSC191 - CSU, Sacramento Fall 2013
+===================================
 
 CSC 191 @ CSU, Sacramento is the 2nd part of a "Senior Project" class.
 
