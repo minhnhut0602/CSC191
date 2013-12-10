@@ -54,7 +54,13 @@
                         <input placeholder="Search" type="search" class="gn-search">
                     </li> -->
                     <li>
-                        <a class="gn-icon" href="#/calendar/" ng-show="isClient() || isAdmin() || isStylist()">
+                        <a class="gn-icon" href="#/calendar/" ng-show="isClient()">
+                            <i class="fa fa-calendar"></i>
+                            <span>Make an Appointment</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="gn-icon" href="#/staff-calendar/" ng-show="isAdmin() || isStylist()">
                             <i class="fa fa-calendar"></i>
                             <span>Make an Appointment</span>
                         </a>
