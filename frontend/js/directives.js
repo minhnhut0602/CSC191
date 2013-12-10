@@ -133,7 +133,7 @@ scheduleDirectives.directive('appointmentgetter', function($http) {
                 }
             };
 
-            $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+            $http.get('/salon-scheduler-api/appointments', config).success(function(data) {
                 scope.appointments = [];
 
                 for (var something in data){
@@ -476,7 +476,7 @@ scheduleDirectives.directive('appointmentgetterStaff', function($http) {
                 }
             };
 
-            $http.get('http://home.joubin.me/salon-scheduler-api/appointments', config).success(function(data) {
+            $http.get('/salon-scheduler-api/appointments', config).success(function(data) {
                 scope.appointments = [];
 
                 for (var something in data){

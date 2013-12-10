@@ -80,7 +80,7 @@ availabilityModule.controller('TimepickerDemoCtrl', function TimepickerDemoCtrl(
             }
         };
         console.log(availability);
-        $http.put('http://home.joubin.me/salon-scheduler-api/availability/me/', availability, config).success(function(data) {
+        $http.put('/salon-scheduler-api/availability/me/', availability, config).success(function(data) {
             console.log("availability saved");
             $location.path('staff-landing');
         }).error(function(data) {

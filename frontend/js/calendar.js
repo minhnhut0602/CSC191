@@ -50,7 +50,7 @@ calendarModule.directive('calendar', function($http, $location) {
                     'authToken': readCookie('myAccessToken')
                 }
             };
-            $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).success(function(appointmentTypes) {
+            $http.get('/salon-scheduler-api/appointmentTypes', config).success(function(appointmentTypes) {
                 var types = [];
                 console.log(appointmentTypes);
                 for (type in appointmentTypes) {
@@ -64,7 +64,7 @@ calendarModule.directive('calendar', function($http, $location) {
                 $scope.appointmentInfo.types = types;
                 console.log(types);
             });
-            $http.get('http://home.joubin.me/salon-scheduler-api/users/stylists', config).success(function(stylistAccounts) {
+            $http.get('/salon-scheduler-api/users/stylists', config).success(function(stylistAccounts) {
                 var stylists = [];
                 for (stylist in stylistAccounts) {
                     stylists.push({
@@ -225,7 +225,7 @@ calendarModule.directive('calendar', function($http, $location) {
                             'authToken': readCookie('myAccessToken')
                         }
                     }
-                    $http.post('http://home.joubin.me/salon-scheduler-api/appointments', newAppointment, config).success(function(data) {
+                    $http.post('/salon-scheduler-api/appointments', newAppointment, config).success(function(data) {
                         console.log(data);
                         $location.path('client-landing');
                     }).error(function(data){
@@ -477,7 +477,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                     'authToken': readCookie('myAccessToken')
                 }
             };
-            $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).success(function(appointmentTypes) {
+            $http.get('/salon-scheduler-api/appointmentTypes', config).success(function(appointmentTypes) {
                 var types = [];
                 console.log(appointmentTypes);
                 for (type in appointmentTypes) {
@@ -491,7 +491,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                 $scope.appointmentInfo.types = types;
                 console.log(types);
             });
-            $http.get('http://home.joubin.me/salon-scheduler-api/users/me/', config).success(function(stylistAccounts) {
+            $http.get('/salon-scheduler-api/users/me/', config).success(function(stylistAccounts) {
                 var stylists = [];
                 stylists.push({
                     name: stylistAccounts.firstName +' '+ stylistAccounts.lastName,
@@ -500,7 +500,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                 $scope.appointmentInfo.stylists = stylists;
                 console.log(stylists);
             });
-            $http.get('http://home.joubin.me/salon-scheduler-api/users/clients', config).success(function(clientAccounts) {
+            $http.get('/salon-scheduler-api/users/clients', config).success(function(clientAccounts) {
                 var clients = [];
                 for (stylist in clientAccounts) {
                     clients.push({
@@ -667,7 +667,7 @@ calendarModule.directive('staffcalendar', function($http, $location) {
                             'authToken': readCookie('myAccessToken')
                         }
                     }
-                    $http.post('http://home.joubin.me/salon-scheduler-api/appointments', newAppointment, config).success(function(data) {
+                    $http.post('/salon-scheduler-api/appointments', newAppointment, config).success(function(data) {
                         console.log(data);
                         $location.path('staff-landing');
                     }).error(function(data){
