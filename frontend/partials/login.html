@@ -7,7 +7,7 @@
         <button type="button" class="btn btn-lg" ng-class="{true:'btn-primary', false:'btn-default'}[client]" ng-click="staff=false; client=true;">Client</button>
     </p>
     <form ng-show="staff" >
-        <ng-form>   
+        <ng-form>
             <h2>Please sign in</h2>
             <div class="form-group">
                 <label for="email-input">Email</label>
@@ -23,9 +23,9 @@
 
     <form ng-show="client">
         <h2>Please sign in with one of the following services</h2>
-        <div class="form-group">
-            <button type="button" class="btn btn-primary btn-lg btn-block" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login()">Facebook</button>
-            <button type="button" class="btn btn-danger btn-lg btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
+        <div class="form-group" ng-controller="userAuthController">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-ng-show="!loggedIn" data-ng-disabled="!facebookReady" data-ng-click="login();">Facebook</button>
+            <!-- <button type="button" class="btn btn-danger btn-lg btn-block" data-ng-show="loggedIn" data-ng-disabled="!facebookReady" data-ng-click="logout(); clearUserStuff();">Logout</button> -->
         </div>
     </form>
 </div>
