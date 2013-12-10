@@ -263,8 +263,13 @@ scheduleControllers.controller('AuthController', ['$scope', '$rootScope', '$loca
                 $scope.user = response;
                 $rootScope.facebook = response;
 
-                $rootScope.getMe(true, function() {
-                    $location.path('client-landing');
+                $rootScope.getMe(true, function(firstTimeLogin) {
+                    if (firstTimeLogin == false) {
+                        $location.path('edit-profile');
+                    } else {
+                        $location.path('client-landing');
+                    }
+
                 });
 
             } else {
@@ -638,7 +643,13 @@ scheduleControllers.controller('userAuthController', function userAuthController
             console.log($scope.currentUserAuth);
             document.cookie="backendUserID="+data.id;
             if (redirect == true) {
-                callback();
+                console.log(data.firstName);
+                if (data.firstName === null) {
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+
             }
         });
     };
@@ -977,7 +988,6 @@ scheduleControllers.controller('loginController', function loginController($loca
 
 scheduleControllers.controller('loadingController', function loadingController($location, $scope) {
     console.log("loading page controller, let see where it goes");
-    alert("loading");
     if (readCookie('userType') !== "CLIENT" && readCookie('userType') != null) {
         $location.path('staff-landing');
 
