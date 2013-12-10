@@ -1031,7 +1031,7 @@ var config = {headers:  {
                 console.log("winning");
                 $location.path('staff-landing');
         }).error(function(data) {
-                console.log("failing");
+                alert(data);
         });
     }
 
@@ -1119,7 +1119,7 @@ $http.get('http://home.joubin.me/salon-scheduler-api/appointmentTypes', config).
                 $location.path('create-services');
                 location.reload();
             }).error(function(data) {
-                console.log("failing");
+                alert(data);
         });
 
     }
