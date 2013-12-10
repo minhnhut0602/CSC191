@@ -3,6 +3,8 @@ CSC191 - CSU, Sacramento Fall 2013
 
 CSC 191 @ CSU, Sacramento is the 2nd part of a "Senior Project" class.
 
+> CSC 191. Senior Project-Part II. Continuation of the group project begun in CSC 190. Teams apply software engineering principles to the design, implementation and testing of their software product. All technical work is published using guidelines modeled after IEEE documentation standards along with an appropriate user manual. Oral and written reports are required. Senior project is completed with the successful delivery, installation and demonstration of the software along with all approved documentation. Lecture one hour, laboratory three hours.
+
 The goal of this class is to actively develop a software using industry standards.
 
 > That includes but not limited to:
