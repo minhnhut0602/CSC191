@@ -336,27 +336,6 @@ public class UserController extends GenericController
                 sa.setStylistID(user.getId());
                 sa.setAvailability(new Availability());
                 sar.insert(sa);
-                
-                //TODO remove if front end gets appointment types working
-                //adds the stylist to all appointment types
-                List<AppointmentType> appointmentTypes = apptTypeRepo.findByCriteria(new AppointmentType());
-                if(appointmentTypes != null && appointmentTypes.size() != 0)
-                {
-	                String userID = user.getId();
-	                try
-	                {
-		                for(AppointmentType at : appointmentTypes)
-		                {
-		                	apptTypeRepo.addStylistToType(at.getId(), userID);
-		                }
-	                }
-	                catch(Exception e)
-	                {
-	                	throw new GenericUserException("Exception generated while adding appointmentTypes"
-	                			+ " to the new user.", HttpStatus.INTERNAL_SERVER_ERROR);
-	                }
-                }
-                // end TODO
 
                 Resource<User> resource = ResourceHandler.createResource(user);
                 return new ResponseEntity<Resource<User>>(resource, HttpStatus.CREATED);

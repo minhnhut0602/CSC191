@@ -235,19 +235,6 @@ public class AppointmentTypeController extends GenericController
         requestData.setId(null);
         Resource<AppointmentType> resource = ResourceHandler.createResource(appointmentTypeRepository.insert(requestData),
                                                                             this.id);
-        
-        //TODO remove if front end gets appointment types working
-        //adds all stylists to the new appointment type
-        List<User> users = userRepository.findAllByGroup(UserType.STYLIST);
-        users.addAll(userRepository.findAllByGroup(UserType.ADMIN));
-        if(users != null && users.size() != 0)
-        {
-	        for(User u : users)
-	        {
-	        	//appointmentTypeRepository.addStylistToType(requestData.getId(), u.getId());
-	        }
-        }
-        //end TODO
 
         return new ResponseEntity<>(resource, HttpStatus.ACCEPTED);
     }
