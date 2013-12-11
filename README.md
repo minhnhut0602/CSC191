@@ -52,10 +52,21 @@ Example redirect
 ##Installation
 
 ###Backend
-The backend requires an application server such as Tomcat or JBoss as well as MongoDB to run. Once these have been installed, using Maven, simply run `mvn package`. This will generate a `.war` file which you can deploy to your application server.
+The backend requires an application server such as Tomcat or JBoss as well as MongoDB to run. 
+<pre>
+apt-get install tomcat7
+apt-get install mongodb
+</pre>
+
+Once these have been installed, using Maven, simply run `mvn package`. This will generate a `.war` file which you can deploy to your application server.
 
 ###Frontend
-The frontend only requires a webserver to run. There are no special requirements so any web server will work because it will only be serveing static files. Simply copy the frontend folder to the root document folder of your webserver and you are ready to go.
+The frontend only requires a webserver to run.
+<pre>
+apt-get install apache2
+a2enmod proxy_http # This is required by facebook as noted in the Facebook Section
+</pre>
+There are no special requirements so any web server will work because it will only be serveing static files. Simply copy the frontend folder to the root document folder of your webserver and you are ready to go.
 
 
 
