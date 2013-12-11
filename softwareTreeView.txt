@@ -1,0 +1,163 @@
+.
+├── README.md
+├── SoftwareTreeView.txt
+├── backend
+│   ├── pom.xml
+│   ├── salon-scheduler-api.iml
+│   └── src
+│       ├── main
+│       │   ├── java
+│       │   │   └── com
+│       │   │       └── teamsierra
+│       │   │           └── csc191
+│       │   │               └── api
+│       │   │                   ├── controller
+│       │   │                   │   ├── AppointmentController.java
+│       │   │                   │   ├── AppointmentTypeController.java
+│       │   │                   │   ├── AuthenticationController.java
+│       │   │                   │   ├── AvailabilityController.java
+│       │   │                   │   ├── GenericController.java
+│       │   │                   │   └── UserController.java
+│       │   │                   ├── exception
+│       │   │                   │   ├── GenericAvailabilityException.java
+│       │   │                   │   ├── GenericException.java
+│       │   │                   │   ├── GenericUserException.java
+│       │   │                   │   └── UserAlreadyExistsException.java
+│       │   │                   ├── form
+│       │   │                   │   └── LoginForm.java
+│       │   │                   ├── interceptor
+│       │   │                   │   └── AuthInterceptor.java
+│       │   │                   ├── model
+│       │   │                   │   ├── Appointment.java
+│       │   │                   │   ├── AppointmentType.java
+│       │   │                   │   ├── Authentication.java
+│       │   │                   │   ├── GenericModel.java
+│       │   │                   │   ├── StylistAvailability.java
+│       │   │                   │   └── User.java
+│       │   │                   ├── repository
+│       │   │                   │   ├── AppointmentRepository.java
+│       │   │                   │   ├── AppointmentTypeRepository.java
+│       │   │                   │   ├── StylistAvailabilityRepository.java
+│       │   │                   │   └── UserRepository.java
+│       │   │                   ├── resources
+│       │   │                   │   └── ResourceHandler.java
+│       │   │                   └── util
+│       │   │                       ├── Availability.java
+│       │   │                       └── DateRange.java
+│       │   ├── main.iml
+│       │   ├── resources
+│       │   │   └── system.properties
+│       │   └── webapp
+│       │       └── WEB-INF
+│       │           ├── spring
+│       │           │   ├── root-context.xml
+│       │           │   └── salon-scheduler-api
+│       │           │       ├── controllers-test.xml
+│       │           │       ├── controllers.xml
+│       │           │       ├── servlet-context-test.xml
+│       │           │       └── servlet-context.xml
+│       │           ├── views
+│       │           │   └── login.jsp
+│       │           └── web.xml
+│       └── test
+│           ├── java
+│           │   ├── controllerTest
+│           │   │   ├── AppointmentTypeControllerTest.java
+│           │   │   ├── AvailabilityControllerTest.java
+│           │   │   ├── GenericControllerTest.java
+│           │   │   ├── UserControllerIntegrationTest.java
+│           │   │   └── UserControllerTest.java
+│           │   └── utilTest
+│           │       ├── AvailabilityTest.java
+│           │       └── DateRangeTest.java
+│           └── test.iml
+├── documentation
+│   ├── Abstract.pdf
+│   ├── Charter.pdf
+│   ├── ProjectManagementPlan.pdf
+│   ├── ProjectSRS.pdf
+│   ├── SDS.pdf
+│   └── STS\ Formatted.pdf
+├── frontend
+│   ├── apple-touch-icon-precomposed.png
+│   ├── crossdomain.xml
+│   ├── css
+│   │   ├── component.less
+│   │   ├── constants.less
+│   │   ├── main.less
+│   │   └── normalize.css
+│   ├── doc
+│   │   ├── TOC.md
+│   │   ├── crossdomain.md
+│   │   ├── css.md
+│   │   ├── extend.md
+│   │   ├── faq.md
+│   │   ├── html.md
+│   │   ├── js.md
+│   │   ├── misc.md
+│   │   └── usage.md
+│   ├── favicon.ico
+│   ├── fonts
+│   │   ├── codropsicons
+│   │   │   ├── codropsicons.eot
+│   │   │   ├── codropsicons.svg
+│   │   │   ├── codropsicons.ttf
+│   │   │   ├── codropsicons.woff
+│   │   │   └── license.txt
+│   │   └── ecoicons
+│   │       ├── Read\ Me.txt
+│   │       ├── ecoicons.dev.svg
+│   │       ├── ecoicons.eot
+│   │       ├── ecoicons.svg
+│   │       ├── ecoicons.ttf
+│   │       ├── ecoicons.woff
+│   │       └── license.txt
+│   ├── img
+│   ├── index.html
+│   ├── js
+│   │   ├── angular-facebook.js
+│   │   ├── app.js
+│   │   ├── availability.js
+│   │   ├── calendar.js
+│   │   ├── classie.js
+│   │   ├── controllers.js
+│   │   ├── directives.js
+│   │   ├── gnmenu.js
+│   │   ├── main.js
+│   │   ├── md5.js
+│   │   ├── plugins.js
+│   │   └── vendor
+│   │       ├── angular.min.js
+│   │       ├── jquery-1.10.2.min.js
+│   │       ├── less.min.js
+│   │       ├── modernizr-2.6.2.min.js
+│   │       └── ui-bootstrap-tpls-0.7.0.js
+│   ├── json
+│   │   ├── appointments
+│   │   │   ├── clientAppointments.json
+│   │   │   └── staffAppointments.json
+│   │   ├── stylists.json
+│   │   ├── userAuthController.json
+│   │   └── users.json
+│   ├── partials
+│   │   ├── admin.html
+│   │   ├── calendar.html
+│   │   ├── channel.html
+│   │   ├── client-landing.html
+│   │   ├── create-services.html
+│   │   ├── create-user.html
+│   │   ├── edit-availability.html
+│   │   ├── edit-profile.html
+│   │   ├── edit-user.html
+│   │   ├── loading.html
+│   │   ├── login.html
+│   │   ├── staff-calendar.html
+│   │   ├── staff-landing.html
+│   │   ├── user-profile.html
+│   │   ├── view-clients.html
+│   │   └── view-stylists.html
+│   ├── sftp-config.json
+│   └── site.iml
+└── readme.pdf
+
+39 directories, 121 files
